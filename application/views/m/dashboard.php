@@ -6,11 +6,12 @@
 				<div class="level">
 					<h1>Recent Course</h1>
 					<hr/>
-					<p>Shell :: Level 3</p>
+					<p><?php echo $recentCourse['title'];?> :: Level <?php echo $recentCourse['level'];?></p>
 					<br>
-					<p style="font-size:30px;"><strong> 34%</strong></p>
+					<p style="font-size:30px;"><strong> <?php echo $percentage;?>%</strong></p>
+					<small style="color:gray">Recent : <?php echo $recentCourse['lastdate']?></small>
 					<p><div style="height:10px" class="radius progress success">
-						<span style="float:left;color:#fff;width:34%;" class="meter"></span>
+						<span style="float:left;color:#fff;width:<?php echo $percentage;?>%;" class="meter"></span>
 					</div></p>
 					<p><a class="button" href="#">Resume</a></p>
 				</div>
@@ -32,85 +33,56 @@
 					<div class="tabs-content">
 						<div class="content active" id="mycourse">
 							<!-- start of my course -->
+							<?php foreach($userCourse as $uc):
+							$totalnow = $this->m_course->countCourseStep($uc['id_course'],$uc['id_level']);
+							$totalCourse = $this->m_course->countCourseByLevel($uc['id_level']);
+							$recentPercentage = number_format(($totalnow*100)/$totalCourse);
+							?>
 							<a id="btn_course_item" href="#btn_resume">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
 									<div class="materi-item">
 										<div class="materi-title">
-											<h5>Introduction Linux</h5>								
+											<h5><?php echo $uc['title']?></h5>								
 										</div>
 										<hr/>
-										<h2><strong>100%</strong></h2>
-										<small>recent : 23/02/2014</small>
+										<h2><strong><?php echo $recentPercentage;?>%</strong></h2>
+										<small>recent : <?php echo $uc['lastdate']?></small>
 										<p><div style="height:10px" class="radius progress success">
-											<span style="float:left;color:#fff;width:100%;" class="meter"></span>
+											<span style="float:left;color:#fff;width:<?php echo $recentPercentage?>%;" class="meter"></span>
 										</div></p> 
 									</div>
 								</div>					
 							</a>
-							<a id="btn_course_item" href="#btn_resume">
-								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">
-									<div class="materi-item">
-										<div class="materi-title">
-											<h5>Shell</h5>
-										</div>
-										<hr/>
-										<h2><strong>1.2%</strong></h2>
-										<small>recent : 23/02/2014</small>
-										<p><div style="height:10px" class="radius progress success">
-											<span style="float:left;color:#fff;width:34%;" class="meter"></span>
-										</div></p>  
-									</div>
-								</div>
-							</a>
-							<a id="btn_course_item" href="#btn_resume">
-								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">
-									<div class="materi-item">
-										<div class="materi-title">
-											<h5>Networking</h5>
-										</div>
-										<hr/>
-										<h2><strong>0%</strong></h2>
-										<small>recent : 23/02/2014</small>
-										<p><div style="height:10px" class="radius progress success">
-											<span style="float:left;color:#fff;width:34%;" class="meter"></span>
-										</div></p>  
-									</div>
-								</div>
-							</a>
-							<a id="btn_course_item" href="#btn_resume">
-								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">
-									<div class="materi-item">
-										<div class="materi-title">
-											<h5>Developing Software</h5>
-										</div>
-										<hr/>
-										<h2><strong>0%</strong></h2>
-										<small>recent : 23/02/2014</small>
-										<p><div style="height:10px" class="radius progress success">
-											<span style="float:left;color:#fff;width:34%;" class="meter"></span>
-										</div></p>  
-									</div>
-								</div>	
-							</a>
-							<!-- end of my course -->
-						</div>
-						<div class="content" id="finishedcourse">
-							<!-- start of finished course -->
+						<?php endforeach;?>						
+						<!-- end of my course -->
+					</div>
+					<div class="content" id="finishedcourse">
+						<!-- start of finished course -->
+						<?php foreach($userCourse as $uc):
+						$totalnow = $this->m_course->countCourseStep($uc['id_course'],$uc['id_level']);
+						$totalCourse = $this->m_course->countCourseByLevel($uc['id_level']);
+						$percentage = number_format(($totalnow*100)/$totalCourse);
+						if($percentage == 100){
+							?>
 							<a id="btn_course_item" href="#btn_resume">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
 									<div class="materi-item">
 										<div class="materi-title">
-											<h5>Introduction Linux</h5>								
+											<h5><?php echo $uc['title']?></h5>								
 										</div>
 										<hr/>
-										<h2><strong>100%</strong></h2>
-										<small>recent : 23/02/2014</small>
+										<h2><strong><?php echo $percentage;?>%</strong></h2>
+										<small>recent : <?php echo $uc['lastdate']?></small>
 										<p><div style="height:10px" class="radius progress success">
-											<span style="float:left;color:#fff;width:100%;" class="meter"></span>
+											<span style="float:left;color:#fff;width:<?php echo $percentage?>%;" class="meter"></span>
 										</div></p> 
 									</div>
 								</div>					
 							</a>
+							<?php } else {
+								echo '<center><p><strong>not yet</strong></p></center>';
+							}
+							endforeach;?>
 							<!-- end of finished course -->
 						</div>					  
 					</div>
@@ -118,57 +90,49 @@
 				</div>				
 				<br/>
 				<br/>
-				<div id="#btn_resume">
-					<h1>Bash Shell Completion / 23 %</h1>
+				<div id="completion">
+					<h1><?php echo $recentCourse['title'];?> / <?php echo $recentPercentage;?>%</h1>
 					<hr/>
+					<?php 
+					foreach($recentCompletion as $rc):
+						?>
 					<table>
-						<caption style="margin:10px">Level 1 : Linux Base Command (100%)</caption>
+						<caption style="margin:10px">Level <?php echo $rc['level']?> : <?php echo $rc['title']?> (100%)</caption>
 						<tr>
-							<th scope="column">Activity</th>
-							<th scope="column">Status</th>
-							<th scope="column">Date</th>
+							<th style="width:80%" scope="column">Activity</th>
+							<th style="width:20%" scope="column">Status</th>
 						</tr>
+						<?php 
+						$courseItem = $this->m_course->completedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
+						foreach($courseItem as $ci):?>
 						<tr>
-							<td scope="row">Using Echo </td>
-							<td scope="row">Completed</td>
-							<td scope="row">23/12/2014 14:00:00</td>
+							<td scope="row"><?php echo $ci['title']?></td>
+							<td style="color:green" scope="row">Completed</td>
 						</tr>
+						<?php endforeach;?>
+						<?php 
+						$uncompletedCourseItem = $this->m_course->unCompletedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
+						foreach($uncompletedCourseItem as $uci):?>
 						<tr>
-							<td scope="row">Using Echo </td>
-							<td scope="row">Completed</td>
-							<td scope="row">23/12/2014 14:00:00</td>
+							<td scope="row"><?php echo $uci['title']?></td>
+							<td scope="row">Uncompleted</td>
 						</tr>
+						<?php endforeach;?>
+
 					</table>
 					<br/>
-					<table>
-						<caption style="margin:10px">Level 2 : Directory Management (100%)</caption>
-						<tr>
-							<th scope="column">Activity</th>
-							<th scope="column">Status</th>
-							<th scope="column">Date</th>
-						</tr>
-						<tr>
-							<td scope="row">Using Echo </td>
-							<td scope="row">Completed</td>
-							<td scope="row">23/12/2014 14:00:00</td>
-						</tr>
-						<tr>
-							<td scope="row">Using Echo </td>
-							<td scope="row">Completed</td>
-							<td scope="row">23/12/2014 14:00:00</td>
-						</tr>
-					</table>
-					<a id="btn_resume" href="#" class="button large">resume</a>
-					<br/>
-				</div>
-				<!-- badge completion -->
-				<h1>Badge Collection</h1>
-				<hr/>
-				<p>you don't have</p>
+				<?php endforeach;?>
+				<a id="btn_resume" href="#" class="button large">resume</a>
 				<br/>
 			</div>
+			<!-- badge completion -->
+			<h1>Badge Collection</h1>
+			<hr/>
+			<p>you don't have</p>
+			<br/>
 		</div>
-	</center>
+	</div>
+</center>
 </section>
 <!-- other course -->
 <section id="otherCourse">

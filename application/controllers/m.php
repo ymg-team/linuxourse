@@ -19,6 +19,15 @@ class m extends base { //class for public
 	list of course
 	*/
 	public function dashboard(){
+		//cek return member or not
+		//if return member, start Introduce Linux Course
+		$idStudent = $this->session->userdata['student_login']['id_user'];
+		//check is id_course started?
+		if($this->m_course->doFirstCourse($idStudent) == false){ //course is never started
+			//create new course
+			$this->m_course->newCourse($idStudent);
+			redirect(site_url('m/dashboard'));
+		}
 		if(!empty($_GET['note'])){
 			switch ($_GET['note']) {
 				case 'loginsuccess':
@@ -34,7 +43,14 @@ class m extends base { //class for public
 		}
 		$data = array(
 			'title'=>'Student Dashboard',
+			'recentCourse'=>$this->m_course->recentCourseByUser($idStudent),
+			'userCourse'=>$this->m_course->courseByUser($idStudent),
 			);
+		// count percentation course
+		$totalnow = $this->m_course->countCourseStep($data['recentCourse']['id_course'],$data['recentCourse']['id_level']);
+		$totalCourse = $this->m_course->countCourseByLevel($data['recentCourse']['id_level']);
+		$data['percentage'] = number_format(($totalnow*100)/$totalCourse);
+		$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
 		$this->baseView('m/dashboard',$data);
 	}
 	//edit profile

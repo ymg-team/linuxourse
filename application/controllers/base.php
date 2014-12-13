@@ -6,7 +6,7 @@ class base extends CI_Controller {
 	{
 		parent::__construct();
 		//load all model
-		$this->load->model(array('m_user'));//auto load model
+		$this->load->model(array('m_user','m_course'));//auto load model
 	}
 
 	public function index()
