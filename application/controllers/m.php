@@ -45,11 +45,13 @@ class m extends base { //class for public
 			'title'=>'Student Dashboard',
 			'recentCourse'=>$this->m_course->recentCourseByUser($idStudent),
 			'userCourse'=>$this->m_course->courseByUser($idStudent),
+			'myMateri'=>$this->m_course->showMyIdMateri($this->session->userdata['student_login']['id_user']),
+			'allMateri'=>$this->m_course->showAllMateri(),
 			);
 		// count percentation course
-		$totalnow = $this->m_course->countCourseStep($data['recentCourse']['id_course'],$data['recentCourse']['id_level']);
-		$totalCourse = $this->m_course->countCourseByLevel($data['recentCourse']['id_level']);
-		$data['percentage'] = number_format(($totalnow*100)/$totalCourse);
+		$totalnow = $this->m_course->countCourseStepByMateri($data['recentCourse']['id_course'],$data['recentCourse']['id_materi']);
+		$totalCourse = $this->m_course->countCourseByMateri($data['recentCourse']['id_materi']);
+		$data['percentage'] = number_format(($totalnow*100/$totalCourse),1);
 		$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
 		$this->baseView('m/dashboard',$data);
 	}

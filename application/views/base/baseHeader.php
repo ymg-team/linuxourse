@@ -35,9 +35,10 @@
 				</div>
 				<div class="small-9 columns">
 					<ul style="float:right;padding-top:10px" class="inline-list">
-						<li><a style="margin-top: 4px;" href="#">Home</a></li>
-						<li><a style="margin-top: 4px;" href="#">Help</a></li>
-						<li><a style="margin-top: 4px;" href="#">About</a></li>
+						<li><a style="margin-top: 4px;" href="<?php echo site_url()?>">Home</a></li>
+						<li><a style="margin-top: 4px;" href="<?php echo site_url('news')?>">News</a></li>
+						<li><a style="margin-top: 4px;" href="<?php echo site_url('news/read/TWc9PQ/Help')?>">Help</a></li>
+						<li><a style="margin-top: 4px;" href="<?php echo site_url('news/read/TVE9PQ/About')?>">About</a></li>
 						<?php if(!empty($this->session->userdata['student_login']['id_user'])){ 
 							if(!empty($this->session->userdata['student_login']['pp'])){
 								$src = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);

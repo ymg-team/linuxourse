@@ -12,6 +12,7 @@
 			<p><a href="#">about</a></li><p/>
 			<p><a href="#">register</a></li><p/>
 			<p><a href="#">login</a></li><p/>
+			<p><a href="<?php echo site_url('news')?>">news</a></li><p/>
 			<p><a href="#">error report</a></li><p/>
 		</div>
 		<div class="large-2 medium-2 columns">

@@ -27,7 +27,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .materi-item:hover{background-color: #F4F4F4;}
 .materi-item{float:left;border:1px solid lightgray;width:100%;}
 .materi-item small{color:gray;}
-.materi-title{height: 20px;padding:0.1em;}
+.materi-title{height: 35px;padding:0.1em;}
 .learn_sidebar{padding: 10px;margin-top:0;background-color: #F5F5F5}
 .terminal_view{padding:10px;background-color: #282828}
 .text{height:250px;overflow: auto}

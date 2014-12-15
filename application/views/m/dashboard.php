@@ -6,7 +6,7 @@
 				<div class="level">
 					<h1>Recent Course</h1>
 					<hr/>
-					<p><?php echo $recentCourse['title'];?> :: Level <?php echo $recentCourse['level'];?></p>
+					<p><?php echo $recentCourse['materi_title'];?> :: Level <?php echo $recentCourse['level'];?></p>
 					<br>
 					<p style="font-size:30px;"><strong> <?php echo $percentage;?>%</strong></p>
 					<small style="color:gray">Recent : <?php echo $recentCourse['lastdate']?></small>
@@ -34,9 +34,9 @@
 						<div class="content active" id="mycourse">
 							<!-- start of my course -->
 							<?php foreach($userCourse as $uc):
-							$totalnow = $this->m_course->countCourseStep($uc['id_course'],$uc['id_level']);
-							$totalCourse = $this->m_course->countCourseByLevel($uc['id_level']);
-							$recentPercentage = number_format(($totalnow*100)/$totalCourse);
+							$totalnow = $this->m_course->countCourseStepByMateri($uc['id_course'],$uc['id_materi']);
+							$totalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
+							$recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 							?>
 							<a id="btn_course_item" href="#btn_resume">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
@@ -59,7 +59,7 @@
 					<div class="content" id="finishedcourse">
 						<!-- start of finished course -->
 						<?php foreach($userCourse as $uc):
-						$totalnow = $this->m_course->countCourseStep($uc['id_course'],$uc['id_level']);
+						$totalnow = $this->m_course->countCourseStepByLevel($uc['id_course'],$uc['id_level']);
 						$totalCourse = $this->m_course->countCourseByLevel($uc['id_level']);
 						$percentage = number_format(($totalnow*100)/$totalCourse);
 						if($percentage == 100){
@@ -80,7 +80,7 @@
 								</div>					
 							</a>
 							<?php } else {
-								echo '<center><p><strong>not yet</strong></p></center>';
+								echo '<center><p><strong>you don\'t have</strong></p></center>';
 							}
 							endforeach;?>
 							<!-- end of finished course -->
@@ -91,13 +91,22 @@
 				<br/>
 				<br/>
 				<div id="completion">
-					<h1><?php echo $recentCourse['title'];?> / <?php echo $recentPercentage;?>%</h1>
+					<h1><?php echo $recentCourse['materi_title'];?> / <?php echo $recentPercentage;?>%</h1>
 					<hr/>
 					<?php 
 					foreach($recentCompletion as $rc):
-						?>
-					<table>
-						<caption style="margin:10px">Level <?php echo $rc['level']?> : <?php echo $rc['title']?> (100%)</caption>
+						$nowLevelCompletion = $this->m_course->countCourseStepByLevel($recentCourse['id_course'],$rc['id_level']);
+					$rencentLevelCompletion = $this->m_course->countCourseByLevel($rc['id_level']);
+					$levelPercentage = ($nowLevelCompletion * 100) / $rencentLevelCompletion;
+					$levelPercentage = number_format($levelPercentage,1);
+					?>
+					<h5 style="margin:10px">Level <?php echo $rc['level']?> : <?php echo $rc['title']?> (<?php echo $levelPercentage;?>%)</h5>
+					<div style="height:10px" class="radius progress success">
+						<span style="float:left;color:#fff;width:<?php if($levelPercentage == 0){
+							$levelPercentage = 0.1;
+						}echo $levelPercentage?>%;" class="meter"></span>
+					</div>
+					<table>						
 						<tr>
 							<th style="width:80%" scope="column">Activity</th>
 							<th style="width:20%" scope="column">Status</th>
@@ -109,138 +118,61 @@
 							<td scope="row"><?php echo $ci['title']?></td>
 							<td style="color:green" scope="row">Completed</td>
 						</tr>
-						<?php endforeach;?>
-						<?php 
-						$uncompletedCourseItem = $this->m_course->unCompletedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
-						foreach($uncompletedCourseItem as $uci):?>
-						<tr>
-							<td scope="row"><?php echo $uci['title']?></td>
-							<td scope="row">Uncompleted</td>
-						</tr>
-						<?php endforeach;?>
-
-					</table>
-					<br/>
+					<?php endforeach;?>
+					<?php 
+					$uncompletedCourseItem = $this->m_course->unCompletedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
+					foreach($uncompletedCourseItem as $uci):?>
+					<tr>
+						<td scope="row"><?php echo $uci['title']?></td>
+						<td scope="row">Uncompleted</td>
+					</tr>
 				<?php endforeach;?>
-				<a id="btn_resume" href="#" class="button large">resume</a>
-				<br/>
-			</div>
-			<!-- badge completion -->
-			<h1>Badge Collection</h1>
-			<hr/>
-			<p>you don't have</p>
+
+			</table>
 			<br/>
-		</div>
+		<?php endforeach;?>
+		<a id="btn_resume" href="#" class="button large">resume</a>
+		<br/>
 	</div>
+	<!-- badge completion -->
+	<h1>Badge Collection</h1>
+	<hr/>
+	<p><strong>you don't have</strong></p>
+	<br/>
+</div>
+</div>
 </center>
 </section>
 <!-- other course -->
 <section id="otherCourse">
 	<center>
-		<div style="background-color:#fff" class="row">		
+		<div class="row">		
 			<div class="large-8 collapse" columns>
-				<h1>Start Other Course</h1>
+				<h1 style="margin:0">Start Other Course</h1>
+				<small>improve the mastery of Linux by following other courses</small>
 				<hr/>
 				<!-- skill completion -->
-				<div class="row">
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
-					<a id="btn_course_item" href="#btn_resume">
-						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-							<div class="materi-item">
-								<div class="materi-title">
-									<h5>Basic Networking</h5>								
-								</div>
-								<hr/>
-								<div class="course-detail">
-									Learn linux as basic networking
-								</div>
-								<a href="#" class="button small">start</a>
-							</div>
-						</div>					
-					</a>
+				<div style="background-color:#fff" class="row">
+					<?php foreach($myMateri as $mm):?>
+						<?php foreach($allMateri as $am):
+							if($am['id_materi'] != $mm['id_materi']) { ?>
+							<a id="btn_course_item" href="#btn_resume">
+								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
+									<div class="materi-item">
+										<div class="materi-title">
+											<h5><?php echo $am['title'];?></h5>								
+										</div>
+										<hr/>
+										<div class="course-detail">
+											<?php echo $am['description'];?>
+										</div>
+										<a href="#" class="button small">start</a>
+									</div>
+								</div>					
+							</a>
+							<?php } ?>
+						<?php endforeach;?>
+					<?php endforeach;?>				
 				</div>
 			</div>
 		</div>

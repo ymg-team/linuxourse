@@ -8,12 +8,28 @@ class m_course extends CI_Model{
 	}
 
 	/******************
-	ALL ABOUT LEVEL
+	ALL ABOUT MATERI
 	*******************/
-	//show other course
-	public function showOtherMateri($params){//array = id materi
-		
+	//show all my id materi
+	public function showMyIdMateri($id){
+		$this->db->select('id_materi');
+		$query = $this->db->get('user_course');
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
 	}
+	//show all materi
+	public function showAllMateri(){
+		$query = $this->db->get('materi');
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//show all id materi have user choose
 
 	/******************
 	ALL ABOUT LEVEL
@@ -38,8 +54,27 @@ class m_course extends CI_Model{
 	ALL ABOUT COURSE
 	*******************/
 
-	//count course step by user
-	public function countCourseStep($x,$y){//x = course y = id level
+	//count course step by user by id Materi
+	public function countCourseStepByMateri($x,$y){//x = course y = id materi
+		$params = array($x,$y);
+		$sql = "SELECT course.id_course AS 'id_course' FROM course 
+		INNER JOIN level ON course.id_level = level.id_level
+		INNER JOIN materi ON level.id_materi = materi.id_materi
+		WHERE course.id_course <= ? AND materi.id_materi = ?";
+		$query = $this->db->query($sql,$params);
+		return $query->num_rows();
+	}
+	//count course by id materi
+	public function countCourseByMateri($x){//x = id level
+		$sql = "SELECT course.id_course AS 'id_course' FROM course 
+		INNER JOIN level ON course.id_level = level.id_level
+		INNER JOIN materi ON level.id_materi = materi.id_materi
+		WHERE materi.id_materi = ?";
+		$query = $this->db->query($sql,$x);
+		return $query->num_rows();
+	}
+	//count course step by user by id level
+	public function countCourseStepByLevel($x,$y){//x = course y = id level
 		$this->db->where('id_course <=',$x);
 		$this->db->where('id_level',$y);
 		return $this->db->count_all_results('course');//return total number result
@@ -74,7 +109,7 @@ class m_course extends CI_Model{
 	}
 	//show recent course by user
 	public function recentCourseByUser($param){//id student
-		$sql = "SELECT user_course.id_user_course AS 'id_user_course',level.level AS 'level',level.title AS 'title', user_course.id_materi AS 'id_materi',user_course.lastdate AS 'lastdate',user_course.id_level AS 'id_level',user_course.id_course AS 'id_course'
+		$sql = "SELECT user_course.id_user_course AS 'id_user_course',materi.title AS 'materi_title',level.level AS 'level',level.title AS 'title', user_course.id_materi AS 'id_materi',user_course.lastdate AS 'lastdate',user_course.id_level AS 'id_level',user_course.id_course AS 'id_course'
 		FROM user_course
 		INNER JOIN course ON user_course.id_course = course.id_course
 		INNER JOIN level ON level.id_level = course.id_level
