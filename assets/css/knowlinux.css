@@ -7,6 +7,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .home_login{}
 .welcome_message{color:#fff;}
 /*section only*/
+#title{background-color: #F4F4F4;padding: 20px;margin-top: 19px;}
 #welcome{padding: 40px;background-color: #000/*rgba(0, 130, 255, 0.82)*/;background-size: cover;}
 #home_header{border-bottom: 4px solid #D5D5D5;width:100%;position:fixed;background-color:#fff;z-index:100;}
 #home_center{padding:40px;}
@@ -34,12 +35,12 @@ ul.menu{list-style: none;line-height: 1.2}
 .text p{font-size: 12px}
 .texthint{height:150px;overflow: auto;font-size}
 .texthint p{font-size: 12px}
-.full-height{height: 600px}
+.full-height{height: 700px}
 .command{}
-.command>.item{padding:10px;color:#fff;}
+.command>.item{padding:10px;color:#fff;height: 580px;}
 .result{}
 .result>.item{margin:10px;padding:10px;color:#fff;background-color: #000;min-height: 500px}
-#linux-command{background-color: #282828;border:0;height: 480px;float:left;}
+#linux-command{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;}
 #linux-command:focus{border:0;box-shadow: none};
 .dropdownme{max-width: none}
 /*other course*/

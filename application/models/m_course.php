@@ -10,6 +10,11 @@ class m_course extends CI_Model{
 	/******************
 	ALL ABOUT MATERI
 	*******************/
+	//show all materi
+	public function showAllMateri(){//id materi
+		$query = $this->db->get('materi');//get all materi
+		return $query->result_array();
+	}
 	//show all my id materi
 	public function showMyIdMateri($id){
 		$this->db->select('id_materi');
@@ -20,14 +25,41 @@ class m_course extends CI_Model{
 			return array();
 		}
 	}
-	//show all materi
-	public function showAllMateri(){
+	//show materi by id_materi
+	public function detMateri($id){
+		$this->db->where('id_materi',$id);
 		$query = $this->db->get('materi');
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//show course by materi
+	public function showSyllabusByMateri($id){//id materi
+		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title_course',course.description AS 'course_description',course.estimate AS 'course_estimate'
+		FROM course
+		INNER JOIN level ON course.id_level = level.id_level
+		INNER JOIN materi ON level.id_materi = materi.id_materi
+		WHERE materi.id_materi = ?";
+		$query = $this->db->query($sql,$id);
 		if($query->num_rows()>0){
 			return $query->result_array();
 		}else{
 			return array();
 		}
+	}
+	//cek is user have started course
+	public function isStudentStarted($x,$y){//id user | id materi
+		$this->db->where('id_user',$x);
+		$this->db->where('id_materi',$y);
+		$query = $this->db->get('user_course');
+		if($query->num_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+
 	}
 	//show all id materi have user choose
 
@@ -35,6 +67,17 @@ class m_course extends CI_Model{
 	ALL ABOUT LEVEL
 	*******************/
 
+	//show level by id materi
+	public function showLevelByMateri($id){
+		$this->db->where('id_materi',$id);
+		$this->db->order_by('level','ASC');
+		$query = $this->db->get('level');
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 	//show level completion after click my course
 	public function showLevelCompletion($idMateri,$idLevel){ //id materi + last id level
 		$params = array($idMateri,$idLevel);
@@ -53,7 +96,26 @@ class m_course extends CI_Model{
 	/******************
 	ALL ABOUT COURSE
 	*******************/
-
+	//get recent step
+	public function getMyRecentCourseStep($x,$y){//x =course y = materi
+		$params = array($x,$y);
+		$sql = "SELECT course.step AS 'step' FROM course
+		INNER JOIN user_course ON course.id_course = user_course.id_course
+		WHERE user_course.id_user = ? AND user_course.id_materi = ?";
+		$query = $this->db->query($sql,$params);
+		$user_course = $query->row_array();
+		return $user_course['step'];
+	}
+	//get recent course id
+	public function getMyRecentCourseId($x,$y){//x =course y = materi
+		$params = array($x,$y);
+		$sql = "SELECT course.id_course AS 'id_course' FROM course
+		INNER JOIN user_course ON course.id_course = user_course.id_course
+		WHERE user_course.id_user = ? AND user_course.id_materi = ?";
+		$query = $this->db->query($sql,$params);
+		$user_course = $query->row_array();
+		return $user_course['id_course'];
+	}
 	//count course step by user by id Materi
 	public function countCourseStepByMateri($x,$y){//x = course y = id materi
 		$params = array($x,$y);
@@ -78,6 +140,28 @@ class m_course extends CI_Model{
 		$this->db->where('id_course <=',$x);
 		$this->db->where('id_level',$y);
 		return $this->db->count_all_results('course');//return total number result
+	}
+	//show course by level
+	public function courseByLevel($x){//x = id level
+		$this->db->where('id_level',$x);
+		$this->db->order_by('step','ASC');
+		$query =  $this->db->get('course');//return total number result
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//count estimate course by level
+	public function countEstimateCourseByLevel($x){//id level
+		$this->db->where('id_level',$x);
+		$this->db->select_sum('estimate');
+		$query = $this->db->get('course');
+		if($query->num_rows()>0){
+			return $query->row_array();//return to show estimate result
+		}else{
+			return $array();//return to empry array
+		}
 	}
 	//count course by level
 	public function countCourseByLevel($x){//x = id level

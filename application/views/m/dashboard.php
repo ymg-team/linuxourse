@@ -13,7 +13,7 @@
 					<p><div style="height:10px" class="radius progress success">
 						<span style="float:left;color:#fff;width:<?php echo $percentage;?>%;" class="meter"></span>
 					</div></p>
-					<p><a class="button" href="#">Resume</a></p>
+					<p><a class="button" href="#completion">Review</a></p>
 				</div>
 			</div>
 			<div class="large-3 columns"><p></p></div>
@@ -37,8 +37,10 @@
 							$totalnow = $this->m_course->countCourseStepByMateri($uc['id_course'],$uc['id_materi']);
 							$totalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
 							$recentPercentage = number_format(($totalnow*100/$totalCourse),1);
+							$id = base64_encode(base64_encode($uc['id_materi']));
+							$id = str_replace('=', '', $id);
 							?>
-							<a id="btn_course_item" href="#btn_resume">
+							<a id="btn_course_item" href="<?php echo site_url('course/review/'.$id)?>">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
 									<div class="materi-item">
 										<div class="materi-title">
@@ -86,7 +88,6 @@
 							<!-- end of finished course -->
 						</div>					  
 					</div>
-
 				</div>				
 				<br/>
 				<br/>
@@ -98,7 +99,7 @@
 						$nowLevelCompletion = $this->m_course->countCourseStepByLevel($recentCourse['id_course'],$rc['id_level']);
 					$rencentLevelCompletion = $this->m_course->countCourseByLevel($rc['id_level']);
 					$levelPercentage = ($nowLevelCompletion * 100) / $rencentLevelCompletion;
-					$levelPercentage = number_format($levelPercentage,1);
+					$levelPercentage = number_format($levelPercentage,1);						
 					?>
 					<h5 style="margin:10px">Level <?php echo $rc['level']?> : <?php echo $rc['title']?> (<?php echo $levelPercentage;?>%)</h5>
 					<div style="height:10px" class="radius progress success">
@@ -112,34 +113,39 @@
 							<th style="width:20%" scope="column">Status</th>
 						</tr>
 						<?php 
-						$courseItem = $this->m_course->completedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
-						foreach($courseItem as $ci):?>
+						$recentCourseStep = $this->m_course->getMyRecentCourseStep($this->session->userdata['student_login']['id_user'],$recentCourse['id_materi']);//get recent id course by id_user n id_materi
+						$course = $this->m_course->courseByLevel($rc['id_level']);//show course by level
+						foreach($course as $c):?>
 						<tr>
-							<td scope="row"><?php echo $ci['title']?></td>
-							<td style="color:green" scope="row">Completed</td>
-						</tr>
-					<?php endforeach;?>
-					<?php 
-					$uncompletedCourseItem = $this->m_course->unCompletedCourseByLevel($rc['id_level'],$recentCourse['id_course']);
-					foreach($uncompletedCourseItem as $uci):?>
-					<tr>
-						<td scope="row"><?php echo $uci['title']?></td>
-						<td scope="row">Uncompleted</td>
-					</tr>
-				<?php endforeach;?>
-
-			</table>
+							<td><?php echo $c['title'];?><br/><small style="color:gray"><?php echo $c['description']?></small></td>
+							<td><?php 
+								if($c['step'] <= $recentCourseStep){
+									echo '<span style="color:green" class="fi-check"> completed</span>';
+								} else {
+									echo '<span style="color:red" class="fi-x"> waiting</span>';
+								}
+								?></td>
+							</tr>
+							<?php
+							endforeach;
+							?>
+						</table>
+						<br/><br/>
+					<?php endforeach ?>
+			<?php
+		//show recent course id
+			$idRecentCourse = base64_encode(base64_encode($recentCourse['id_user_course']));
+			$idRecentCourse = str_replace('=', '', $idRecentCourse);
+			?>
+			<a href="<?php echo site_url('course/start/'.$idRecentCourse)?>" class="button large">resume</a>
 			<br/>
-		<?php endforeach;?>
-		<a id="btn_resume" href="#" class="button large">resume</a>
+		</div>
+		<!-- badge completion -->
+		<h1>Badge Collection</h1>
+		<hr/>
+		<p><strong>you don't have</strong></p>
 		<br/>
 	</div>
-	<!-- badge completion -->
-	<h1>Badge Collection</h1>
-	<hr/>
-	<p><strong>you don't have</strong></p>
-	<br/>
-</div>
 </div>
 </center>
 </section>
@@ -155,7 +161,11 @@
 				<div style="background-color:#fff" class="row">
 					<?php foreach($myMateri as $mm):?>
 						<?php foreach($allMateri as $am):
-							if($am['id_materi'] != $mm['id_materi']) { ?>
+						if($am['id_materi'] != $mm['id_materi']) { 
+							$idMateri = base64_encode(base64_encode($am['id_materi']));
+							$idMateri = str_replace('=', '', $idMateri);
+							$titleMateri = str_replace(' ', '-', $am['title']);
+							?>
 							<a id="btn_course_item" href="#btn_resume">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
 									<div class="materi-item">
@@ -166,7 +176,7 @@
 										<div class="course-detail">
 											<?php echo $am['description'];?>
 										</div>
-										<a href="#" class="button small">start</a>
+										<a href="<?php echo site_url('course/syllabus/'.$idMateri.'/'.$titleMateri)?>" class="button small">start</a>
 									</div>
 								</div>					
 							</a>

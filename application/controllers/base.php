@@ -19,6 +19,11 @@ class base extends CI_Controller {
 		$data['childView'] = $x;
 		$this->load->view('base/baseView',$data);
 	}
+	//empty base view
+	public function emptyBaseView($x="",$data=""){ //x = view anak , y = data
+		$data['childView'] = $x;
+		$this->load->view('base/emptyBaseView',$data);
+	}
 	//member only
 	public function memberOnly(){
 		if(empty($this->session->userdata['student_login']['id_user'])){
