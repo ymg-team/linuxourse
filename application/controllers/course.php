@@ -33,7 +33,10 @@ class course extends base { //class for public
 			'materi'=>$this->m_course->detMateri($id),//show materi detail
 			'level'=>$this->m_course->showLevelByMateri($id),//show level by id materi
 			'recentCourseStep'=>$this->m_course->getMyRecentCourseStep($this->session->userdata['student_login']['id_user'],$id),//get recent id course
+			'recentCourseId'=>$this->m_course->getMyRecentCourseId($this->session->userdata['student_login']['id_user'],$id),
 			);
+		//get detail course by iduser n idlevel
+		$data['detCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$this->session->userdata['student_login']['id_user']);//get all user course data
 		$this->baseView('course/course_review',$data);
 	}
 	//materi -> syllabus detail
@@ -56,9 +59,11 @@ class course extends base { //class for public
 	//start new course
 	public function start(){
 		$id = $this->uri->segment(3);//id_user_course
-		$data = array(
-			'title'=>'Course',
-			);
+		$id = str_replace('', '=', $id);
+		$id = base64_decode(base64_decode($id));
+		$data['detCourse'] = $this->m_course->detUserCourse($id);//get all user course data
+		$data['title'] = 'Course';
+		$data['courseList']=$this->m_course->courseByLevel($data['detCourse']['id_level']);//show course b y id level
 		$this->emptyBaseView('course/start',$data);
 	}
 }

@@ -46,9 +46,9 @@
 								$src = base_url('assets/img/avatar.png');
 							}
 						?>
-						<li><a href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="secondary dropdown has-dropdown not-click"><img style="width:30px" src="<?php echo $src?>"/></a>
+						<li><a href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="secondary dropdown has-dropdown not-click"><img style="width:30px;border-radius:30px" src="<?php echo $src?>"/></a>
 							<ul id="drop1" data-dropdown-content class="dropdownme f-dropdown" aria-hidden="true" tabindex="-1">
-								<li><a href="#"><strong>username</strong><br/><small>my profile page</small></a></li>
+								<li><a href="<?php echo site_url('student/v/'.$this->session->userdata['student_login']['username']);?>"><strong><?php echo $this->session->userdata['student_login']['username'];?></strong><br/><small>my profile page</small></a></li>
 								<li><a href="<?php echo site_url('m/edit')?>"><span class="fi-widget"></span>  update profile</a></li>
 								<li><a href="<?php echo site_url('m/logout')?>"><span class="fi-x-circle"></span> logout</a></li>
 							</ul>

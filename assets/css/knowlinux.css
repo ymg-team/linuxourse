@@ -31,7 +31,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .materi-title{height: 35px;padding:0.1em;}
 .learn_sidebar{padding: 10px;margin-top:0;background-color: #F5F5F5}
 .terminal_view{padding:10px;background-color: #282828}
-.text{height:250px;overflow: auto}
+.text{height:300px;overflow: auto}
 .text p{font-size: 12px}
 .texthint{height:150px;overflow: auto;font-size}
 .texthint p{font-size: 12px}

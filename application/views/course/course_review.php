@@ -1,10 +1,19 @@
+<?php
+//sount materi completion
+$totalnow = $this->m_course->countCourseStepByMateri($recentCourseId,$materi['id_materi']);
+$totalCourse = $this->m_course->countCourseByMateri($materi['id_materi']);
+$recentPercentage = number_format(($totalnow*100/$totalCourse),1);
+?>
 <section id="title">
-	<center>
-		<h1 style="margin:0"><?php echo $materi['title'];?> / x%</h1>
+	<center>		
+		<h1 style="margin:0"><?php echo $materi['title'];?> / <?php echo $recentPercentage;?>%</h1>
 		<p><?php echo $materi['description'];?></p>
+		<div style="height:10px;width:50%" class="radius progress success">
+			<span style="float:left;color:#fff;width:<?php echo $recentPercentage;?>%;" class="meter"></span>
+		</div>
 		<hr/>
-		<p style="margin:0">Active Student <strong>345</strong></p>
-		<p style="margin:0">Completing Student <strong>345</strong></p>
+		<p style="margin:0">Active Student <strong><?php echo $this->m_user->countAciveUserOnCourse($materi['id_materi'])?></strong></p>
+		<p style="margin:0">Completed Student <strong><?php echo $this->m_user->countCompletedUserOnCourse($materi['id_materi'])?></strong></p>
 	</center>
 </section>
 <section id="completion">
@@ -22,13 +31,18 @@
 					<div class="tabs-content">
 						<div class="content active" id="mycourse">
 							<!-- level and review list -->
-							<p style="margin:0"><strong>Course Has Been Start 45 Days Ago  </strong></p> 
+							<p style="margin:0"><strong>Course Has Been Start <?php echo $this->m_course->countDiffCourse($this->session->userdata['student_login']['id_user'],$materi['id_materi'])?> Days Ago  </strong></p> 
 							<hr/>
 							<?php foreach ($level as $l):
+							$totalnow = $this->m_course->countCourseStepByLevel($recentCourseId,$l['id_level']);
+							$totalCourse = $this->m_course->countCourseByLevel($l['id_level']);
+							$recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 							?>
-
-							<p style="margin:0"><strong><?php echo 'Level '.$l['level'].'</strong> : '.$l['title']?> / x%</p>
+							<p style="margin:0"><strong><?php echo 'Level '.$l['level'].'</strong> : '.$l['title']?> / <?php echo $recentPercentage;?>%</p>
 							<p style="margin:0;color:gray"><?php echo $l['description']?></p>
+							<div style="height:10px" class="radius progress success">
+								<span style="float:left;color:#fff;width:<?php echo $recentPercentage;?>%;" class="meter"></span>
+							</div>
 							<br/><br/>
 							<table>
 								<tr>
@@ -64,8 +78,12 @@
 						</div>
 
 					</div>
-					<form><button type="submit" id="btn_resume" href="#" class="button large">Resume Course</button>
-					</form>
+					<?php
+					//encode id user course
+					$encIdUserCourse = base64_encode(base64_encode($detCourse['id_user_course']));
+					$encIdUserCourse = str_replace('=', '', $encIdUserCourse);
+					?>
+					<a href="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">Resume Course</a>
 				</div>
 			</div>
 		</center>
