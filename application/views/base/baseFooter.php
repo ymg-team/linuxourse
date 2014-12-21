@@ -39,17 +39,10 @@
 		</div>
 	</div>
 </section>
-<script src="<?php echo base_url('assets/js/vendor/jquery.js')?>"></script>
 <script src="<?php echo base_url('assets/js/foundation.min.js')?>"></script>
-<script>
-	$(document).foundation();
-</script>
-<?php
-	//custom js setup
-if(!empty($script)){
-	echo $script;//if add custom js scrript
-}
-?>
+	<script>
+		$(document).foundation();
+	</script>
 <!--<script src="<?php echo base_url('assets/js/vendor/fastclick.js')?>"></script>-->
 </body>
 </html>

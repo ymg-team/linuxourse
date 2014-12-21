@@ -1,8 +1,54 @@
 <script type="text/javascript">
+	//when document ready
+	$(document).ready(function(){
+		
+	});
+	//if press enter
+	function inputKeyUp(e) {
+    e.which = e.which || e.keyCode;
+	    if(e.which == 13) {
+	       execCommand();
+	    } 	    
+	}
+	//show hint text
 	function showhint(){
 		$('#hint').toggle('fast');		
+	}	
+	//exec command
+	function execCommand(){
+		$('#loaderexe').show();
+		command = $('#linux-command').val();
+		$.ajax({
+			url:'<?php echo site_url("regex/execcommand");?>',
+			data:{command:command},
+			success:function(response){
+				$('#result').append(response);//response is command result
+				$('#linux-command').val('');
+				//alert(response);
+				$('#loaderexe').hide();
+			},
+			error:function(){
+				alert('something error, try again');
+				$('#loaderexe').hide();
+			},
+		});
 	}
-
+	//check command
+	function checkCommand(){
+		$('#loadercheck').show();
+		$('#linux-command').attr('readonly','readonly');
+		command = $('#linux-command').val();
+	}
+	//clear terminal
+	function clearTerminal(){
+		$.ajax({
+			url:'<?php echo site_url("regex/deletehistory");?>',
+		});
+		html = '<div id="result"></div>'+
+		'<span class="small-2 columns" style="padding:0;font-size:13px">student@linux-ecourse:~$</span>'+
+		'<span class="small-10 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linux-command" autofocus></textarea></span>';
+		$('#terminal').html(html);
+	}
 </script>
 <section id="livecommand">
 	<div style="min-width:100%" class="row collapse">
@@ -53,36 +99,17 @@
 						<div style="padding:10px" class="row collapse">
 							<!-- command -->
 							<div style="background-color:#000" class="command large-12 columns">
-								<div class="item" style="">
-<pre>
-user@knowlinux.com:~$ ls -l /opt
-total 28
-drwxr-xr-x  7 root  root   4096 Des 16 06:36 ./
-drwxr-xr-x 24 root  root   4096 Des 15 11:17 ../
-drwxr-xr-x  3 10490 floppy 4096 Des  6 14:01 Adobe/
-drwxr-xr-x  3 root  root   4096 Nov  3 13:40 google/
-drwxr-xr-x  3 root  root   4096 Des 14 08:41 kingsoft/
-drwxr-xr-x 30 root  root   4096 Nov  2 22:02 lampp/
-drwxr-xr-x  4 root  root   4096 Nov  3 13:51 sublime_text/
-</pre>
-<pre>
-user@knowlinux.com:~$ guard my body
-No command 'guard' found, did you mean:
-Command 'geard' from package 'python-gear' (universe)
-Command 'guacd' from package 'guacd' (universe)
-Command 'guards' from package 'quilt' (main)
-guard: command not found
-</pre>
-
-									<span class="small-2 columns" style="padding:0;font-size:13px">user@knowlinux.com:~$</span>
-									<span class="small-10 columns"  style="padding:0;"><textarea id="linux-command" autofocus></textarea></span>							
+								<div id="terminal" class="item" style="">
+									<div id="result"></div>
+									<span class="small-2 columns" style="padding:0;font-size:13px">student@linux-ecourse:~$</span>
+									<span class="small-10 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linux-command" autofocus></textarea></span>							
 								</div>
 							</div>
 							<!-- button excute -->
 							<div class="row">
 								<!-- command -->
 								<div style="padding-top:10px" class="large-6 columns">
-									<a href="#" class="small button">Check</a>  <a href="#" class="small alert button">X</a><span style="padding:5px;color:#fff" id="loader">checking...</span>
+									<a onclick="checkCommand()" href="#" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>execute..</span>
 								</div>
 							</div>
 						</div>

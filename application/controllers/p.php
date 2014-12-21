@@ -86,6 +86,7 @@ class p extends base { //class for public
 				$loginuser['status'] = $userdata['status'];
 				$loginuser['is_login'] = 1;
 				$sessiondata['student_login'] = $loginuser;
+				$sessiondata['command'] = array();//for course
 				//set session
 				$this->session->set_userdata($sessiondata);
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif

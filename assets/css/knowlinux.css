@@ -37,10 +37,10 @@ ul.menu{list-style: none;line-height: 1.2}
 .texthint p{font-size: 12px}
 .full-height{height: 700px}
 .command{}
-.command>.item{padding:10px;color:#fff;height: 580px;}
+.command>.item{padding:10px;color:#fff;height: 580px;overflow-y:auto}
 .result{}
 .result>.item{margin:10px;padding:10px;color:#fff;background-color: #000;min-height: 500px}
-#linux-command{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;}
+#linux-command{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;font-family: monospace}
 #linux-command:focus{border:0;box-shadow: none};
 .dropdownme{max-width: none}
 /*other course*/
