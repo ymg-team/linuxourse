@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<hr/>
-		<form method="POST" action="<?php echo site_url('m/updateprofile');?>">
+		<form method="POST" action="<?php echo site_url('m/updateprofile');?>" enctype="multipart/form-data">
 			<div class="row">
 				<div class="large-12 columns">
 					<?php

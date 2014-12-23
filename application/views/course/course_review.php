@@ -1,7 +1,7 @@
 <?php
 //sount materi completion
-$totalnow = $this->m_course->countCourseStepByMateri($recentCourseId,$materi['id_materi']);
-$totalCourse = $this->m_course->countCourseByMateri($materi['id_materi']);
+$totalnow = $this->m_course->countCourseStepByMateri($detCourse['id_materi'],$detCourse['id_level'],$detCourse['id_course']);
+$totalCourse = $this->m_course->countCourseByMateri($detCourse['id_materi']);
 $recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 ?>
 <section id="title">
@@ -55,7 +55,7 @@ $recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 									<tr>
 										<td><?php echo $c['title'];?><br/><small style="color:gray"><?php echo $c['description']?></small></td>
 										<td><?php 
-											if($c['step'] <= $recentCourseStep){
+											if($c['id_level'] < $detCourse['id_level'] || ($c['step'] <= $recentCourseStep && $c['level'] <= $detCourse['level'])){//if level n course step <= now = completed
 												echo '<span style="color:green" class="fi-check"> completed</span>';
 											} else {
 												echo '<span style="color:red" class="fi-x"> waiting</span>';

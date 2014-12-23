@@ -34,27 +34,27 @@ class m extends base { //class for public
 				$data['script'] = '<script>$(document).ready(function(){
 					$("#loginSuccess").foundation("reveal", "open");
 				});</script>';
-break;
+			break;
 
-default:
-					# code...
-break;
-}
-}
-$data = array(
-	'title'=>'Student Dashboard',
-	'recentCourse'=>$this->m_course->recentCourseByUser($idStudent),
-	'userCourse'=>$this->m_course->courseByUser($idStudent),
-	'myMateri'=>$this->m_course->showMyIdMateri($this->session->userdata['student_login']['id_user']),
-	'allMateri'=>$this->m_course->showAllMateri(),
-	);
-		// count percentation course
-$totalnow = $this->m_course->countCourseStepByMateri($data['recentCourse']['id_course'],$data['recentCourse']['id_materi']);
-$totalCourse = $this->m_course->countCourseByMateri($data['recentCourse']['id_materi']);
-$data['percentage'] = number_format(($totalnow*100/$totalCourse),1);
-$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
-$this->baseView('m/dashboard',$data);
-}
+			default:
+								# code...
+			break;
+			}
+		}
+		$data = array(
+			'title'=>'Student Dashboard',
+			'recentCourse'=>$this->m_course->recentCourseByUser($idStudent),
+			'userCourse'=>$this->m_course->courseByUser($idStudent),
+			'myMateri'=>$this->m_course->showMyIdMateri($this->session->userdata['student_login']['id_user']),
+			'allMateri'=>$this->m_course->showAllMateri(),
+			);
+			// count percentation course
+		$totalnow = $this->m_course->countCourseStepByMateri($data['recentCourse']['id_materi'],$data['recentCourse']['id_level'],$data['recentCourse']['id_course']);
+		$totalCourse = $this->m_course->countCourseByMateri($data['recentCourse']['id_materi']);
+		$data['recentMateriPercentage'] = number_format(($totalnow*100/$totalCourse),1);
+		$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
+		$this->baseView('m/dashboard',$data);
+	}
 	//edit profile
 public function edit(){
 	$this->load->library('form_validation');
@@ -82,7 +82,7 @@ public function edit(){
 		$this->form_validation->set_rules('input_newpassconf', 'New Password Confirmation', 'trim');//password confirmation
 		if ($this->form_validation->run()){//if validation is true
 			//manage profile picture
-			if(isset($_FILES['input_pp'])){
+			if(!empty($_FILES['input_pp']['name'])){
 				$config['upload_path'] = './assets/img/';
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size']	= '100';
@@ -92,9 +92,8 @@ public function edit(){
 				if (!$this->upload->do_upload('input_pp')){//gagal upload
 					echo $this->upload->display_errors();
 				} else { //berhasil upload
-					$data = array('upload_data' => $this->upload->data());
-					$this->load->view('upload_success', $data);
 					$pp = $_FILES['input_pp']['name'];
+					$pp = str_replace(' ','_',$pp);
 				}
 			}else{//not upload new profile picure
 				if(!empty($this->session->userdata['student_login']['pp'])){
@@ -102,7 +101,6 @@ public function edit(){
 				} else {
 					$pp = '';
 				}
-
 			}
 			//manage password
 			if(!empty($_POST['input_newpassword'])){				

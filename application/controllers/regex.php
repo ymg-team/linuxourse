@@ -33,17 +33,31 @@ class regex extends base { //class for public
 		//get my history
 		$myhistory = '';
 		//get total history on session
-		for($n=1;$n<count($this->session->userdata['command']);$n++){
-			
+		for($n=0;$n<count($this->session->userdata['command']);$n++){
+			$myhistory = $myhistory.$this->session->userdata['command'][$n];
 		}
 		$specialcommand = array(
-			'history'=>'last command',
+			'history'=>$myhistory,
 			'cls'=>'clear screen',
+			'ls-l'=>'drwxrwxrwx  4 user user  4096 Nov  3 21:50 mydirectory',
+			'ls-a'=>'.hiddendirectory <br/>mydirectory',
+			'pwd'=>'/home/user/',
+			'ls'=>'mydirectory',
+			'y'=>'confirmed',
 			);
+		$docommand = array(
+			);
+		$forbiddencommand = array(
+			'reboot','init0');
 		//command is special command or not
-		if(array_key_exists(trim($command),$specialcommand)){//found
-			echo '<pre>student@linux-ecourse:~$ '.$command.$specialcommand[trim($command)].'</pre>';
-		} else {//not found
+		$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
+		if(array_key_exists($trimcommand,$specialcommand)){//output
+			echo '<pre>student@linux-ecourse:~$ '.$command.$specialcommand[$trimcommand].'</pre>';
+		} else if(array_key_exists($trimcommand,$docommand)){//create input
+
+		} else if(in_array($trimcommand,$forbiddencommand)){//forbidden command | preg_match
+			echo '<pre>student@linux-ecourse:~$ '.$command.'FORBIDDEN command</pre>';
+		}else {//not found
 			$result = shell_exec($command);
 		// echo '<pre>student@linux-ecourse:~$ '.$command.
 		// 	$result.'</pre>';

@@ -56,7 +56,7 @@
 		<div style="background-color:#F5F5F5" class="full-height large-3 columns">
 			<ul style="/*background-color:#e7e7e7*/" class="button-group">
 				<li style="width:20%"><a href="<?php echo site_url()?>" class="small secondary button"><strong>Back</strong></a></li>
-				<li style="width:80%"><a style="width:100%" href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown">Level 3</a><br>
+				<li style="width:80%"><a style="width:100%" href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown">Level <?php echo $detCourse['level']?></a><br>
 					<ul style="max-width:none" id="drop1" data-dropdown-content class="dropdownme f-dropdown" aria-hidden="true" tabindex="-1">
 						<?php foreach($courseList as $cl):?>
 							<li>

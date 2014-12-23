@@ -3,8 +3,8 @@
 		<h1 style="margin:0"><?php echo $materi['title'];?></h1>
 		<p><?php echo $materi['description'];?></p>
 		<hr/>
-		<p style="margin:0">Active Student <strong><?php echo $this->m_user->countAciveUserOnCourse($materi['id_materi'])?></strong></p>
-		<p style="margin:0">Completed Student <strong><?php echo $this->m_user->countCompletedUserOnCourse($materi['id_materi'])?></strong></p>
+		<p style="margin:0">Active Student <strong><?php echo $activeUser;?></strong></p>
+		<p style="margin:0">Completed Student <strong><?php echo $completedUser;?></strong></p>
 	</center>
 </section>
 <section id="completion">
@@ -64,7 +64,8 @@
 
 				</div>
 				<form action="<?php echo site_url('course/newcourse')?>" method="POST">
-					<label><input name="check_tnc" type="checkbox" required><a href="#"> i agree terms and conditions</a></label>
+					<label><input name="check_tnc" type="checkbox" required><a target="_blank" href="<?php echo site_url('news/read/TXc9PQ/Terms-And-Conditions');?>"> i agree terms and conditions</a></label>
+					<input type="hidden" name="id_materi" value="<?php echo $this->uri->segment(3);?>">
 					<button type="submit" id="btn_resume" href="#" class="button large">Start Course</button>
 				</form>
 			</div>

@@ -54,6 +54,8 @@ class course extends base { //class for public
 			'materi'=>$this->m_course->detMateri($id),//show materi detail
 			'level'=>$this->m_course->showLevelByMateri($id),//show level by id materi
 			);
+		$data['activeUser'] = $this->m_user->countAciveUserOnCourse($data['materi']['id_materi']);//total active user
+		$data['completedUser'] = $this->m_user->countCompletedUserOnCourse($data['materi']['id_materi']);//total completed user
 		$this->baseView('course/course_syllabus',$data);
 	}
 	//start new course
@@ -62,8 +64,53 @@ class course extends base { //class for public
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));
 		$data['detCourse'] = $this->m_course->detUserCourse($id);//get all user course data
-		$data['title'] = 'Course';
+		$data['title'] = $data['detCourse']['leveltitle'];
 		$data['courseList']=$this->m_course->courseByLevel($data['detCourse']['id_level']);//show course b y id level
 		$this->emptyBaseView('course/start',$data);
+	}
+	//join new course materi
+	public function newcourse(){
+		if(empty($_POST['id_materi']) && $_POST['check_tnc'] == 'off'){
+			redirect(site_url());
+		} else if(empty($this->session->userdata)){
+			redirect(site_url());
+		} else{
+			$iduser = $this->session->userdata['student_login']['id_user'];
+			//decode id materi
+			$idmateri = base64_decode(base64_decode($_POST['id_materi']));
+			$idmateri = str_replace('', '', $idmateri);
+			//cek is user has joined the course materi
+			if($this->m_user->hasJoinedMater($iduser,$idmateri)){//student has joined
+				redirect(site_url());
+			} else{ //new student
+				//get the smallest id level
+				$sqllevel = "SELECT id_level FROM level WHERE id_materi = ? ORDER BY level ASC";
+				$querylevel = $this->db->query($sqllevel,$idmateri);
+				$querylevel = $querylevel->row_array();
+				$idlevel = $querylevel['id_level'];
+				if(empty($idlevel)){$idlevel=0;}
+				//get the smallest id course 
+				$sqlcourse = "SELECT id_course FROM course WHERE id_level = ? ORDER BY step ASC";
+				$querycourse = $this->db->query($sqlcourse,$idlevel);
+				$querycourse = $querycourse->row_array();
+				$idcourse = $querycourse['id_course'];
+				if(empty($idcourse)){$idcourse=1;}
+				//insert to database
+				$data = array(
+					'id_user'=>$iduser,
+					'id_materi'=>$idmateri,
+					'id_level'=>$idlevel,
+					'id_course'=>$idcourse,
+					'startdate'=>date('Y-m-d h:i:s'),
+					'lastdate'=>date('Y-m-d h:i:s'),
+					'status'=>'incompleted'
+					);
+				if($this->db->insert('user_course',$data)){//success join new course materi
+					redirect(site_url('m/dashboard?note=success started new course materi'));
+				}else{
+					echo 'failed join course';
+				}
+			}			
+		}
 	}
 }

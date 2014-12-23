@@ -20,9 +20,9 @@
 				<h4>Courses</h4>
 				<div class="row">
 					<?php foreach($userCourse as $uc):
-					$totalnow = $this->m_course->countCourseStepByLevel($uc['id_course'],$uc['id_level']);
-					$totalCourse = $this->m_course->countCourseByLevel($uc['id_level']);
-					$percentage = number_format(($totalnow*100)/$totalCourse);
+					$totalnow = $this->m_course->countCourseStepByMateri($uc['id_materi'],$uc['id_level'],$uc['id_course']);
+					$totalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
+					$percentage = number_format(($totalnow*100)/$totalCourse,1);
 					$id = base64_encode(base64_encode($uc['id_level']));
 					$id = str_replace('=', '', $id);
 					?>
