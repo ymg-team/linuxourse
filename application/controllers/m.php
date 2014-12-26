@@ -53,10 +53,11 @@ class m extends base { //class for public
 		$totalCourse = $this->m_course->countCourseByMateri($data['recentCourse']['id_materi']);
 		$data['recentMateriPercentage'] = number_format(($totalnow*100/$totalCourse),1);
 		$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
+		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
 		$this->baseView('m/dashboard',$data);
 	}
 	//edit profile
-public function edit(){
+	public function edit(){
 	$this->load->library('form_validation');
 		if(!empty($_POST)){//if do update profile
 			$data['title'] = 'processing...';

@@ -17,12 +17,14 @@
 		</div>
 		<div class="large-2 medium-2 columns">
 			<h3 class="menu-title">Course Materi</h3>
-			<p><a href="#">home</a></p>
-			<p><a href="#">help</a></li><p/>
-			<p><a href="#">about</a></li><p/>
-			<p><a href="#">register</a></li><p/>
-			<p><a href="#">login</a></li><p/>
-			<p><a href="#">error report</a></li><p/>
+			<?php
+			$course = $this->m_course->showAllMateri();
+			foreach($course as $c):
+			$encid = base64_encode(base64_encode($c['id_materi']));
+			$idmateri = str_replace('=', '', $encid);
+			?>
+			<p><a href="<?php echo site_url('course/review/'.$idmateri)?>"><?php echo $c['title'];?></a></p>
+			<?php endforeach;?>
 		</div>
 		<div class="large-2 medium-2 columns">
 			<h3 class="menu-title">Course Materi</h3>

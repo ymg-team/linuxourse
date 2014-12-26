@@ -3,6 +3,7 @@ by yussan @xyussanx
 28 Oct 2014*/
 body{font-size: 12px}
 ul.menu{list-style: none;line-height: 1.2}
+.activemenu{border-bottom: 2px solid #008cba;}
 .logo{margin-top:5px;width:140px;height:40px;background-color:#000;background-image: url('img/logo.png');background-size: cover}
 .home_login{}
 .welcome_message{color:#fff;}
@@ -48,3 +49,15 @@ ul.menu{list-style: none;line-height: 1.2}
 .course-detail{height:100px;color:#000;padding:0.4em;}
 /*base content*/
 .base-content{padding:15px;}
+/*all about discuss*/
+.discuss-avatar{width:40px;border-radius:40px}
+.discuss-item a.linktitle{font-size: 14px}
+.discuss-item .avatar{width:45px;height:45px;float:left;display: block}
+.discuss-item .detail{width:80%;height:45px;float:left;display: block}
+.discuss-item .title{height:60px;}
+.linktaggreen{color:#fff;background-color: green;padding:0.1em;width:40px;font-size: 11px}
+.linktagblue{color:#fff;background-color: blue;padding:0.1em;width:40px;font-size: 11px}
+.linktaggreen:hover,.linktagblue:hover{color:#fff;background-color: gray};
+.discuss-comments{background-color: #F4F4F4;padding:5px;}
+.comment-item{background-color: #F4F4F4;padding:5px;}
+.comment-item-button a{font-size: 20px}

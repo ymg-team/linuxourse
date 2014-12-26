@@ -18,6 +18,7 @@ class p extends base { //class for public
 		$data = array(
 			'title'=>'',//will print FOSSIL ECCOURSE
 			);
+		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
 		$this->baseView('p/home',$data);
 	}
 

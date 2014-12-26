@@ -27,6 +27,7 @@ class news extends base { //class for public
 			'title'=>'News',
 			'view'=>$this->m_news->news_list($config['per_page'],$uri),
 			);
+		$data['script'] = '<script>$(document).ready(function(){$("#news").addClass("activemenu")});</script>';
 		$this->baseView('news/list',$data);
 	}
 
@@ -40,6 +41,16 @@ class news extends base { //class for public
 			'view'=>$this->m_news->news_item($id),//get news item
 			'title'=>$title
 			);
+		$id = $data['view']['id_news'];
+		$encid = base64_encode(base64_encode($id));
+		$encid = str_replace('=', '', $encid);
+		if($encid == 'TWc9PQ'){
+			$data['script'] = '<script>$(document).ready(function(){$("#help").addClass("activemenu")});</script>';
+		}else if($encid == 'TVE9PQ'){
+			$data['script'] = '<script>$(document).ready(function(){$("#about").addClass("activemenu")});</script>';
+		}else {
+			$data['script'] = '<script>$(document).ready(function(){$("#news").addClass("activemenu")});</script>';
+		}
 		$this->baseView('news/item',$data);
 	}
 }

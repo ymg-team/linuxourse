@@ -8,7 +8,7 @@
 				<div class="row">
 					<div class="large-12 columns">
 
-						<input name="input_username" style="height:40px" type="text" placeholder="username" value="<?php echo $_POST['input_username']?>" required>
+						<input name="input_username" style="height:40px" type="text" placeholder="username" value="<?php if(!empty($_POST['input_username'])){echo $_POST['input_username'];}?>" required>
 					</div>								
 				</div>
 				<div class="row">
