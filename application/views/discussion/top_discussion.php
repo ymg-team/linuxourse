@@ -1,6 +1,14 @@
 <?php foreach($this->m_discussion->show_discussion_by_views(8,0) AS $v): ?>
 	<div style="float:left;padding:0.9375rem" class="discuss-item large-12 columns">
-		<div class="avatar"><img class="discuss-avatar" src="<?php echo base_url('assets/img/avatar.png')?>" /></div>
+		<?php 
+					//avatar setup
+		if(!empty($v['pp'])){
+			$avatar = base_url('assets/img/avatar/'.$v['pp']);
+		}else{
+			$avatar = base_url('assets/img/avatar.png');
+		}
+		?>
+		<div class="avatar"><img class="discuss-avatar" src="<?php echo $avatar;?>" /></div>
 		<div class="detail">
 			<?php 
 			if($v['type']=='ask'){
@@ -13,7 +21,12 @@
 		</div>
 		<br/>
 		<div class="title">
-			<a class="linktitle" href="<?php echo site_url('discussion/open')?>"><?php echo $v['title']?></a><br/>
+			<?php
+			$id_discuss = base64_encode(base64_encode($v['id_discuss']));
+			$id_discuss = str_replace('=','', $id_discuss);
+			//echo $id_discuss;
+			?>
+			<a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
 		</div>
 		<hr/>					
 	</div>

@@ -10,7 +10,7 @@ class discussion extends base { //class for public
 		$this->load->library('user_agent');
 	}
 	public function index(){
-		redirect(site_url('discussion/all'));
+		echo 'empty';
 	}
 	// index page
 	public function all(){
@@ -89,11 +89,59 @@ class discussion extends base { //class for public
 	}
 	//open discussion
 	public function open(){
+
+		if(!empty($_POST)){
+			//add comment
+			if(empty($this->session->userdata['student_login'])){//if not login
+				redirect(site_url('p/login'));
+			}
+			$enc_id_discuss = $this->uri->segment(3);
+			$id_discuss = str_replace('', '=', $enc_id_discuss);
+			$id_discuss = base64_decode(base64_decode($id_discuss));
+			$comment = $_POST['input_comment'];
+			$id_user = $this->session->userdata['student_login']['id_user'];
+			$now = date('Y-m-d h:i:s');
+			$data = array(
+				'id_discussion'=>$id_discuss,
+				'id_user'=>$id_user,
+				'commentdate'=>$now,
+				'updatedate'=>$now,
+				'comment'=>$comment
+				);
+			//print_r($data);
+			//is captcha is matching
+			if($_POST['input_captcha'] == $this->session->userdata('mycaptcha')){
+				$this->db->insert('discussion_comment',$data);
+				redirect($this->agent->referrer());
+			}else{
+				echo 'captcha not matched';
+			}
+		}
+		$this->load->helper('captcha');
 		$id_discuss = $this->uri->segment(3);
 		$id_discuss = base64_decode(base64_decode($id_discuss));
 		$id_discuss = str_replace('', '=', $id_discuss);
+		$tgl = date('d');
+		$minutes = date('m');
+		$second = date('s');
+		$key = $tgl * $minutes * $second ;
+		$vals = array(
+			'word' => $key,
+			'img_path'   => './assets/img/captcha',
+			'img_url'    => base_url('assets/img/captcha'),
+			'img_width'  => '200',
+			'img_height' => 30,
+			'border' => 0,
+			'expiration' => 7200
+			);
+	  		// create captcha image
+		$cap = create_captcha($vals);
+			// store the captcha word in a session
+		$this->session->set_userdata('mycaptcha', $cap['word']);
 		$data = array(
 			'script'=>'<script>$(document).ready(function(){$("#discusion").addClass("activemenu")});</script>',
+			'image'=>$cap['image'],
+			'comments'=>$this->m_discussion->showCommentByIdDiscusion($id_discuss,10,0),
 			'view'=>$this->m_discussion->showDiscussionById($id_discuss));
 		$data['title'] = $data['view']['title'];
 		$this->baseView('discussion/open.php',$data);
@@ -138,6 +186,16 @@ class discussion extends base { //class for public
 			$this->baseView('discussion/newdiscuss',$data);
 		}		
 	}
+
+	/*
+	* ALl ABOUT COMMENT
+	*/
+
+
+	/*
+	* CREATE OR UPDATE
+	*/
+
 	//create new topic
 	public function addtopic(){
 		$title = $_POST['input_title'];
@@ -150,7 +208,7 @@ class discussion extends base { //class for public
 		if($this->form_validation->run() && $captcha == $this->session->userdata('mycaptcha')){//is data valid
 			$data = array(
 				'title'=>$title,
-				'content'=>$content,
+				'content'=>strip_tags($content),
 				'postdate'=>date('Y-m-d h:i:s'),
 				'updatedate'=>date('Y-m-d h:i:s'),
 				'id_user'=>$this->session->userdata['student_login']['id_user'],

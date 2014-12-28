@@ -43,11 +43,11 @@
 				<div class="small-9 columns">
 					<ul style="float:right;padding-top:10px" class="inline-list">
 						<li id="home"><a style="margin-top: 4px;" href="<?php echo site_url()?>">Home</a></li>
-						<li id="discusion"><a style="margin-top: 4px;" href="<?php echo site_url('discussion')?>">Discussion</a></li>
+						<li id="discusion"><a style="margin-top: 4px;" href="<?php echo site_url('discussion/all')?>">Discussion</a></li>
 						<li id="news"><a style="margin-top: 4px;" href="<?php echo site_url('news')?>">News</a></li>
 						<li id="help"><a style="margin-top: 4px;" href="<?php echo site_url('news/read/TWc9PQ/Help')?>">Help</a></li>
 						<li id="about"><a style="margin-top: 4px;" href="<?php echo site_url('news/read/TVE9PQ/About')?>">About</a></li>
-						<?php if(!empty($this->session->userdata['student_login']['id_user'])){ 
+						<?php if(!empty($this->session->userdata['student_login'])){ 
 							if(!empty($this->session->userdata['student_login']['pp'])){
 								$src = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
 							} else {

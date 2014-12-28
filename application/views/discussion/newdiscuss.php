@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	function showmarkdown(){
+		$('#markdown').toggle('fast');
+	}
+</script>
 <section id="title">
 	<center>		
 		<h1 style="margin:0">linuXourse Discussion</h1>
@@ -58,27 +63,34 @@
 						</div>
 						<div class="large-12 columns">
 							<div class="large-2 columns"><label><strong>Content</strong></label></div>
-							<div class="large-10 columns"><small><a href="#">how to create content</a></small><br/><textarea style="width:100%;min-height:300px" name="input_content"></textarea>
+							<div class="large-10 columns"><small><a onclick="showmarkdown()">how to create content</a>
+								<div style=" font-size:13px;display:none;background-color:#f4f4f4;padding:5px" id="markdown">
+									add command / code : <code>[code]...[/code]</code><br/>
+									add link : <code>[url]link[/url]</code><br/>
+									add image : <code>[image]image link[/image]</code><br/>
+									heading style : <code>[h1]...[/h1] until [h6]...[/h6]</code>
+								</div>
+							</small><br/><textarea style="width:100%;min-height:300px" name="input_content"></textarea>
 							<br/>
 							<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
 							<br/>
 							<button class="button" type="submit">Create</button>
-							</div>
-							<input type="hidden" name="input_type" value="<?php echo $_GET['create']?>">
-
 						</div>
-					</form>
-				</div>
-				<br/>
-				<br/>
-				<!-- end of new discuss form -->
-			</div>
-			<div class="large-4 columns">
-				<?php $this->load->view('discussion/top_discussion')?>
-			</div>
-		</div>
+						<input type="hidden" name="input_type" value="<?php echo $_GET['create']?>">
 
+					</div>
+				</form>
+			</div>
+			<br/>
+			<br/>
+			<!-- end of new discuss form -->
+		</div>
+		<div class="large-4 columns">
+			<?php $this->load->view('discussion/top_discussion')?>
+		</div>
 	</div>
+
+</div>
 
 </div>			
 

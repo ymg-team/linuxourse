@@ -1,8 +1,8 @@
 <section id="title">
 	<center>
 		<?php
-		if(!empty($this->session->userdata['student_login']['pp'])){
-			$src = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
+		if(!empty($student['pp'])){
+			$src = base_url('assets/img/avatar/'.$student['pp']);
 		} else {
 			$src = base_url('assets/img/avatar.png');
 		}

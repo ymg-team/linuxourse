@@ -109,4 +109,18 @@ class m_discussion extends CI_Model{
 		$this->db->where('id_discussion',$id_discussion);
 		return $count =  $this->db->count_all_results('discussion_comment');
 	}
+	public function showCommentByIdDiscusion($id_discuss,$limit,$offset){
+		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion_comment.id_comment AS 'id_comment',
+		discussion_comment.commentdate AS 'commentdate',discussion_comment.updatedate AS 'commentupdatedate',
+		discussion_comment.comment AS 'comment'
+		FROM discussion_comment
+		INNER JOIN user ON discussion_comment.id_user = user.id_user
+		WHERE discussion_comment.id_discussion = ?";
+		$query = $this->db->query($sql,$id_discuss);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 }

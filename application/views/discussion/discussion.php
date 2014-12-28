@@ -36,7 +36,15 @@
 			<br/><br/>
 			<?php foreach($view as $v):?>
 				<div style="float:left;padding:0.9375rem" class="discuss-item large-4 columns">
-					<div class="avatar"><img class="discuss-avatar" src="<?php echo base_url('assets/img/avatar.png')?>" /></div>
+					<?php 
+					//avatar setup
+					if(!empty($v['pp'])){
+						$avatar = base_url('assets/img/avatar/'.$v['pp']);
+					}else{
+						$avatar = base_url('assets/img/avatar.png');
+					}
+					?>
+					<div class="avatar"><img class="discuss-avatar" src="<?php echo $avatar;?>" /></div>
 					<div class="detail">
 						<?php 
 						if($v['type']=='ask'){
@@ -45,7 +53,7 @@
 							echo '<a class="linktagblue" href="'.site_url('discussion/all?type=thread').'">thread</a>';
 						}
 						?>					
-						<span class="fi-eye"></span> <?php echo $v['views'];?> <span class="fi-comment"></span> <?php echo $this->m_discussion->count_comment($v['id_discuss']);?><br/><small><?php echo $v['updatedate']?></small>
+						<span class="fi-eye"></span> <?php echo $v['views'];?> <span class="fi-comment"></span> <?php echo $this->m_discussion->count_comment($v['id_discuss']);?><br/><small><?php echo '<a target="_blank" href="'.site_url('student/v/'.$v['username']).'">'.$v['username'].'</a> | '.$v['updatedate']?></small>
 					</div>
 					<br/>
 					<div class="title">
@@ -56,7 +64,16 @@
 						<a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
 					</div>
 					<hr/>
-					<p><?php echo $v['content'];?></p>	
+					<?php
+					//regular expression
+
+					//$content = $v['content'];
+					$start = array('[',']');
+					$replace = array('<','>');
+					$content = str_replace($start, $replace, $v['content']);
+					$content = strip_tags($content);
+					?>
+					<p><?php echo $content;?></p>	
 				</div>
 			<?php endforeach;?>
 		</div>

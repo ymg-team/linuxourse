@@ -64,6 +64,7 @@ class p extends base { //class for public
 	}
 	//user login
 	public function login(){
+		$this->load->library('user_agent');
 		//set rules
 		$this->form_validation->set_rules('input_username', 'Username', 'required|trim|callback_validate_credentials');//is required
 		$this->form_validation->set_rules('input_password', 'Password', 'required|trim');//is required email
@@ -85,6 +86,7 @@ class p extends base { //class for public
 				$loginuser['password'] = $userdata['password'];
 				$loginuser['level'] = $userdata['level'];
 				$loginuser['status'] = $userdata['status'];
+				$loginuser['pp'] = $userdata['pp'];
 				$loginuser['is_login'] = 1;
 				$sessiondata['student_login'] = $loginuser;
 				$sessiondata['command'] = array();//for course
@@ -93,7 +95,7 @@ class p extends base { //class for public
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
 					$data = array('last_login'=>date('Y-m-d h:i:s'));
 					$this->db->update('user',$data);//update login terakhir
-					redirect('m/dashboard?note=loginsuccess');					
+					redirect($this->agent->referrer());					
 				} else { //jika statusnya banned
 					echo 'gagal memasukan session';
 				}

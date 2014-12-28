@@ -6,9 +6,8 @@ class student extends base { //class for public
 	{
 		parent::__construct();
 		//only for member
-		$this->memberOnly();
+		
 	}
-
 	//index url
 	public function v(){
 		$username =  $this->uri->segment(3);
