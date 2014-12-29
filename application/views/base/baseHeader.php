@@ -61,7 +61,9 @@
 									<li><a href="<?php echo site_url('m/logout')?>"><span class="fi-x-circle"></span> logout</a></li>
 								</ul>
 							</li>
-							<?php }	?>
+							<?php }	else { //show login link?>
+							<li id="about"><a style="margin-top: 4px;" href="<?php echo site_url('p/login')?>">Login</a></li>
+							<?php } ?>
 						</ul>
 					</div>
 				</div>

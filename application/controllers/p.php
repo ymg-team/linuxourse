@@ -95,7 +95,7 @@ class p extends base { //class for public
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
 					$data = array('last_login'=>date('Y-m-d h:i:s'));
 					$this->db->update('user',$data);//update login terakhir
-					redirect($this->agent->referrer());					
+					redirect(site_url());					
 				} else { //jika statusnya banned
 					echo 'gagal memasukan session';
 				}

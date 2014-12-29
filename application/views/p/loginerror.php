@@ -2,7 +2,7 @@
 	<div class="base-content" class="large-12 columns">
 		<div class="large-5 columns">
 			<h4>Login</h4>
-			<p>you got an error login</p>
+			<p><a href="<?php echo site_url()?>">i don't have account</a></p>
 			<hr/>
 			<form method="POST" action="">
 				<div class="row">

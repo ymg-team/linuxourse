@@ -123,4 +123,54 @@ class m_discussion extends CI_Model{
 			return array();
 		}
 	}
+	/*
+	* ALL about show data after login
+	*/
+	//get my topics
+	public function myTopics($limit,$offset){
+		$myid = $this->session->userdata['student_login']['id_user'];
+		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
+		discussion.type AS 'type',discussion.views AS 'views'
+		FROM discussion
+		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.id_user = ?
+		LIMIT ".$offset." , ".$limit;
+		$query = $this->db->query($sql,$myid);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//count my topics
+	public function countMyTopics(){
+		$myid = $this->session->userdata['student_login']['id_user'];
+		$this->db->where('id_user',$myid);
+		$query = $this->db->get('discussion');
+		return $query->num_rows();
+	}
+	//get my comments
+	public function myAnswers($limit,$offset){
+		$myid = $this->session->userdata['student_login']['id_user'];
+		$sql = "SELECT discussion.type AS 'type',discussion.title AS 'title',user.username AS 'username', discussion_comment.id_discussion AS 'id_discuss', discussion_comment.updatedate AS 'updatedate',
+		discussion_comment.commentdate AS 'commentdate',discussion_comment.comment AS 'comment', discussion_comment.id_comment AS 'id_comment',user.pp AS 'pp'
+		FROM discussion_comment 
+		INNER JOIN user ON discussion_comment.id_user = user.id_user
+		INNER JOIN discussion ON discussion.id_discuss = discussion_comment.id_discussion
+		WHERE discussion_comment.id_user = ?";
+		$query = $this->db->query($sql,$myid);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//count my comments
+	public function countMyAnswer(){
+		$myid = $this->session->userdata['student_login']['id_user'];
+		$this->db->where('id_user',$myid);
+		$query = $this->db->get('discussion_comment');
+		return $query->num_rows();
+	}
 }

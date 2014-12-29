@@ -24,7 +24,7 @@ class discussion extends base { //class for public
 		$uri = $this->uri->segment(3);		
 		//end of pagination setup
 		$data['title'] = 'Discussion';
-		$data['script'] = '<script>$(document).ready(function(){$("#discusion").addClass("activemenu")});</script>';
+		$data['script'] = '<script>$(document).ready(function(){$("#discusion,#orderAll").addClass("activemenu")});</script>';
 		if(!empty($_GET['type'])){//filter discussion by type
 			$config['base_url'] = site_url('discussion/all?type='.$this->input->get('type',TRUE));
 			$config['page_query_string'] = TRUE;
@@ -79,6 +79,7 @@ class discussion extends base { //class for public
 		switch ($this->uri->segment(3)) {
 			case 'views': //order by views
 			$data['title'] = 'Order By Views';
+			$data['script'] = '<script>$(document).ready(function(){$("#discusion,#orderViews").addClass("activemenu")});</script>';
 			$data['view'] = $this->m_discussion->showDiscussionByViews($config['per_page'],$uri);
 			break;			
 			default:
@@ -89,7 +90,6 @@ class discussion extends base { //class for public
 	}
 	//open discussion
 	public function open(){
-
 		if(!empty($_POST)){
 			//add comment
 			if(empty($this->session->userdata['student_login'])){//if not login
@@ -308,5 +308,74 @@ class discussion extends base { //class for public
 		}else{
 			echo 'you re no topic owner';
 		}
+	}
+
+	/*
+	* Action after login
+	*/
+
+	//show all topics added by me
+	public function mytopics(){
+		//if not login redirect to discussion
+		if(empty($this->session->userdata['student_login']['id_user'])){
+			redirect(site_url('discussion/all'));
+		}
+		//pagination setup
+		$this->load->library('pagination');
+		$config = array(
+			'total_rows'=> $this->m_discussion->countMyTopics(),
+			'per_page'=>15,
+			'uri_segment'=>3,
+			'num_link'=>5,
+			'use_page_number'=>TRUE,
+			);
+		$uri = $this->uri->segment(3);
+		$config['base_url'] = site_url('discussion/mytopics');
+		$this->pagination->initialize($config);
+		if(!$uri) {
+			$uri = 0;
+		}
+		if($config['total_rows'] < 15) {
+			$data['page'] = 1;
+		} else {
+			$data['page'] = $this->pagination->create_links();
+		}
+		//end of pagination setup
+		$data['title']='My Topics';
+		$data['view']=$this->m_discussion->myTopics($config['per_page'],$uri);
+		$data['script']='<script>$(document).ready(function(){$("#discusion,#orderTopics").addClass("activemenu")});</script>';
+		$this->baseView('discussion/mytopics',$data);
+	}
+	//show all answer added by me
+	public function myanswers(){
+		//if not login redirect to discussion
+		if(empty($this->session->userdata['student_login']['id_user'])){
+			redirect(site_url('discussion/all'));
+		}
+		//pagination setup
+		$this->load->library('pagination');
+		$config = array(
+			'total_rows'=> $this->m_discussion->countMyAnswer(),
+			'per_page'=>15,
+			'uri_segment'=>3,
+			'num_link'=>5,
+			'use_page_number'=>TRUE,
+			);
+		$uri = $this->uri->segment(3);
+		$config['base_url'] = site_url('discussion/myanswer');
+		$this->pagination->initialize($config);
+		if(!$uri) {
+			$uri = 0;
+		}
+		if($config['total_rows'] < 15) {
+			$data['page'] = 1;
+		} else {
+			$data['page'] = $this->pagination->create_links();
+		}
+		//end of pagination setup
+		$data['title']='My Topics';
+		$data['view']=$this->m_discussion->myAnswers($config['per_page'],$uri);
+		$data['script']='<script>$(document).ready(function(){$("#discusion,#orderAnswers").addClass("activemenu")});</script>';
+		$this->baseView('discussion/myanswers',$data);
 	}
 }

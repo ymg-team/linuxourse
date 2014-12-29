@@ -10,26 +10,6 @@
 			<br/><br/>
 			<?php foreach($view as $v):?>
 				<div style="float:left;padding:0.9375rem" class="discuss-item large-4 columns">
-					<?php 
-					//avatar setup
-					if(!empty($v['pp'])){
-						$avatar = base_url('assets/img/avatar/'.$v['pp']);
-					}else{
-						$avatar = base_url('assets/img/avatar.png');
-					}
-					?>
-					<div class="avatar"><img class="discuss-avatar" src="<?php echo $avatar;?>" /></div>
-					<div class="detail">
-						<?php 
-						if($v['type']=='ask'){
-							echo '<a class="linktaggreen" href="'.site_url('discussion/all?type=ask').'">ask?</a>';
-						}else{
-							echo '<a class="linktagblue" href="'.site_url('discussion/all?type=thread').'">thread</a>';
-						}
-						?>					
-						<span class="fi-eye"></span> <?php echo $v['views'];?> <span class="fi-comment"></span> <?php echo $this->m_discussion->count_comment($v['id_discuss']);?><br/><small><?php echo '<a target="_blank" href="'.site_url('student/v/'.$v['username']).'">'.$v['username'].'</a> | '.$v['updatedate']?></small>
-					</div>
-					<br/>
 					<div class="title">
 						<?php
 						$id_discuss = base64_encode(base64_encode($v['id_discuss']));
@@ -44,10 +24,11 @@
 					//$content = $v['content'];
 					$start = array('[',']');
 					$replace = array('<','>');
-					$content = str_replace($start, $replace, $v['content']);
+					$content = str_replace($start, $replace, $v['comment']);
 					$content = strip_tags($content);
 					?>
-					<p><?php echo $content;?></p>	
+					<small>post <?php echo $v['commentdate']?> | update <?php echo $v['updatedate']?></small><br/>
+					<p><a title="edit answer" href="#"> <span class="fi-pencil"> </span></a><strong>my answer : </strong><?php echo $content;?></p>	
 				</div>
 			<?php endforeach;?>
 		</div>
