@@ -34,7 +34,7 @@
 			<br/>
 			<br/>
 			<div class="title">
-				<h1><a style="font-size:20px" class="linktitle" href="<?php echo site_url('discussion/open'.$this->uri->segment(3))?>"><?php echo $view['title']?></a> <?php if(!empty($this->session->userdata['student_login'])){echo '<a title="edit topic" href="'.site_url('discussion/edit').'"><span class="fi-pencil"></span></a>';}?></h1><br/>
+				<h1><a style="font-size:20px" class="linktitle" href="<?php echo site_url('discussion/open/'.$this->uri->segment(3))?>"><?php echo $view['title']?></a> <?php if($this->session->userdata['student_login']['id_user']==$view['id_user']){echo '<a title="edit topic" href="'.site_url('discussion/edittopic/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span></a>';}?></h1><br/>
 			</div>
 			<hr/>
 			<p><?php 
@@ -61,7 +61,14 @@
 							<small><?php echo '<a href="'.site_url('student/v/'.$c['username']).'">'.$c['username'].'</a>';?></small><br/>
 							<small><?php echo $c['commentupdatedate']?></small>
 							<br/><br/><br/>
-							<p><?php echo $c['comment']?></p>
+							<p>
+							<?php
+							//if user logged in is user added answer = update answer
+							if($this->session->userdata['student_login']['username'] == $c['username']){
+								echo '<a href="'.site_url('discussion/editanswer/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span> </a>';
+							} 
+							echo $c['comment']?>
+							</p>
 						</div>
 						<div style="float:left" class="small-2 columns">
 							<p><a href="#"><span class="fi-arrow-up"></span></a> 4500

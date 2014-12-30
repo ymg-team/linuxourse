@@ -12,7 +12,7 @@ class m_discussion extends CI_Model{
 	*/
 	//show all discussion by id
 	public function showDiscussionById($id_discuss){
-		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+		$sql = "SELECT user.id_user AS 'id_user',user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
 		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
@@ -172,5 +172,11 @@ class m_discussion extends CI_Model{
 		$this->db->where('id_user',$myid);
 		$query = $this->db->get('discussion_comment');
 		return $query->num_rows();
+	}
+	//show answer by id
+	public function answerById($id_answer){
+		$this->db->where('id_comment',$id_answer);
+		$query = $this->db->get('discussion_comment');
+		return $query->row_array();
 	}
 }

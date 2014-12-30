@@ -127,8 +127,8 @@ class discussion extends base { //class for public
 		$key = $tgl * $minutes * $second ;
 		$vals = array(
 			'word' => $key,
-			'img_path'   => './assets/img/captcha',
-			'img_url'    => base_url('assets/img/captcha'),
+			'img_path'   => './assets/img/captcha/',
+			'img_url'    => base_url('assets/img/captcha').'/',
 			'img_width'  => '200',
 			'img_height' => 30,
 			'border' => 0,
@@ -166,8 +166,8 @@ class discussion extends base { //class for public
 			$key = $tgl * $minutes * $second ;
 			$vals = array(
 				'word' => $key,
-				'img_path'   => './assets/img/captcha',
-				'img_url'    => base_url('assets/img/captcha'),
+				'img_path'   => './assets/img/captcha/',
+				'img_url'    => base_url('assets/img/captcha').'/',
 				'img_width'  => '200',
 				'img_height' => 30,
 				'border' => 0,
@@ -236,8 +236,8 @@ class discussion extends base { //class for public
 			$key = $tgl * $minutes * $second ;
 			$vals = array(
 				'word' => $key,
-				'img_path'   => './assets/img/captcha',
-				'img_url'    => base_url('assets/img/captcha'),
+				'img_path'   => './assets/img/captcha/',
+				'img_url'    => base_url('assets/img/captcha').'/',
 				'img_width'  => '200',
 				'img_height' => 30,
 				'border' => 0,
@@ -259,11 +259,15 @@ class discussion extends base { //class for public
 			$this->baseView('discussion/editdiscuss',$data);
 		}
 	}
-	//edit my discuss
-	public function edit(){
+	//edit topic
+	public function edittopic(){
 		$this->load->library('form_validation');
+		$enc_id_discuss = $this->uri->segment(3);
+		//descrypt
+		$id_discuss = str_replace('', '=', $enc_id_discuss);
+		$id_discuss = base64_decode(base64_decode($id_discuss));//get real id discuss
 		if(!empty($_POST)){//submit data
-
+			redirect($this->aggent->referrer());//back to last page
 		}
 		//captcha
 		$this->load->helper('captcha');
@@ -273,8 +277,8 @@ class discussion extends base { //class for public
 		$key = $tgl * $minutes * $second ;
 		$vals = array(
 			'word' => $key,
-			'img_path'   => './assets/img/captcha',
-			'img_url'    => base_url('assets/img/captcha'),
+			'img_path'   => './assets/img/captcha/',
+			'img_url'    => base_url('assets/img/captcha').'/',
 			'img_width'  => '200',
 			'img_height' => 30,
 			'border' => 0,
@@ -288,11 +292,6 @@ class discussion extends base { //class for public
 		if(empty($this->session->userdata['student_login'])){//if not login
 			redirect(site_url('p/login'));
 		}
-		$referrer =  $this->agent->referrer();
-		preg_match('#/discussion/open/(.*)#',$referrer,$getid);
-		$enc_id_discuss = $getid[1];
-		$id_discuss = str_replace('', '=', $enc_id_discuss);
-		$id_discuss = base64_decode(base64_decode($id_discuss));
 		//is this topic create by now login user
 		if($this->m_discussion->checkOwner($id_discuss,$this->session->userdata['student_login']['id_user'])){
 			//get discussion by id
@@ -309,7 +308,81 @@ class discussion extends base { //class for public
 			echo 'you re no topic owner';
 		}
 	}
+	//proc edit topic
+	public function procEditTopic(){
+		$title = $_POST['input_title'];
+		$content = $_POST['input_content'];
+		$captcha = $_POST['input_captcha'];
+		$referrer = $this->agent->referrer();
+		//get ecryption id discuss
+		preg_match('#/discussion/edittopic/(.*)#',$referrer,$getid);
+		$enc_id_discuss = $getid[1];
+		$id_discuss = str_replace('', '=', $enc_id_discuss);
+		$id_discuss = base64_decode(base64_decode($id_discuss));
+		//form validation
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('input_title', 'title', 'required|min_length[5]|max_length[100]|xss_clean');
+		$this->form_validation->set_rules('input_content', 'content', 'required|min_length[5]|max_length[500]|xss_clean');
+		//is chaptcha correct
+		if($captcha = $this->session->userdata['mycaptcha']){//if captcha is correct
+			if($this->form_validation->run()){//form validation is good
+				//update database
+				$this->db->where('id_discuss',$id_discuss);//where id discuss
+				$data = array(
+					'title'=>$title,
+					'content'=>$content,
+					'updatedate'=>date('Y-m-d h:i:s'),
+					);
+				if($this->db->update('discussion',$data)){
+					//$enc_id_discuss;
+					redirect(site_url('discussion/open/'.$enc_id_discuss));
+				}else{
+					echo 'gagal memasukan ke database';
+				}
+			}else{//form validation not work
+				echo 'form validation not work';
+			}
+		}else{//captcha is wrong
+			echo 'your captcha is wrong';
+		}
+	}
+	//edit answer
+	public function editAnswer(){
+		$this->load->library('form_validation');
+		// captcha
+		$this->load->helper('captcha');
+		$tgl = date('d');
+		$minutes = date('m');
+		$second = date('s');
+		$key = $tgl * $minutes * $second ;
+		$vals = array(
+			'word' => $key,
+			'img_path'   => './assets/img/captcha/',
+			'img_url'    => base_url('assets/img/captcha').'/',
+			'img_width'  => '200',
+			'img_height' => 30,
+			'border' => 0,
+			'expiration' => 7200
+			);
+  		// create captcha image
+		$cap = create_captcha($vals);
+		// store the captcha word in a session
+		$this->session->set_userdata('mycaptcha', $cap['word']);
+		// end of captcha config
+		$enc_id_discuss = $this->uri->segment(3);
+		$id_discuss = str_replace('', '=', $enc_id_discuss);
+		$id_discuss = base64_decode(base64_decode($id_discuss));
+		$data = array(
+			'title'=>'edit comment',
+			'image'=>$cap['image'],
+			'view'=>$this->m_discussion->answerById($id_discuss),
+			);
+		$this->baseView('discussion/editanswer',$data);
+	}
+	//process edit answer
+	public function procEditAnswer(){
 
+	}
 	/*
 	* Action after login
 	*/

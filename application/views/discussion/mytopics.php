@@ -35,7 +35,7 @@
 						$id_discuss = base64_encode(base64_encode($v['id_discuss']));
 						$id_discuss = str_replace('=', '', $id_discuss);
 						?>
-						<a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
+						<a href="<?php echo site_url('discussion/edittopic/'.$id_discuss)?>"><span class="fi-pencil"></span> </a><a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
 					</div>
 					<hr/>
 					<?php

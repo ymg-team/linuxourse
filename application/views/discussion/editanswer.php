@@ -47,14 +47,15 @@
 						';
 					}
 					?>
+					<h3>Edit Answer</h3>
 					<form method="POST" action="<?php echo site_url('discussion/procEditTopic')?>">
 						<div class="large-12 columns">
 							<div class="large-2 columns"><label><strong>Title</strong></label></div>
-							<div class="large-10 columns"><?php if(!empty($view['type'])){echo '<strong>'.$view['type'].'</strong>';}?><input type="text" value="<?php if(!empty($view['title'])){echo $view['title'];}?>" name="input_title"></div>
+							<div class="large-10 columns"><input type="text" value="<?php if(!empty($view['title'])){echo $view['title'];}?>" name="input_title"></div>
 						</div>
 						<div class="large-12 columns">
 							<div class="large-2 columns"><label><strong>Content</strong></label></div>
-							<div class="large-10 columns"><small><a href="#">how to create content</a></small><br/><textarea style="width:100%;min-height:300px" name="input_content"><?php if(!empty($view['content'])){echo $view['content'];}?></textarea>
+							<div class="large-10 columns"><small><a href="#">how to create content</a></small><br/><textarea style="width:100%;min-height:300px" name="input_content"><?php if(!empty($view['comment'])){echo $view['comment'];}?></textarea>
 								<br/>
 								<?php 
 								if(!empty($captcha) && $captcha != $this->session->userdata('mycaptcha')){
@@ -67,10 +68,9 @@
 								?>
 								<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
 								<br/>
-								<button class="button" type="submit">Create</button><?php if($isedit){echo '<input type="hidden" name="enc_id_discuss" value="'.$enc_id_discuss.'">';echo '<a onclick="return confirm(\'are you sure!\')" class="alert button" href="'.site_url('discussion/deletetopic?id='.$enc_id_discuss).'">delete</a>';}?>
+								<button class="button" type="submit">Edit Answer</button>
 							</div>
-							<input type="hidden" name="input_type" value="<?php echo $type?>">
-
+							
 						</div>
 					</form>
 				</div>
