@@ -18,7 +18,7 @@
 	<?php
 		//title setup
 	if(!empty($title)){
-		echo $title.' :: FOSSIL Linux Ecourse';
+		echo $title.' :: LINUXOURSE';
 	} else {
 		echo 'FOSSIL Linux Ecourse';
 	}

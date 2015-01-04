@@ -103,7 +103,7 @@
 				<div class="large-4 columns">
 					<center>
 						<h5>Total Student</h5>
-						<strong><h3>4500K</h3></strong>
+						<strong><h3><?php echo $this->m_user->countActiveStudent();?></h3></strong>
 					</center>
 				</div>
 				<div class="large-4 columns">
@@ -114,7 +114,7 @@
 				</div>
 				<div class="large-4 columns">
 					<center>
-						<h5>Course This Week</h5>
+						<h5>Total Course</h5>
 						<strong><h3>4500K</h3></strong>
 					</center>
 				</div>			

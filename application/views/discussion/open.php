@@ -51,6 +51,9 @@
 					<div class="comment-item row">
 						<div class="small-10 columns">
 							<?php
+							//encrypt id answer
+							$enc_id_answer = base64_encode(base64_encode($c['id_comment']));
+							$enc_id_answer = str_replace('=', '', $enc_id_answer);
 							if(!empty($c['pp'])){
 								$avatar = base_url('assets/img/avatar/'.$c['pp']);
 							}else{
@@ -65,7 +68,7 @@
 							<?php
 							//if user logged in is user added answer = update answer
 							if($this->session->userdata['student_login']['username'] == $c['username']){
-								echo '<a href="'.site_url('discussion/editanswer/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span> </a>';
+								echo '<a href="'.site_url('discussion/editanswer/'.$enc_id_answer).'"><span class="fi-pencil"></span> </a>';
 							} 
 							echo $c['comment']?>
 							</p>

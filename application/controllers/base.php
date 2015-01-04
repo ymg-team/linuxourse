@@ -27,7 +27,7 @@ class base extends CI_Controller {
 	//member only
 	public function memberOnly(){
 		if(empty($this->session->userdata['student_login']['id_user'])){
-			redirect(site_url());
+			redirect(site_url('p/login'));
 		}
 	}
 	//admin only

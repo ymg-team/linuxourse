@@ -1,0 +1,491 @@
+commit 176af74ecb255e792a04e1293ba311f488f799ad
+Author: yussan <yussandeveloper@gmail.com>
+Date:   Tue Dec 30 13:32:17 2014 +0700
+
+    dari perpus
+
+diff --git a/application/controllers/discussion.php b/application/controllers/discussion.php
+old mode 100644
+new mode 100755
+index aa0d861..faa931c
+--- a/application/controllers/discussion.php
++++ b/application/controllers/discussion.php
+@@ -127,8 +127,8 @@ class discussion extends base { //class for public
+ 		$key = $tgl * $minutes * $second ;
+ 		$vals = array(
+ 			'word' => $key,
+-			'img_path'   => './assets/img/captcha',
+-			'img_url'    => base_url('assets/img/captcha'),
++			'img_path'   => './assets/img/captcha/',
++			'img_url'    => base_url('assets/img/captcha').'/',
+ 			'img_width'  => '200',
+ 			'img_height' => 30,
+ 			'border' => 0,
+@@ -166,8 +166,8 @@ class discussion extends base { //class for public
+ 			$key = $tgl * $minutes * $second ;
+ 			$vals = array(
+ 				'word' => $key,
+-				'img_path'   => './assets/img/captcha',
+-				'img_url'    => base_url('assets/img/captcha'),
++				'img_path'   => './assets/img/captcha/',
++				'img_url'    => base_url('assets/img/captcha').'/',
+ 				'img_width'  => '200',
+ 				'img_height' => 30,
+ 				'border' => 0,
+@@ -236,8 +236,8 @@ class discussion extends base { //class for public
+ 			$key = $tgl * $minutes * $second ;
+ 			$vals = array(
+ 				'word' => $key,
+-				'img_path'   => './assets/img/captcha',
+-				'img_url'    => base_url('assets/img/captcha'),
++				'img_path'   => './assets/img/captcha/',
++				'img_url'    => base_url('assets/img/captcha').'/',
+ 				'img_width'  => '200',
+ 				'img_height' => 30,
+ 				'border' => 0,
+@@ -259,11 +259,15 @@ class discussion extends base { //class for public
+ 			$this->baseView('discussion/editdiscuss',$data);
+ 		}
+ 	}
+-	//edit my discuss
+-	public function edit(){
++	//edit topic
++	public function edittopic(){
+ 		$this->load->library('form_validation');
++		$enc_id_discuss = $this->uri->segment(3);
++		//descrypt
++		$id_discuss = str_replace('', '=', $enc_id_discuss);
++		$id_discuss = base64_decode(base64_decode($id_discuss));//get real id discuss
+ 		if(!empty($_POST)){//submit data
+-
++			redirect($this->aggent->referrer());//back to last page
+ 		}
+ 		//captcha
+ 		$this->load->helper('captcha');
+@@ -273,8 +277,8 @@ class discussion extends base { //class for public
+ 		$key = $tgl * $minutes * $second ;
+ 		$vals = array(
+ 			'word' => $key,
+-			'img_path'   => './assets/img/captcha',
+-			'img_url'    => base_url('assets/img/captcha'),
++			'img_path'   => './assets/img/captcha/',
++			'img_url'    => base_url('assets/img/captcha').'/',
+ 			'img_width'  => '200',
+ 			'img_height' => 30,
+ 			'border' => 0,
+@@ -288,11 +292,6 @@ class discussion extends base { //class for public
+ 		if(empty($this->session->userdata['student_login'])){//if not login
+ 			redirect(site_url('p/login'));
+ 		}
+-		$referrer =  $this->agent->referrer();
+-		preg_match('#/discussion/open/(.*)#',$referrer,$getid);
+-		$enc_id_discuss = $getid[1];
+-		$id_discuss = str_replace('', '=', $enc_id_discuss);
+-		$id_discuss = base64_decode(base64_decode($id_discuss));
+ 		//is this topic create by now login user
+ 		if($this->m_discussion->checkOwner($id_discuss,$this->session->userdata['student_login']['id_user'])){
+ 			//get discussion by id
+@@ -309,7 +308,81 @@ class discussion extends base { //class for public
+ 			echo 'you re no topic owner';
+ 		}
+ 	}
++	//proc edit topic
++	public function procEditTopic(){
++		$title = $_POST['input_title'];
++		$content = $_POST['input_content'];
++		$captcha = $_POST['input_captcha'];
++		$referrer = $this->agent->referrer();
++		//get ecryption id discuss
++		preg_match('#/discussion/edittopic/(.*)#',$referrer,$getid);
++		$enc_id_discuss = $getid[1];
++		$id_discuss = str_replace('', '=', $enc_id_discuss);
++		$id_discuss = base64_decode(base64_decode($id_discuss));
++		//form validation
++		$this->load->library('form_validation');
++		$this->form_validation->set_rules('input_title', 'title', 'required|min_length[5]|max_length[100]|xss_clean');
++		$this->form_validation->set_rules('input_content', 'content', 'required|min_length[5]|max_length[500]|xss_clean');
++		//is chaptcha correct
++		if($captcha = $this->session->userdata['mycaptcha']){//if captcha is correct
++			if($this->form_validation->run()){//form validation is good
++				//update database
++				$this->db->where('id_discuss',$id_discuss);//where id discuss
++				$data = array(
++					'title'=>$title,
++					'content'=>$content,
++					'updatedate'=>date('Y-m-d h:i:s'),
++					);
++				if($this->db->update('discussion',$data)){
++					//$enc_id_discuss;
++					redirect(site_url('discussion/open/'.$enc_id_discuss));
++				}else{
++					echo 'gagal memasukan ke database';
++				}
++			}else{//form validation not work
++				echo 'form validation not work';
++			}
++		}else{//captcha is wrong
++			echo 'your captcha is wrong';
++		}
++	}
++	//edit answer
++	public function editAnswer(){
++		$this->load->library('form_validation');
++		// captcha
++		$this->load->helper('captcha');
++		$tgl = date('d');
++		$minutes = date('m');
++		$second = date('s');
++		$key = $tgl * $minutes * $second ;
++		$vals = array(
++			'word' => $key,
++			'img_path'   => './assets/img/captcha/',
++			'img_url'    => base_url('assets/img/captcha').'/',
++			'img_width'  => '200',
++			'img_height' => 30,
++			'border' => 0,
++			'expiration' => 7200
++			);
++  		// create captcha image
++		$cap = create_captcha($vals);
++		// store the captcha word in a session
++		$this->session->set_userdata('mycaptcha', $cap['word']);
++		// end of captcha config
++		$enc_id_discuss = $this->uri->segment(3);
++		$id_discuss = str_replace('', '=', $enc_id_discuss);
++		$id_discuss = base64_decode(base64_decode($id_discuss));
++		$data = array(
++			'title'=>'edit comment',
++			'image'=>$cap['image'],
++			'view'=>$this->m_discussion->answerById($id_discuss),
++			);
++		$this->baseView('discussion/editanswer',$data);
++	}
++	//process edit answer
++	public function procEditAnswer(){
+ 
++	}
+ 	/*
+ 	* Action after login
+ 	*/
+diff --git a/application/models/m_discussion.php b/application/models/m_discussion.php
+old mode 100644
+new mode 100755
+index cba9ba0..66e496c
+--- a/application/models/m_discussion.php
++++ b/application/models/m_discussion.php
+@@ -12,7 +12,7 @@ class m_discussion extends CI_Model{
+ 	*/
+ 	//show all discussion by id
+ 	public function showDiscussionById($id_discuss){
+-		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
++		$sql = "SELECT user.id_user AS 'id_user',user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+ 		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
+ 		discussion.type AS 'type',discussion.views AS 'views'
+ 		FROM discussion
+@@ -173,4 +173,10 @@ class m_discussion extends CI_Model{
+ 		$query = $this->db->get('discussion_comment');
+ 		return $query->num_rows();
+ 	}
++	//show answer by id
++	public function answerById($id_answer){
++		$this->db->where('id_comment',$id_answer);
++		$query = $this->db->get('discussion_comment');
++		return $query->row_array();
++	}
+ }
+\ No newline at end of file
+diff --git a/application/views/discussion/discussion.php b/application/views/discussion/discussion.php
+old mode 100644
+new mode 100755
+diff --git a/application/views/discussion/editanswer.php b/application/views/discussion/editanswer.php
+new file mode 100755
+index 0000000..dc6bcdb
+--- /dev/null
++++ b/application/views/discussion/editanswer.php
+@@ -0,0 +1,110 @@
++<section id="title">
++	<center>		
++		<h1 style="margin:0">linuXourse Discussion</h1>
++		<p>have problem, stuck, something not working, join the club and discuss it</p>
++	</center>
++</section>
++<br/>
++<div class="row">	
++	<center>
++		<div class="large-10 large-offset-1 columns">
++			<div class="row">
++				<br/>
++				<form action="<?php echo site_url('discussion/pedittopic')?>">
++					<div class="large-12 columns">
++						<div class="row collapse">
++							<div class="small-11 columns">
++								<input style="height:40px" type="text" placeholder="Hex Value">
++							</div>
++							<div class="small-1 columns">
++								<a style="height:40px" href="#" class="button postfix"><h3 style="color:#fff"><span class="fi-magnifying-glass"></span></h3></a>
++							</div>
++						</div>
++					</div>
++					<p> or <a data-reveal-id="newtopic" href="#">create new topic</a></p>
++				</form>
++				<br/>
++			</div>
++		</div>
++	</center>
++	<div class="row">
++		<div class="large-12 columns">
++			<div class="large-12 columns">
++				<strong>order by : </strong><a href="<?php echo site_url('discussion')?>">Lattest</a> | <a href="#">Top Views</a> | <a href="#">Top Comment</a>
++				<hr/>
++			</div>
++			<br/><br/>
++			<div class="large-8 columns">
++				<br/>
++				<!-- new discuss form -->
++				<div class="row">
++					<?php 
++					if(!empty(validation_errors())){
++						echo '
++						<div data-alert class="alert-box alert radius">
++							'.validation_errors().'<a href="'.site_url().'" class="close">&times;</a>
++						</div>
++						';
++					}
++					?>
++					<h3>Edit Answer</h3>
++					<form method="POST" action="<?php echo site_url('discussion/procEditTopic')?>">
++						<div class="large-12 columns">
++							<div class="large-2 columns"><label><strong>Title</strong></label></div>
++							<div class="large-10 columns"><input type="text" value="<?php if(!empty($view['title'])){echo $view['title'];}?>" name="input_title"></div>
++						</div>
++						<div class="large-12 columns">
++							<div class="large-2 columns"><label><strong>Content</strong></label></div>
++							<div class="large-10 columns"><small><a href="#">how to create content</a></small><br/><textarea style="width:100%;min-height:300px" name="input_content"><?php if(!empty($view['comment'])){echo $view['comment'];}?></textarea>
++								<br/>
++								<?php 
++								if(!empty($captcha) && $captcha != $this->session->userdata('mycaptcha')){
++									echo '
++									<div data-alert class="alert-box alert radius">
++										security code not match <a href="'.site_url().'" class="close">&times;</a>
++									</div>
++									';
++								}
++								?>
++								<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
++								<br/>
++								<button class="button" type="submit">Edit Answer</button>
++							</div>
++							
++						</div>
++					</form>
++				</div>
++				<br/>
++				<br/>
++				<!-- end of new discuss form -->
++			</div>
++			<div class="large-4 columns">
++				<?php $this->load->view('discussion/top_discussion')?>
++			</div>
++		</div>
++
++	</div>
++
++</div>			
++
++</div>
++</div>
++<!-- modal -->
++<div id="newtopic" class="reveal-modal small" data-reveal>
++	<center><h3>What the topic type you want to start</h3></center>
++	<hr/>
++	<div class="row">
++		<div class="large-6 columns">
++			<p><center><a style="width:100%" href="<?php echo site_url('discussion?create=ask')?>" class="button large"><span class=""></span> Ask</a></center>
++				Are you stuck? <br/>
++				some command does not work <br/>
++				ask here
++			</p>
++		</div>
++		<div class="large-6 columns">
++			<p><center><a style="width:100%" href="<?php echo site_url('discussion?create=thread')?>" class="button large"><span class="fi-megaphone"></span> Thread</a></center>
++				Do you have an interesting topic to discuss, post here</p>
++			</div>
++		</div>
++		<a class="close-reveal-modal">&#215;</a>
++	</div>
+\ No newline at end of file
+diff --git a/application/views/discussion/editdiscuss.php b/application/views/discussion/editdiscuss.php
+old mode 100644
+new mode 100755
+index df65510..48006fe
+--- a/application/views/discussion/editdiscuss.php
++++ b/application/views/discussion/editdiscuss.php
+@@ -10,7 +10,7 @@
+ 		<div class="large-10 large-offset-1 columns">
+ 			<div class="row">
+ 				<br/>
+-				<form action="">
++				<form action="<?php echo site_url('discussion/pedittopic')?>">
+ 					<div class="large-12 columns">
+ 						<div class="row collapse">
+ 							<div class="small-11 columns">
+@@ -47,7 +47,7 @@
+ 						';
+ 					}
+ 					?>
+-					<form method="POST" action="<?php echo site_url('discussion/addtopic')?>">
++					<form method="POST" action="<?php echo site_url('discussion/procEditTopic')?>">
+ 						<div class="large-12 columns">
+ 							<div class="large-2 columns"><label><strong>Title</strong></label></div>
+ 							<div class="large-10 columns"><?php if(!empty($view['type'])){echo '<strong>'.$view['type'].'</strong>';}?><input type="text" value="<?php if(!empty($view['title'])){echo $view['title'];}?>" name="input_title"></div>
+diff --git a/application/views/discussion/myanswers.php b/application/views/discussion/myanswers.php
+old mode 100644
+new mode 100755
+diff --git a/application/views/discussion/mytopics.php b/application/views/discussion/mytopics.php
+old mode 100644
+new mode 100755
+index a842237..f8ca8c1
+--- a/application/views/discussion/mytopics.php
++++ b/application/views/discussion/mytopics.php
+@@ -35,7 +35,7 @@
+ 						$id_discuss = base64_encode(base64_encode($v['id_discuss']));
+ 						$id_discuss = str_replace('=', '', $id_discuss);
+ 						?>
+-						<a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
++						<a href="<?php echo site_url('discussion/edittopic/'.$id_discuss)?>"><span class="fi-pencil"></span> </a><a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
+ 					</div>
+ 					<hr/>
+ 					<?php
+diff --git a/application/views/discussion/newdiscuss.php b/application/views/discussion/newdiscuss.php
+old mode 100644
+new mode 100755
+diff --git a/application/views/discussion/open.php b/application/views/discussion/open.php
+old mode 100644
+new mode 100755
+index 345b981..a994083
+--- a/application/views/discussion/open.php
++++ b/application/views/discussion/open.php
+@@ -34,7 +34,7 @@
+ 			<br/>
+ 			<br/>
+ 			<div class="title">
+-				<h1><a style="font-size:20px" class="linktitle" href="<?php echo site_url('discussion/open'.$this->uri->segment(3))?>"><?php echo $view['title']?></a> <?php if(!empty($this->session->userdata['student_login'])){echo '<a title="edit topic" href="'.site_url('discussion/edit').'"><span class="fi-pencil"></span></a>';}?></h1><br/>
++				<h1><a style="font-size:20px" class="linktitle" href="<?php echo site_url('discussion/open/'.$this->uri->segment(3))?>"><?php echo $view['title']?></a> <?php if($this->session->userdata['student_login']['id_user']==$view['id_user']){echo '<a title="edit topic" href="'.site_url('discussion/edittopic/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span></a>';}?></h1><br/>
+ 			</div>
+ 			<hr/>
+ 			<p><?php 
+@@ -61,7 +61,14 @@
+ 							<small><?php echo '<a href="'.site_url('student/v/'.$c['username']).'">'.$c['username'].'</a>';?></small><br/>
+ 							<small><?php echo $c['commentupdatedate']?></small>
+ 							<br/><br/><br/>
+-							<p><?php echo $c['comment']?></p>
++							<p>
++							<?php
++							//if user logged in is user added answer = update answer
++							if($this->session->userdata['student_login']['username'] == $c['username']){
++								echo '<a href="'.site_url('discussion/editanswer/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span> </a>';
++							} 
++							echo $c['comment']?>
++							</p>
+ 						</div>
+ 						<div style="float:left" class="small-2 columns">
+ 							<p><a href="#"><span class="fi-arrow-up"></span></a> 4500
+diff --git a/application/views/discussion/order.php b/application/views/discussion/order.php
+old mode 100644
+new mode 100755
+diff --git a/application/views/discussion/top_discussion.php b/application/views/discussion/top_discussion.php
+old mode 100644
+new mode 100755
+diff --git a/assets/img/.gitkeep b/assets/img/.gitkeep
+deleted file mode 100755
+index 8b13789..0000000
+--- a/assets/img/.gitkeep
++++ /dev/null
+@@ -1 +0,0 @@
+-
+diff --git a/assets/img/avatar.png b/assets/img/avatar.png
+deleted file mode 100755
+index 0e18c1c..0000000
+Binary files a/assets/img/avatar.png and /dev/null differ
+diff --git a/assets/img/avatar/yussan.png b/assets/img/avatar/yussan.png
+old mode 100644
+new mode 100755
+diff --git a/assets/img/captcha/1419914569.5675.jpg b/assets/img/captcha/1419914569.5675.jpg
+new file mode 100644
+index 0000000..2116088
+Binary files /dev/null and b/assets/img/captcha/1419914569.5675.jpg differ
+diff --git a/assets/img/captcha/1419914605.0742.jpg b/assets/img/captcha/1419914605.0742.jpg
+new file mode 100644
+index 0000000..4a5cc70
+Binary files /dev/null and b/assets/img/captcha/1419914605.0742.jpg differ
+diff --git a/assets/img/captcha/1419914942.5025.jpg b/assets/img/captcha/1419914942.5025.jpg
+new file mode 100644
+index 0000000..ff9fb20
+Binary files /dev/null and b/assets/img/captcha/1419914942.5025.jpg differ
+diff --git a/assets/img/captcha/1419915053.4033.jpg b/assets/img/captcha/1419915053.4033.jpg
+new file mode 100644
+index 0000000..d9ecfcd
+Binary files /dev/null and b/assets/img/captcha/1419915053.4033.jpg differ
+diff --git a/assets/img/captcha/1419915054.1043.jpg b/assets/img/captcha/1419915054.1043.jpg
+new file mode 100644
+index 0000000..7b0ad73
+Binary files /dev/null and b/assets/img/captcha/1419915054.1043.jpg differ
+diff --git a/assets/img/captcha/1419915059.2675.jpg b/assets/img/captcha/1419915059.2675.jpg
+new file mode 100644
+index 0000000..78f19cc
+Binary files /dev/null and b/assets/img/captcha/1419915059.2675.jpg differ
+diff --git a/assets/img/captcha/1419915060.1465.jpg b/assets/img/captcha/1419915060.1465.jpg
+new file mode 100644
+index 0000000..ca0bba1
+Binary files /dev/null and b/assets/img/captcha/1419915060.1465.jpg differ
+diff --git a/assets/img/captcha/1419915061.06.jpg b/assets/img/captcha/1419915061.06.jpg
+new file mode 100644
+index 0000000..9c047cc
+Binary files /dev/null and b/assets/img/captcha/1419915061.06.jpg differ
+diff --git a/assets/img/captcha/1419915149.9126.jpg b/assets/img/captcha/1419915149.9126.jpg
+new file mode 100644
+index 0000000..86a2389
+Binary files /dev/null and b/assets/img/captcha/1419915149.9126.jpg differ
+diff --git a/assets/img/captcha/1419915183.8636.jpg b/assets/img/captcha/1419915183.8636.jpg
+new file mode 100644
+index 0000000..edf7d9d
+Binary files /dev/null and b/assets/img/captcha/1419915183.8636.jpg differ
+diff --git a/assets/img/captcha/1419915198.3029.jpg b/assets/img/captcha/1419915198.3029.jpg
+new file mode 100644
+index 0000000..cff0879
+Binary files /dev/null and b/assets/img/captcha/1419915198.3029.jpg differ
+diff --git a/assets/img/captcha1419817288.7134.jpg b/assets/img/captcha1419817288.7134.jpg
+deleted file mode 100644
+index 6f4c919..0000000
+Binary files a/assets/img/captcha1419817288.7134.jpg and /dev/null differ
+diff --git a/assets/img/captcha1419819281.7258.jpg b/assets/img/captcha1419819281.7258.jpg
+deleted file mode 100644
+index fbe9c6b..0000000
+Binary files a/assets/img/captcha1419819281.7258.jpg and /dev/null differ
+diff --git a/assets/img/captcha1419821054.1658.jpg b/assets/img/captcha1419821054.1658.jpg
+deleted file mode 100644
+index bf1f05b..0000000
+Binary files a/assets/img/captcha1419821054.1658.jpg and /dev/null differ
+diff --git a/assets/img/captcha1419821147.6172.jpg b/assets/img/captcha1419821147.6172.jpg
+deleted file mode 100644
+index 41334c5..0000000
+Binary files a/assets/img/captcha1419821147.6172.jpg and /dev/null differ
+diff --git a/assets/img/captcha1419821198.5822.jpg b/assets/img/captcha1419821198.5822.jpg
+deleted file mode 100644
+index 74c5c56..0000000
+Binary files a/assets/img/captcha1419821198.5822.jpg and /dev/null differ
+diff --git a/assets/img/favicon.png b/assets/img/favicon.png
+deleted file mode 100755
+index 6f390dc..0000000
+Binary files a/assets/img/favicon.png and /dev/null differ
+diff --git a/assets/img/loader.gif b/assets/img/loader.gif
+deleted file mode 100755
+index 918e161..0000000
+Binary files a/assets/img/loader.gif and /dev/null differ
+diff --git a/assets/img/second-logo.jpg b/assets/img/second-logo.jpg
+deleted file mode 100755
+index b39b03a..0000000
+Binary files a/assets/img/second-logo.jpg and /dev/null differ
+diff --git a/idmore_linux_ecourse.sql b/idmore_linux_ecourse.sql
+old mode 100644
+new mode 100755

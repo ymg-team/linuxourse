@@ -7,6 +7,18 @@ class m_user extends CI_Model{
 		//Do your magic here
 	}
 
+	//total active student
+	public function countActiveStudent(){
+		$this->db->where('verified',1);
+		$query = $this->db->get('user');
+		$total = $query->num_rows();
+		if($total>1000){
+			$total = $total/1000;
+			$total = $total.'K';
+		}
+		return $total;
+	}
+
 	//cek login
 	public function can_login($username,$password){
 		$this->db->where('username',$username);

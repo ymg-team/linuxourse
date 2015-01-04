@@ -8,6 +8,9 @@
 <div class="row">	
 			<?php $this->load->view('discussion/order')?>
 			<br/><br/>
+			<?php
+			echo '<h4>Total Topic : '.$result.'</h4>';
+			?>
 			<?php foreach($view as $v):?>
 				<div style="float:left;padding:0.9375rem" class="discuss-item large-4 columns">
 					<?php 

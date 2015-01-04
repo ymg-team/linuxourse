@@ -7,16 +7,12 @@ class course extends base { //class for public
 	{
 		parent::__construct();
 		//only for member
-		$this->memberOnly();
+		
 	}
 
 	// index page
 	public function index(){
-		if(!empty($_GET['id'])){
-			$idCourse = $_GET['id'];
-		}else{
-			echo '404';
-		}	
+		
 	}
 	//review to resume course
 	public function review(){
@@ -41,6 +37,7 @@ class course extends base { //class for public
 	}
 	//materi -> syllabus detail
 	public function syllabus(){//show all syllabus by id_materi
+		$this->memberOnly();
 		$id = $this->uri->segment(3);//get id materi
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));//decoding id to get id_materi
@@ -60,6 +57,7 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
+		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));
@@ -70,6 +68,7 @@ class course extends base { //class for public
 	}
 	//join new course materi
 	public function newcourse(){
+		$this->memberOnly();
 		if(empty($_POST['id_materi']) && $_POST['check_tnc'] == 'off'){
 			redirect(site_url());
 		} else if(empty($this->session->userdata)){

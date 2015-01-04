@@ -9,14 +9,20 @@ class p extends base { //class for public
 		$this->load->library('form_validation');
 	}
 
+	public function notfound(){
+		$data['title'] = "ERROR 404";
+		$this->baseView('base/404',$data);
+	}
+
 	public function index() //homepage
 	{
+		$this->load->model(array('m_course','m_user'));
 		//if logged in
 		if(!empty($this->session->userdata['student_login'])){
 			redirect(site_url('m/dashboard'));//back to dashboard
 		}
 		$data = array(
-			'title'=>'',//will print FOSSIL ECCOURSE
+			'title'=>'',//will print LINUXOURSE
 			);
 		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
 		$this->baseView('p/home',$data);
@@ -61,6 +67,27 @@ class p extends base { //class for public
 				);
 			$this->baseView('p/registererror',$data);
 		}
+	}
+
+	//sent verfication code to email
+	public function sentemail(){
+		//if not do verfication in 7 days, user data will delete
+		$verficationcode = $this->uri->segment(3);
+		$this->load->library('email');
+		$this->email->from('nonreply-linuxourse@gmail.com', 'Non Reply Linuxourse');
+		$this->email->to('someone@example.com'); 
+		// $this->email->cc('another@another-example.com'); 
+		// $this->email->bcc('them@their-example.com');
+		$this->email->subject('Linuxourse Verfication');
+		$this->email->message('ready to learn Linux, one more step to do it : click this url to verification your account
+			 <a href="'.site_url('p/doverification/'.$verficationcode).'">http://linuxourse.com/p/doverification/'.$verficationcode.'</a>');
+		$this->email->send();
+
+		echo $this->email->print_debugger();
+	}
+	//do verification
+	public function doverification(){
+		$verficationcode = $this->uri->segment(3);
 	}
 	//user login
 	public function login(){
@@ -148,7 +175,7 @@ class p extends base { //class for public
 	//logout
 	public function logout(){		
 		$this->session->sess_destroy();
-		redirect(site_url());
+		redirect(site_url(),'refresh');
 	}
 }
 

@@ -51,7 +51,8 @@ class discussion extends base { //class for public
 				$data['page'] = $this->pagination->create_links();
 			}
 			$data['view'] = $this->m_discussion->show_discussion($config['per_page'],$uri);
-		}		
+		}
+		$data['result'] = $config['total_rows'];				
 		$this->baseView('discussion/discussion',$data);
 	}
 	//show discussion order by
@@ -78,6 +79,7 @@ class discussion extends base { //class for public
 		//by views or top comment
 		switch ($this->uri->segment(3)) {
 			case 'views': //order by views
+			$data['result'] = $config['total_rows'];
 			$data['title'] = 'Order By Views';
 			$data['script'] = '<script>$(document).ready(function(){$("#discusion,#orderViews").addClass("activemenu")});</script>';
 			$data['view'] = $this->m_discussion->showDiscussionByViews($config['per_page'],$uri);
@@ -185,6 +187,43 @@ class discussion extends base { //class for public
 				);
 			$this->baseView('discussion/newdiscuss',$data);
 		}		
+	}
+
+	//search discussion
+	public function search(){
+		if(!empty($_GET['q'])){
+			$q = $_GET['q'];
+			$change = array('+',' ');
+			$q = str_replace($change, '-', $q);
+			redirect(site_url('discussion/search/'.$q));
+		}	else{
+			$q = $this->uri->segment(3);
+			$keyword = str_replace('-', ' ', $q);
+		}
+
+		//setup pagination
+		$this->load->library('pagination');
+		$config['total_rows'] = $this->m_discussion->count_search_discussion($keyword);//total row for search result
+		$config['per_page'] = 15; 
+		$config['uri_segment'] = 3;
+		$config['num_link'] = 5;
+		$config['use_page_number'] = TRUE;
+		$config['base_url'] = site_url('discussion/search/'.$q);
+		$this->pagination->initialize($config);
+		if(empty($uri)) {
+			$uri = 0;
+		}
+		//end of pagiation
+		//jika melakukan pencarian
+		$data = array(
+			'result'=>$config['total_rows'],
+			'recentq' => $keyword,
+			'title'=>'Pencarian ',
+			'page'=>$this->pagination->create_links(),
+			'script'=>'<script>$(document).ready(function(){$("#discusion,#orderAll").addClass("activemenu")});</script>',
+			'view'=>$this->m_discussion->search_discussion($config['per_page'],$uri,$keyword),//tampilan view
+			);
+		$this->baseView('discussion/discussion',$data);
 	}
 
 	/*
@@ -310,18 +349,11 @@ class discussion extends base { //class for public
 	}
 	//proc edit topic
 	public function procEditTopic(){
-		$title = $_POST['input_title'];
 		$content = $_POST['input_content'];
 		$captcha = $_POST['input_captcha'];
 		$referrer = $this->agent->referrer();
-		//get ecryption id discuss
-		preg_match('#/discussion/edittopic/(.*)#',$referrer,$getid);
-		$enc_id_discuss = $getid[1];
-		$id_discuss = str_replace('', '=', $enc_id_discuss);
-		$id_discuss = base64_decode(base64_decode($id_discuss));
 		//form validation
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('input_title', 'title', 'required|min_length[5]|max_length[100]|xss_clean');
 		$this->form_validation->set_rules('input_content', 'content', 'required|min_length[5]|max_length[500]|xss_clean');
 		//is chaptcha correct
 		if($captcha = $this->session->userdata['mycaptcha']){//if captcha is correct
@@ -347,7 +379,7 @@ class discussion extends base { //class for public
 		}
 	}
 	//edit answer
-	public function editAnswer(){
+	public function editanswer(){
 		$this->load->library('form_validation');
 		// captcha
 		$this->load->helper('captcha');
@@ -369,19 +401,47 @@ class discussion extends base { //class for public
 		// store the captcha word in a session
 		$this->session->set_userdata('mycaptcha', $cap['word']);
 		// end of captcha config
-		$enc_id_discuss = $this->uri->segment(3);
-		$id_discuss = str_replace('', '=', $enc_id_discuss);
-		$id_discuss = base64_decode(base64_decode($id_discuss));
+		//get id answer
+		$dec_id_answer = $this->uri->segment(3);
+		$dec_id_answer = str_replace('', '=', $dec_id_answer);
+		$id_answer = base64_decode(base64_decode($dec_id_answer));
 		$data = array(
+			'id_answer'=>$this->uri->segment(3),
 			'title'=>'edit comment',
 			'image'=>$cap['image'],
-			'view'=>$this->m_discussion->answerById($id_discuss),
+			'view'=>$this->m_discussion->answerById($id_answer),
 			);
 		$this->baseView('discussion/editanswer',$data);
 	}
 	//process edit answer
 	public function procEditAnswer(){
+		$id_discuss = $_POST['id_discuss'];
+		$answer = $_POST['input_content'];
+		//jika tidak login
 
+		//get id answer
+		$dec_id_answer = $this->uri->segment(3);
+		$dec_id_answer = str_replace('', '=', $dec_id_answer);
+		$id_answer = base64_decode(base64_decode($dec_id_answer));
+		//encrypt id discuss
+		$enc_id_discuss = base64_encode(base64_encode($id_discuss));
+		$enc_id_discuss = str_replace('=', '', $enc_id_discuss);
+		//cek apakah komentar milik user yang sedang login
+		if($this->m_discussion->isMyAnswer($id_answer)==FALSE){ //not my answer
+			echo 'it\'s not my answer';
+		}
+		//is my answer
+		$data = array(
+			'comment'=>$answer,
+			'updatedate'=>date('Y-m-d h:i:s'));
+		$this->db->where('id_comment',$id_answer);
+		if($this->db->update('discussion_comment',$data)){
+			// echo $enc_id_discuss;
+			// echo $answer;
+			redirect(site_url('discussion/open/'.$enc_id_discuss));
+		}else{
+			echo 'error save to database';
+		}
 	}
 	/*
 	* Action after login

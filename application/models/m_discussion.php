@@ -10,6 +10,22 @@ class m_discussion extends CI_Model{
 	/*
 	* ALL ABOUT DISCUSSION
 	*/
+	//search discussion
+	public function searchResult($keyword,$limit,$offset){
+		$this->db->like('title',$keyword);
+		$query = $this->db->get('disucssion');
+		return $query->num_rows();
+	}
+	//total search discusion
+	public function countSearchResult($keyword,$limit,$offset){
+		$this->db->like('title',$keyword);
+		$query = $this->db->get('disucssion');
+		if($query->num_row()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 	//show all discussion by id
 	public function showDiscussionById($id_discuss){
 		$sql = "SELECT user.id_user AS 'id_user',user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
@@ -40,6 +56,35 @@ class m_discussion extends CI_Model{
 		}else{
 			return array();
 		}
+	}
+	//search discussion
+	public function search_discussion($limit,$offset,$keyword){
+		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
+		discussion.type AS 'type',discussion.views AS 'views'
+		FROM discussion
+		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%'
+		ORDER BY discussion.id_discuss DESC
+		LIMIT ".$offset." , ".$limit;
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//count search discussion
+	public function count_search_discussion($keyword){
+		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
+		discussion.type AS 'type',discussion.views AS 'views'
+		FROM discussion
+		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%'
+		ORDER BY discussion.id_discuss DESC";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
 	}
 	//show all discussion order by views
 	public function showDiscussionByViews($limit,$offset){
@@ -178,5 +223,17 @@ class m_discussion extends CI_Model{
 		$this->db->where('id_comment',$id_answer);
 		$query = $this->db->get('discussion_comment');
 		return $query->row_array();
+	}
+	//is my answer
+	public function isMyAnswer($idAnswer){
+		$idUser = $this->session->userdata['student_login']['id_user'];
+		$this->db->where('id_user',$idUser);
+		$this->db->where('id_comment',$idAnswer);
+		$query = $this->db->get('discussion_comment');
+		if($query->num_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

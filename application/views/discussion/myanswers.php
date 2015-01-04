@@ -26,9 +26,13 @@
 					$replace = array('<','>');
 					$content = str_replace($start, $replace, $v['comment']);
 					$content = strip_tags($content);
+					//encrypt id_answer
+					$id_answer = $v['id_comment'];
+					$enc_id_answer = base64_encode(base64_encode($id_answer));
+					$enc_id_answer = str_replace('=', '', $enc_id_answer);
 					?>
 					<small>post <?php echo $v['commentdate']?> | update <?php echo $v['updatedate']?></small><br/>
-					<p><a title="edit answer" href="#"> <span class="fi-pencil"> </span></a><strong>my answer : </strong><?php echo $content;?></p>	
+					<p><a title="edit answer" href="<?php echo site_url('discussion/editanswer/'.$enc_id_answer)?>"> <span class="fi-pencil"> </span></a><strong>my answer : </strong><?php echo $content;?></p>	
 				</div>
 			<?php endforeach;?>
 		</div>
