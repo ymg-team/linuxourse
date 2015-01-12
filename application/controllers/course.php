@@ -65,6 +65,8 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
+		//set default active directoru
+		$this->session->set_userdata('dir','/home/user');
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
 		$id = str_replace('', '=', $id);

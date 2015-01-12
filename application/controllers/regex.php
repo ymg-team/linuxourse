@@ -26,6 +26,9 @@ class regex extends base { //class for public
 			redirect(site_url('regex/ls?command='.$command));
 		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
+		} 
+		else if(in_array('cat',$commandArray)){//cat file
+			redirect(site_url('regex/cat?command='.$command));
 		}
 		//get all command have exec from session
 		$history = array();
@@ -49,6 +52,8 @@ class regex extends base { //class for public
 		}
 		$specialcommand = array(
 			'history'=>$myhistory,
+			'cat'=>'no file input',
+			'cd'=>'no directory input',
 			'cls'=>'clear screen',
 			'ls-l'=>'drwxrwxrwx  4 user user  4096 Nov  3 21:50 mydirectory',
 			'ls-a'=>'.hiddendirectory <br/>mydirectory',
@@ -148,6 +153,28 @@ class regex extends base { //class for public
 		} else{
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ command incorect</pre>';	
 		}
+	}
+	//cat
+	public function cat(){
+		$command = $_GET['command'];
+		//cek is this folder or not
+		$commandArray = explode(' ', $command);
+		$cdCommand = array_shift($commandArray);
+		$find = '/';
+		// check from root or not
+		$pos = strpos($commandArray[0],$find);
+		//if from root '/'
+		if($pos === 0){
+			$dir = $commandArray[0];
+		}else{
+			$dir = $this->session->userdata['dir'].'/'.$commandArray[0];
+		}
+		//database check
+		return $this->m_command->cat($dir);		
+	}
+	//nano
+	public function nano(){
+
 	}
 	//delete history
 	public function deletehistory(){

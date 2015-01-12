@@ -30,7 +30,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .materi-item{float:left;border:1px solid lightgray;width:100%;}
 .materi-item small{color:gray;}
 .materi-title{height: 35px;padding:0.1em;}
-.learn_sidebar{padding: 10px;margin-top:0;background-color: #F5F5F5}
+.learn_sidebar{padding:0  10px;margin-top:0;background-color: #F5F5F5}
 .terminal_view{padding:10px;background-color: #282828}
 .text{height:560px;overflow: auto;margin-bottom: 20px;}
 .text p{font-size: 12px}
@@ -38,7 +38,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .texthint p{font-size: 12px}
 .instructions{background-color:rgb(167, 213, 228);padding:5px;display: block}
 .instructions>h5{font-weight: bold}
-.full-height{height: 700px}
+.full-height{height: 100%}
 .command{}
 .command>.item{padding:10px;color:#fff;height: 580px;overflow-y:auto}
 .result{}

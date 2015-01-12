@@ -1,6 +1,7 @@
 <script type="text/javascript">
 	//when document ready
 	$(document).ready(function(){
+		$('#footer').hide();
 		$('#terminal').click(function(){//when click terminal
 			$('#linuxCommand').focus();//set autofocus textarea command
 		});
