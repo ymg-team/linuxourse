@@ -1,7 +1,23 @@
 <script type="text/javascript">
 	//when document ready
 	$(document).ready(function(){
+		$('#terminal').click(function(){//when click terminal
+			$('#linuxCommand').focus();//set autofocus textarea command
+		});
 	});
+	//get command textarea
+	function commandArea(){
+		$.ajax({
+			url:'<?php echo site_url("course/commandArea")?>',
+			success:function(response){
+				$('#commandarea').html(response);
+				$('#linuxCommand').focus();//set autofocus textarea command
+			},
+			error:function(response){
+				alert('something wrong, refresh page');
+			}
+		});
+	}
 	//if press enter
 	function inputKeyUp(e) {
 		e.which = e.which || e.keyCode;
@@ -24,9 +40,11 @@
 				$('#result').append(response);//response is command result
 				$('#linuxCommand').val('');
 				//alert(response);
+				commandArea();
 				$('#loaderexe').hide();
 			},
 			error:function(){
+				commandArea();
 				alert('something error, try again');
 				$('#loaderexe').hide();
 			},
@@ -38,16 +56,15 @@
 			url:'<?php echo site_url("regex/deletehistory");?>',
 		});
 		html = '<div id="result"></div>'+
-		'<span class="small-2 columns" style="padding:0;font-size:13px">student@linux-ecourse:~$</span>'+
-		'<span class="small-10 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>';
+		'<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata("dir")?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>';
 		$('#terminal').html(html);
 	}
 	//check result
 	function check(){
 		$('#loadercheck').show();//show loader
 		//$('#linuxCommand').attr('readonly','readonly');//readonly terminal
-		id = '<?php echo $this->uri->segment(3);?>';
 		terminal = $('#terminal').html();
+		usercourseid = '<?php echo $this->uri->segment(3)?>';
 		<?php if(!empty($course['custom_controller'])){ //if use custom controller?>
 			url='<?php echo site_url("regex/".$course["custom_controller"]);?>';
 			<?php }else{//use default controller?>
@@ -56,7 +73,7 @@
 				$.ajax({
 					url:url,
 					type:'post',
-					data:{terminal:terminal,id:id},
+					data:{terminal:terminal,usercourseid:usercourseid},
 					success:function(data){
 					$('#loadercheck').hide();//show loader
 					// $('#test').html(data);
@@ -100,16 +117,25 @@
 							</li>
 						</ul>
 						<div class="learn_sidebar row">
-							<p><strong>Case</strong><p>
+							<p><strong>Case : <?php echo $course['title']?></strong><p>
 								<div class="text">
-									<p><?php echo $course['course_case_id'];?></p>
-								</div>
-								<hr/>
-								<p><strong><a data-tooltip aria-haspopup="true" title="are you stuck?" onclick="showhint()">Hint !</a></strong><p>
-									<div class="texthint">
-										<p style="display:none" id="hint">
-											<?php echo $course['hint_id'];?>
-										</p>
+									<p><?php 
+										$case = nl2br($course['course_case_id']);
+										$case = str_replace('[', '<', $case);
+										$case = str_replace(']', '>', $case);
+										echo $case;
+										?>
+									</p>
+									<hr/>
+									<h5><strong><a data-tooltip aria-haspopup="true" title="are you stuck?" onclick="showhint()">Hint !</a></strong></h5>
+									<p style="display:none" id="hint">
+										<?php
+										$hint = nl2br($course['hint_id']);
+										$hint = str_replace('[', '<', $hint);
+										$hint = str_replace(']', '>', $hint);
+										echo $hint;
+										?>
+									</p>									
 									</div>
 								</div>
 							</div>
@@ -120,8 +146,8 @@
 									<div style="background-color:#000" class="command large-12 columns">
 										<div id="terminal" class="item" style="">
 											<div id="result"></div>
-											<span class="small-2 columns" style="padding:0;font-size:13px">student@linux-ecourse:~$</span>
-											<span class="small-10 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>							
+											<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata('dir')?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>
+											<!-- <span class="small-8 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>-->
 										</div>
 									</div>
 									<!-- button excute -->

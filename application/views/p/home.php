@@ -109,13 +109,13 @@
 				<div class="large-4 columns">
 					<center>
 						<h5>Total Materi</h5>
-						<strong><h3>235</h3></strong>
+						<strong><h3><?php echo $this->db->count_all_results('materi');?></h3></strong>
 					</center>
 				</div>
 				<div class="large-4 columns">
 					<center>
 						<h5>Total Course</h5>
-						<strong><h3>4500K</h3></strong>
+						<strong><h3><?php echo $this->db->count_all_results('course');?></h3></strong>
 					</center>
 				</div>			
 			</div>

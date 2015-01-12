@@ -41,6 +41,58 @@ class m_course extends CI_Model{
 			redirect(site_url());
 		}
 	}
+	//check, is next step available
+	public function isNextCourseAvailable($idcourse,$idlevel){
+		$params = array($idlevel,$idcourse);
+		$sql = 'SELECT id_course FROM course
+		WHERE id_level = ? AND step > (SELECT step FROM course WHERE id_course = ?)';
+		$query = $this->db->query($sql,$params);
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//check, is next level available
+	public function isNextLevelAvailable($idlevel,$idmateri){
+		$params = array($idlevel,$idmateri);
+		$sql = "SELECT id_level FROM level 
+		WHERE level > (SELECT level FROM level WHERE id_level = ?)";
+		$query = $this->db->query($sql, $params);
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//get id course by id level
+	public function getIdCourseByLevel($idlevel){
+		$this->db->where('id_level',$idlevel);
+		$this->db->select('id_course');
+		$this->db->order_by('step','asc');
+		$query = $this->db->get('course');
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//get course detail by id_user_level
+	public function detCourseByUserCourse($idusercourse){
+		$sql = "SELECT course.id_course AS 'id_course',course.step FROM course
+		INNER JOIN user_course ON user_course.id_course = course.id_course
+		WHERE user_course.id_user_course = ?";
+		$query = $this->db->query($sql,$idusercourse);
+		$recentusercourse = $query->row_array();
+		//get recent id_course
+		$rec_idcourse = $recentusercourse['id_course'];
+		$rec_step = $recentusercourse['step'];
+		$params = array($rec_idcourse,$rec_step);
+		$sql = "SELECT * FROM course 
+		WHERE id_course > ? AND step > ?";
+		$query = $this->db->query($sql,$params);
+		return $query->row_array();//get lattest course data
+	}
 
 	/******************
 	ALL ABOUT MATERI

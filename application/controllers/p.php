@@ -119,6 +119,7 @@ class p extends base { //class for public
 				$sessiondata['command'] = array();//for course
 				//set session
 				$this->session->set_userdata($sessiondata);
+				$this->session->set_userdata('dir','/home/user');
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
 					$data = array('last_login'=>date('Y-m-d h:i:s'));
 					$this->db->update('user',$data);//update login terakhir

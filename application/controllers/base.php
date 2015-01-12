@@ -36,6 +36,14 @@ class base extends CI_Controller {
 			redirect(site_url('manage'));
 		}
 	}
+	//check directory
+	public function checkDir($x){//x = directory
+		$dirList = array('/home/user/mydir','/var','/etc','/home','/home/user','/');
+		if(in_array($x, $dirList)){
+			return true;
+		}else{return false;}
+	}
+
 	//special command
 	public function specialCommand($command){//trim command
 		//get all command have exec from session

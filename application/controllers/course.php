@@ -7,12 +7,20 @@ class course extends base { //class for public
 	{
 		parent::__construct();
 		//only for member
+		$this->load->library('user_agent');		
 		
+	}
+
+	/*
+	AJAX ONLY
+	*/
+	public function commandArea(){
+		echo '<span style="float:left">student@linux-ecourse:'.$this->session->userdata('dir').'$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>';
 	}
 
 	// index page
 	public function index(){
-		
+		echo '403 Forbidden';
 	}
 	//review to resume course
 	public function review(){
@@ -65,6 +73,50 @@ class course extends base { //class for public
 		$data['title'] = $data['detCourse']['leveltitle'];
 		$data['courseList']=$this->m_course->courseByLevel($data['detCourse']['id_level']);//show course b y id level
 		$this->emptyBaseView('course/start',$data);
+	}
+	//next step
+	public function next(){
+		$this->memberOnly();
+		$id_user_course = $this->uri->segment(3);
+		$coursestatus =  $this->session->userdata['coursestatus'];
+		//decrypt id_user_course
+		$id_user_course = str_replace('', '=', $id_user_course);
+		$id_user_course = base64_decode(base64_decode($id_user_course));//decoding id user course
+		if($coursestatus == TRUE){ //course completed
+			//get detail course
+			$user_course = $this->m_course->detUserCourse($id_user_course);
+			$idcourse = $user_course['id_course'];
+			$idlevel = $user_course['id_level'];
+			$idmateri = $user_course['id_materi'];
+			//if next step available
+			$nextcourse = $this->m_course->isNextCourseAvailable($idcourse,$idlevel);
+			if(!empty($nextcourse)){
+				//get next step + get id + update db
+				$this->db->where('id_user_course',$id_user_course);
+				$data = array('id_course'=>$nextcourse['id_course']);
+				$this->db->update('user_course',$data);
+				redirect($this->agent->referrer());//back to start course
+			}else{
+				// next step not available -> change level
+				$nextlevel = $this->m_course->isNextLevelAvailable($idlevel,$idmateri);
+				// echo 'next course no available';
+				if(!empty($nextlevel)){
+					$next_idlevel = $nextlevel['id_level'];
+					//get next_idcourse 
+					$next_idcourse = $this->m_course->getIdCourseByLevel($nextlevel);
+					$next_idcourse = $next_idcourse['id_course'];
+					//update db
+					$this->db->where('id_user_course',$id_user_course);
+					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idcourse);
+					$this->db->update('user_course',$data);
+				redirect($this->agent->referrer());//back to start course
+			}else{
+				echo 'this materi is completed';
+			}
+		}
+		}else {//course incompleted
+			redirect($this->agent->referrer());//back to start course
+		}
 	}
 	//join new course materi
 	public function newcourse(){
