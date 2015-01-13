@@ -18,18 +18,7 @@ class regex extends base { //class for public
 
 	public function execcommand(){
 		$command = $_GET['command'];
-		$commandArray = explode(' ', $command);
-		//if using special command
-		if(in_array('cd', $commandArray)){//cd
-			redirect(site_url('regex/cd?command='.$command));
-		} else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
-			redirect(site_url('regex/ls?command='.$command));
-		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
-			redirect(site_url('m/dashboard'));
-		} 
-		else if(in_array('cat',$commandArray)){//cat file
-			redirect(site_url('regex/cat?command='.$command));
-		}
+		//history setup
 		//get all command have exec from session
 		$history = array();
 		//push to array recentcommand
@@ -49,6 +38,19 @@ class regex extends base { //class for public
 		//get total history on session
 		for($n=0;$n<count($this->session->userdata['command']);$n++){
 			$myhistory = $myhistory.$this->session->userdata['command'][$n];
+		}
+		//end of history setup
+		$commandArray = explode(' ', $command);
+		//if using special command
+		if(in_array('cd', $commandArray)){//cd
+			redirect(site_url('regex/cd?command='.$command));
+		} else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
+			redirect(site_url('regex/ls?command='.$command));
+		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
+			redirect(site_url('m/dashboard'));
+		} 
+		else if(in_array('cat',$commandArray)){//cat file
+			redirect(site_url('regex/cat?command='.$command));
 		}
 		$specialcommand = array(
 			'history'=>$myhistory,
@@ -102,9 +104,9 @@ class regex extends base { //class for public
 		//directory is found or not
 		if($this->m_command->cekAvailableDir($dir)){//directory found
 			$this->session->set_userdata('dir',$dir);
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>directory changed</pre>';	
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:directory changed</pre>';	
 		}else{//directory not found
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>no such file or directory</pre>';	
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no such file or directory</pre>';	
 		}
 	}
 	//list 'ls'
@@ -116,11 +118,11 @@ class regex extends base { //class for public
 		if(!empty($commandArray[0]) && empty($commandArray[1]) && empty($commandArray[2])){//only ls active directory
 			$dir = $this->session->userdata('dir');//get directory
 			// echo 'only ls';
-			return $this->m_command->ls($dir,'');
+			return $this->m_command->ls($dir,'',$command);
 		} else if(!empty($commandArray[0]) && in_array($commandArray[1], $lsOptions) && empty($commandArray[2])) { //ls active directory + options
 			$dir = $this->session->userdata('dir');//get directory
 			$options = $commandArray[1];
-			return $this->m_command->ls($dir,$options);
+			return $this->m_command->ls($dir,$options,$command);
 		} else if(!empty($commandArray[0]) && in_array($commandArray[1], $lsOptions) && !empty($commandArray[2])){//use option + atributes
 			$pos = strpos($commandArray[2],'/');
 			//if from root '/'
@@ -132,9 +134,9 @@ class regex extends base { //class for public
 			$options = $commandArray[1];
 			//check available directory
 			if($this->m_command->cekAvailableDir($dir)){//directory found
-				return $this->m_command->ls($dir,$options);
+				return $this->m_command->ls($dir,$options,$command);
 			}else{//directory not found
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ no such file or directory</pre>';	
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:no such file or directory</pre>';	
 			}			
 		} else if(!empty($commandArray[0]) && !in_array($commandArray[1], $lsOptions) && !empty($commandArray[1])){//command + atributes
 			$pos = strpos($commandArray[1],'/');
@@ -146,12 +148,12 @@ class regex extends base { //class for public
 			}
 			//check available directory
 			if($this->m_command->cekAvailableDir($dir)){//directory found
-				return $this->m_command->ls($dir,'');
+				return $this->m_command->ls($dir,'',$command);
 			}else{//directory not found
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ no such file or directory</pre>';	
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:no such file or directory</pre>';	
 			}
 		} else{
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ command incorect</pre>';	
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:command incorect</pre>';	
 		}
 	}
 	//cat
@@ -197,6 +199,7 @@ class regex extends base { //class for public
 		$idusercourse = str_replace('','=',$usercourseid);
 		$idusercourse = base64_decode(base64_decode($idusercourse));
 		//get course data by id user course
+		// echo $idusercourse;
 		$course_data = $this->m_course->detCourseByUserCourse($idusercourse);
 		//start regex, get command only from terminal
 		preg_match_all('#\$(.*):#Us', $terminal,$reg_terminal,PREG_SET_ORDER);
@@ -210,6 +213,7 @@ class regex extends base { //class for public
 			array_push($command_list, trim($rs[1]));
 		endforeach;
 		// print_r($command_db);
+		// echo '<br/>';
 		// print_r($command_list);
 		//cek command list and command db
 		foreach($command_db as $cbase):
@@ -219,8 +223,8 @@ class regex extends base { //class for public
 			}else{
 				$course = FALSE;
 				// echo $cbase.' not in array </br>';
-				redirect(site_url('regex/check_fault'));
 				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+				redirect(site_url('regex/check_fault'));
 			}
 			endforeach;
 			//set session case = true

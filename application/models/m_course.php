@@ -79,17 +79,20 @@ class m_course extends CI_Model{
 	}
 	//get course detail by id_user_level
 	public function detCourseByUserCourse($idusercourse){
-		$sql = "SELECT course.id_course AS 'id_course',course.step FROM course
+		$sql = "SELECT course.step AS 'step',materi.id_materi AS 'idmateri' FROM course
 		INNER JOIN user_course ON user_course.id_course = course.id_course
+		INNER JOIN materi ON user_course.id_materi = materi.id_materi
 		WHERE user_course.id_user_course = ?";
 		$query = $this->db->query($sql,$idusercourse);
 		$recentusercourse = $query->row_array();
-		//get recent id_course
-		$rec_idcourse = $recentusercourse['id_course'];
-		$rec_step = $recentusercourse['step'];
-		$params = array($rec_idcourse,$rec_step);
-		$sql = "SELECT * FROM course 
-		WHERE id_course > ? AND step > ?";
+		//get recent id_materi AND course step
+		$rec_idmateri = $recentusercourse['idmateri'];//id materi
+		$rec_step = $recentusercourse['step'];//course step
+		$params = array($rec_step,$rec_idmateri);
+		$sql = "SELECT course.step AS 'step',course.command AS 'command' FROM course 
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi 
+		WHERE course.step > ? AND materi.id_materi = ?";
 		$query = $this->db->query($sql,$params);
 		return $query->row_array();//get lattest course data
 	}
@@ -262,10 +265,11 @@ class m_course extends CI_Model{
 		return $query->num_rows();
 	}
 	//count course step by user by id level
-	public function countCourseStepByLevel($x,$y){//x = course y = id level
-		$this->db->where('id_course <=',$x);
-		$this->db->where('id_level',$y);
-		return $this->db->count_all_results('course');//return total number result
+	public function countCourseStepByLevel($x,$y){//x = course step y = id level
+		$params = array($x,$y);
+		$sql = "SELECT step FROM course WHERE step <= ? AND id_level = ?";
+		$query = $this->db->query($sql,$params);
+		return $query->num_rows();
 	}
 	//show course by level
 	public function courseByLevel($x){//x = id level
@@ -283,9 +287,16 @@ class m_course extends CI_Model{
 		}
 	}
 	//show course by id_course
-	public function detCourse($id_course){
-		$this->db->where('id_course',$id_course);
-		$query = $this->db->get('course');
+	public function detCourse($step,$idmateri){//get detail course by step and idmateri
+		$params = array($step,$idmateri);
+		$sql = "SELECT course.title AS 'title', course.description AS 'description',course.estimate AS 'estimate',
+		course.course_case_en AS 'course_case_en', course.course_case_id AS 'course_case_id', course.hint_id AS 'hint_id',
+		course.hint_en AS 'hint_en', course.custom_controller AS 'custom_controller' 
+		FROM course 
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE course.step = ? AND materi.id_materi = ?";
+		$query = $this->db->query($sql,$params);
 		if($query->num_rows()>0){
 			return $query->row_array();
 		}else{

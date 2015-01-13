@@ -67,6 +67,7 @@ class course extends base { //class for public
 	public function start(){
 		//set default active directoru
 		$this->session->set_userdata('dir','/home/user');
+		$this->session->set_userdata('command','');
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
 		$id = str_replace('', '=', $id);
@@ -88,17 +89,18 @@ class course extends base { //class for public
 			//get detail course
 			$user_course = $this->m_course->detUserCourse($id_user_course);
 			$idcourse = $user_course['id_course'];
+			$ste = $user_course['step'];
 			$idlevel = $user_course['id_level'];
 			$idmateri = $user_course['id_materi'];
 			//if next step available
 			$nextcourse = $this->m_course->isNextCourseAvailable($idcourse,$idlevel);
-			if(!empty($nextcourse)){
+			if(!empty($nextcourse)){//next course on same level available
 				//get next step + get id + update db
 				$this->db->where('id_user_course',$id_user_course);
 				$data = array('id_course'=>$nextcourse['id_course']);
 				$this->db->update('user_course',$data);
 				redirect($this->agent->referrer());//back to start course
-			}else{
+			}else{//change to next level
 				// next step not available -> change level
 				$nextlevel = $this->m_course->isNextLevelAvailable($idlevel,$idmateri);
 				// echo 'next course no available';
@@ -109,13 +111,13 @@ class course extends base { //class for public
 					$next_idcourse = $next_idcourse['id_course'];
 					//update db
 					$this->db->where('id_user_course',$id_user_course);
-					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idcourse);
+					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idlevel);
 					$this->db->update('user_course',$data);
 				redirect($this->agent->referrer());//back to start course
-			}else{
-				echo 'this materi is completed';
+				}else{
+					echo 'this materi is completed';
+				}
 			}
-		}
 		}else {//course incompleted
 			redirect($this->agent->referrer());//back to start course
 		}

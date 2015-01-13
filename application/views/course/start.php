@@ -1,3 +1,8 @@
+<?php
+//course detail
+$step = $detCourse['step'] + 1;
+$course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail course by id materi and step
+?>
 <script type="text/javascript">
 	//when document ready
 	$(document).ready(function(){
@@ -98,19 +103,18 @@
 								<?php foreach($courseList as $cl):?>
 									<li>
 										<?php 
-							//check if completed course
+										//check if completed course
 										if($cl['step'] <= $detCourse['step']){
 											$title = '<span style="color:gray">'.$cl['title'].'
 											<span class="fi-check"></span></span>';
 											$link = site_url('rewind');
 										} else if($cl['step'] == $detCourse['step'] + 1){
 											$title = '<strong>'.$cl['title'].'</strong>';
-											$link = '#';
-											$course = $this->m_course->detCourse($cl['id_course']);
+											$link = '#';											
 										} else {
 											$title = $cl['title'];
 											$link = site_url('preview');
-										}							
+										}															
 										?>
 										<a href="<?php echo $link;?>"><?php echo $title;?></a></li>
 									<?php endforeach;?>

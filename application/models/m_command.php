@@ -17,7 +17,7 @@ class m_command extends CI_Model{
 		}
 	}
 	//using ls 
-	public function ls($directory,$options){
+	public function ls($directory,$options,$command){
 		//ls type
 		if(empty($options)) {
 			//get all directory
@@ -40,7 +40,7 @@ class m_command extends CI_Model{
 			}
 			//print result
 			//print dir
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$directory.'<br/>';
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
 			foreach($lsdir as $ld):
 				echo str_replace($directory.'/', '', $ld['directory']).'/ ';
 			endforeach;
@@ -70,7 +70,7 @@ class m_command extends CI_Model{
 					}else{
 						$lsfile = array();
 					}
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$options.' '.$directory.'<br/>';
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
 					//print folder
 					foreach($lsdir as $ld):
 						echo 'drwx------:0 user user 7000 1Jan2015 24:00' .$ld['directory'].'<br/>';
@@ -102,7 +102,7 @@ class m_command extends CI_Model{
 						$lsfile = array();
 					}
 					//print dir
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$directory.'<br/>';
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
 					foreach($lsdir as $ld):
 						echo str_replace($directory.'/', '', $ld['directory']).'/ ';
 					endforeach;
@@ -131,7 +131,7 @@ class m_command extends CI_Model{
 					}else{
 						$lsfile = array();
 					}
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$options.' '.$directory.'<br/>';
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$command.'<br/>:';
 					//print folder
 					foreach($lsdir as $ld):
 						echo 'drwx------:0 user user 7000 1Jan2015 24:00' .$ld['directory'].'<br/>';
@@ -162,10 +162,10 @@ class m_command extends CI_Model{
 		$query = $this->db->query($sql,$params);
 		if($query->num_rows()>0){//print content k
 			$query = $query->row_array();
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>'
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
 			.$query['content'].'</pre>';
 		}else{//file or directory not found
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:
 			file or directory not found</pre>';
 		}
 	}

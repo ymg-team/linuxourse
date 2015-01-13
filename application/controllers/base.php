@@ -89,6 +89,10 @@ class base extends CI_Controller {
 			}
 		}
 	}
+	//add command to history
+	public function addHistory($command){
+
+	}
 }
 
 /* End of file base.php */

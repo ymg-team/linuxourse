@@ -34,7 +34,7 @@ $recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 							<p style="margin:0"><strong>Course Has Been Start <?php echo $this->m_course->countDiffCourse($this->session->userdata['student_login']['id_user'],$materi['id_materi'])?> Days Ago  </strong></p> 
 							<hr/>
 							<?php foreach ($level as $l):
-							$totalnow = $this->m_course->countCourseStepByLevel($recentCourseId,$l['id_level']);
+							$totalnow = $this->m_course->countCourseStepByLevel($recentCourseStep,$l['id_level']);
 							$totalCourse = $this->m_course->countCourseByLevel($l['id_level']);
 							$recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 							?>
