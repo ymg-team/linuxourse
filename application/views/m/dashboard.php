@@ -85,7 +85,7 @@
 					<hr/>
 					<?php 
 					foreach($recentCompletion as $rc):
-						$nowLevelCompletion = $this->m_course->countCourseStepByLevel($recentCourse['id_course'],$rc['id_level']);
+						$nowLevelCompletion = $this->m_course->countCourseStepByLevel($recentCourse['step'],$rc['id_level']);
 					$rencentLevelCompletion = $this->m_course->countCourseByLevel($rc['id_level']);
 					$levelPercentage = ($nowLevelCompletion * 100) / $rencentLevelCompletion;
 					$levelPercentage = number_format($levelPercentage,1);						

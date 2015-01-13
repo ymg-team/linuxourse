@@ -25,6 +25,26 @@ class m_course extends CI_Model{
 			redirect(site_url());
 		}
 	}
+	//course list menu
+	public function courseListMenu($step,$idlevel,$idmateri){
+		//is step and level
+		$params = array($step,$idlevel);
+		$sql = "SELECT step FROM course WHERE step > ".$step." AND id_level = ".$idlevel;
+		$query = $this->db->query($sql);
+		if($query->num_rows>0){//is new level
+			$sql = "SELECT id_level,level FROM level WHERE id_level = ?";
+			$query = $this->db->query($sql,$idlevel);
+			return $query->row_array();
+		}else{//not new level
+			$step = $step+1;
+			$sql = "SELECT level.id_level AS 'id_level',level.level 
+			FROM level INNER JOIN course 
+			ON course.id_level = level.id_level
+			WHERE course.step = ".$step." AND level.id_materi = ".$idmateri;
+			$query = $this->db->query($sql);
+			return $query->row_array();
+		}
+	}
 	//usercourse data by id user n materi
 	public function detUserCourseByMateriNUser($idmateri,$iduser){
 		$params = array($idmateri,$iduser);
@@ -345,7 +365,7 @@ class m_course extends CI_Model{
 	}
 	//show recent course by user
 	public function recentCourseByUser($param){//id student
-		$sql = "SELECT user_course.id_user_course AS 'id_user_course',materi.title AS 'materi_title',level.level AS 'level',level.title AS 'title', user_course.id_materi AS 'id_materi',user_course.lastdate AS 'lastdate',user_course.id_level AS 'id_level',user_course.id_course AS 'id_course'
+		$sql = "SELECT course.step AS 'step',user_course.id_user_course AS 'id_user_course',materi.title AS 'materi_title',level.level AS 'level',level.title AS 'title', user_course.id_materi AS 'id_materi',user_course.lastdate AS 'lastdate',user_course.id_level AS 'id_level',user_course.id_course AS 'id_course'
 		FROM user_course
 		INNER JOIN course ON user_course.id_course = course.id_course
 		INNER JOIN level ON level.id_level = course.id_level

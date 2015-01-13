@@ -74,7 +74,9 @@ class course extends base { //class for public
 		$id = base64_decode(base64_decode($id));
 		$data['detCourse'] = $this->m_course->detUserCourse($id);//get all user course data
 		$data['title'] = $data['detCourse']['leveltitle'];
-		$data['courseList']=$this->m_course->courseByLevel($data['detCourse']['id_level']);//show course b y id level
+		//recent idlevel
+		$data['recentIdlevel'] = $this->m_course->courseListMenu($data['detCourse']['step'],$data['detCourse']['id_level'],$data['detCourse']['id_materi']);
+		$data['courseList']=$this->m_course->courseByLevel($data['recentIdlevel']['id_level']);//show course b y id level
 		$this->emptyBaseView('course/start',$data);
 	}
 	//next step
