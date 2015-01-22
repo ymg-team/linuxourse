@@ -34,7 +34,7 @@
 		<a class="close-reveal-modal">&#215;</a>
 	</div>
 	<!-- header -->
-	<section id="home_header">
+	<section  id="home_header">
 		<div style="min-width:100%" class="row header">
 			<div class="small-12 large-10 large-push-1 columns">
 				<div class="small-3 columns">

@@ -178,6 +178,15 @@ class p extends base { //class for public
 		$this->session->sess_destroy();
 		redirect(site_url(),'refresh');
 	}
+
+	//
+	// OTHER public feature
+	//
+	public function errorreport(){
+		$data = array(
+			'title'=>'Error Report');
+		$this->baseView('p/errorreport',$data);
+	}
 }
 
 /* End of file base.php */

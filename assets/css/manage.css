@@ -1,0 +1,22 @@
+/*knowlinux manage css
+by yussan @xyussanx
+18 Januari 2014*/
+
+html{background-color: :rgba(0, 130, 255, 0.82)}
+.pagination,.pagination a{color:gray;}
+.login-form-block h3{
+    color:#fff;
+}
+.login-form-block{color:#fff;}
+.admin-content{min-width: 100%}
+.admin-menu a{
+	color:#fff;
+}
+.admin-menu h3{
+	color:#fff;font-weight: bold;font-size: 14px
+}
+.admin-label{float:right;}
+.admin-content-white{background-color: #F4F4F4;padding:20px;overflow-x:auto;color:#000; }
+.admin-content-white .columns{margin-bottom: 10px;}
+a.admin-action{font-size:10px;padding:2px;background-color:#008cba;border:1px solid #007095;color:#fff;}
+.form-add{display: none;width:400px;}

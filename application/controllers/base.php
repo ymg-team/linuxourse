@@ -6,7 +6,9 @@ class base extends CI_Controller {
 	{
 		parent::__construct();
 		//load all model
-		$this->load->model(array('m_user','m_course'));//auto load model
+		$this->load->model('m_user');
+		$this->load->model('m_course');
+		// $this->load->model('m_admin');
 	}
 
 	public function index()
@@ -18,6 +20,11 @@ class base extends CI_Controller {
 	public function baseView($x="",$data=""){ //x = view anak , y = data
 		$data['childView'] = $x;
 		$this->load->view('base/baseView',$data);
+	}
+	//base view
+	public function baseManageView($x="",$data=""){ //x = view anak , y = data
+		$data['childView'] = $x;
+		$this->load->view('base/baseManageView',$data);
 	}
 	//empty base view
 	public function emptyBaseView($x="",$data=""){ //x = view anak , y = data
@@ -92,6 +99,22 @@ class base extends CI_Controller {
 	//add command to history
 	public function addHistory($command){
 
+	}
+	//return to row array
+	public function returnToRow($query){
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//return to result array
+	public function returnToResult($query){
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
 	}
 }
 

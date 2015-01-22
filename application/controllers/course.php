@@ -160,7 +160,7 @@ class course extends base { //class for public
 					'id_course'=>$idcourse,
 					'startdate'=>date('Y-m-d h:i:s'),
 					'lastdate'=>date('Y-m-d h:i:s'),
-					'status'=>'incompleted'
+					'status'=>'incomplete'
 					);
 				if($this->db->insert('user_course',$data)){//success join new course materi
 					redirect(site_url('m/dashboard?note=success started new course materi'));

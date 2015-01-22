@@ -39,7 +39,12 @@
 									<span style="float:left;color:#fff;width:<?php echo $percentage?>%;" class="meter"></span>
 								</div></p> 
 							</div>
-						</div>					
+							<span style="float:left">
+							<strong>Start</strong> 13/01/2014
+							<br/>
+							<strong>End</strong> 23/05/2015
+							</span> 
+						</div>	
 					</a>
 				<?php endforeach;?>
 			</div>

@@ -127,6 +127,7 @@ class m_course extends CI_Model{
 	}
 	//show all my id materi
 	public function showMyIdMateri($id){
+		$this->db->where('id_user',$id);
 		$this->db->select('id_materi');
 		$query = $this->db->get('user_course');
 		if($query->num_rows()>0){

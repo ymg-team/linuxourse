@@ -1,6 +1,6 @@
 <!-- footer -->
 <section id="footer">
-<div style="min-width:80%" class="row">
+<div style="min-width:100%" class="row">
 		<div class="large-2 medium-2 columns">
 			<h3 class="menu-title">Navigation</h3>
 			<p><a href="#">home</a></p>
