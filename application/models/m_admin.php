@@ -110,8 +110,7 @@ class m_admin extends CI_Model{
 	/////////////
 	// MANAGE COMMENTS
 	/////////////
-	//count all comments
-	public function countAllComment(){return $this->db->count_all('discussion_comment');}
+	public function countAllComment(){return $this->db->count_all('discussion_comment');}//count all comments
 
 	/////////////
 	// MANAGE DIRECTORIES

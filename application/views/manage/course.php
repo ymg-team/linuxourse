@@ -1,3 +1,8 @@
+   <script type="text/javascript">
+   function showMateri(){
+    $('#listMateri').toggle('fast');
+   }
+   </script>
    <!--body-->
    <section  id="welcome">
     <!--login form-->
@@ -19,9 +24,15 @@
         <dl class="sub-nav">
           <dt>Filter:</dt>
           <dd class="active"><a href="#">All</a></dd>
-          <dd><a href="#">By Materi</a></dd>
+          <dd><a onclick="showMateri()">By Materi</a></dd>
           <dd><a href="#">Active</a></dd>
           <dd><a href="#">Draft</a></dd>
+        </dl>
+        <dl id="listMateri" style="display:none" class="sub-nav">
+          <dt>Choose Materi:</dt>
+          <?php foreach($viewMateri as $vm):?>
+            <dd><a href="<?php echo site_url('manage/coursebymateri/'.$vm['title'])?>"><?php echo $vm['title']?></a></dd>
+          <?php endforeach;?>
         </dl>
         <div class="admin-content-white">
           <form style="float:tiny" method="get" name="q">

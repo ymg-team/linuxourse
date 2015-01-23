@@ -140,6 +140,7 @@ public function course(){
 		//$this->load->library('pagination');
 		$this->pagination->initialize($config);
 		$data['link'] = $this->pagination->create_links();
+		$data['viewMateri'] =$this->m_admin->showAllMateri(10,0);
 		$this->baseManageView('manage/course',$data);		
 	}
 }
@@ -177,8 +178,48 @@ public function materi(){
 	$this->baseManageView('manage/materi',$data);	
 }
 //add new materi
-public function addMateri(){
-	
+public function addmateri(){
+	if(empty($_POST)){
+		redirect('manage/materi');//back to maateri list
+	}
+	$this->load->library('form_validation');
+	$this->form_validation->set_rules('input_title', 'title', 'required');//is required
+	$this->form_validation->set_rules('input_description', 'description', 'required');//is required email
+	if($this->form_validation->run()){//if form validation run
+		//insert to database
+		$data = array(
+			'title'=>$_POST['input_title'],
+			'description'=>$_POST['input_description'],
+			'adddate'=>date('Y-m-d H:i:s'),
+			);
+		if($this->db->insert('materi',$data)){
+			redirect(site_url('manage/materi?success=success add materi'));
+		}else{
+			redirect(site_url('manage/materi?error=error add materi'));
+		}
+	}else{//form validation not run
+		echo 'data not valid';
+	}		
+}
+//mater action
+public function materiaction(){
+	switch ($_GET['act']) {
+		case 'delete'://delete materi
+			$id = $_GET['id'];//get materi id
+			$this->db->where('id_materi',$id);
+			if($this->db->delete('materi')){//success delete materi
+				redirect(site_url('manage/materi?success=success remove materi'));
+			}else{//error delete materi
+				redirect(site_url('manage/materi?error=error remove materi'));
+			}
+			break;
+		case 'edit'://delete 
+			# code...
+			break;
+		case 'editaction':
+			# code...
+			break;
+	}
 }
 //logout
 public function logout(){
