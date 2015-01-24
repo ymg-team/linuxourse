@@ -150,7 +150,7 @@ public function level(){
 }
 //manage materi
 public function materi(){
-	//start pagination
+//start pagination
 	$config = array(
 		'per_page'=>13,
 		'uri_segment'=>3,
@@ -170,9 +170,13 @@ public function materi(){
 	//view only
 	$data = array(
 		'title'=>'All Materi',
-		'script'=>'<script>$(document).ready(function(){$("#materi").addClass("active")});</script>',
+		'script'=>'<script>$(document).ready(function(){$("#materi").addClass("active")});function addForm(){$("#form-add").toggle("fast");}</script>',
 		'view'=>$this->m_admin->showAllMateri($config['per_page'],$uri),
 		);
+	if(!empty($_GET['id'])){//melakukan edit data
+		$idmateri = $_GET['id'];
+		$data['editidmateri'] = $this->m_admin->getMateriByIdMateri($idmateri);
+	}
 	$data['total'] = $config['total_rows'];
 	$data['link'] = $this->pagination->create_links();
 	$this->baseManageView('manage/materi',$data);	
@@ -214,11 +218,28 @@ public function materiaction(){
 			}
 			break;
 		case 'edit'://delete 
-			# code...
-			break;
-		case 'editaction':
-			# code...
-			break;
+			// print_r($_POST);
+			$id = $_POST['id'];
+			$title = $_POST['input_title'];
+			$description = $_POST['input_description'];
+			//update datebase
+			$this->db->where('id_materi',$id);
+			$data = array('title'=>$title,'description'=>$description);
+			if($this->db->update('materi',$data)){//success edit data
+				redirect(site_url('manage/materi?success=success, materi changed'));
+			}else{//failed update data
+				redirect(site_url('manage/materi?error=error, materi unchanged'));
+			}
+		break;
+		case 'changestatus'://change status
+			$id = $_POST['id'];//id materi
+			$status = $_GET['changeto'];//change to
+			$data  = array('status',$status);
+			//update status
+			if($this->db->update('materi',$data)){
+				
+			}
+		break;
 	}
 }
 //logout

@@ -57,55 +57,61 @@ class m_admin extends CI_Model{
 	/////////////
 	// MANAGE MATERI
 	/////////////
-	public function showAllMateri($limit,$offset){
-		$this->db->limit($limit,$offset);
+	//get materi by id materi
+	public function getMateriByIdMateri($idmateri){
+		$this->db->where('id_materi',$idmateri);
 		$query = $this->db->get('materi');
-		return $query->result_array();
-	}
+	return $query->row_array();//get result row array
+}
+public function showAllMateri($limit,$offset){
+	$this->db->limit($limit,$offset);
+	$query = $this->db->get('materi');
+	return $query->result_array();
+}
 	//count materi
-	public function countShowAllMateri(){return $this->db->count_all('materi');}
+public function countShowAllMateri(){return $this->db->count_all('materi');}
 	/////////////
 	// MANAGE STUDENTS
 	/////////////
 	//count all students
-	public function countAllStudents(){return $this->db->count_all('user');}
+public function countAllStudents(){return $this->db->count_all('user');}
 	//count students by materi
-	public function countStudentByMateri($idmateri,$filter){
-		switch ($filter) {
-			case 'incomplete':
-				$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ? AND status = 'incomplete'";
-				break;
-			case 'completed':
-				$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ? AND status = 'completed'";
-				break;			
-			default:
-				$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ?  ";
-				break;
-		}
-		$query = $this->db->query($sql,$idmateri);
-		return $query->num_rows();
+public function countStudentByMateri($idmateri,$filter){
+	switch ($filter) {
+		case 'incomplete':
+		$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ? AND status = 'incomplete'";
+		break;
+		case 'completed':
+		$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ? AND status = 'completed'";
+		break;			
+		default:
+		$sql = "SELECT id_user_course FROM user_course WHERE id_materi = ?  ";
+		break;
 	}
+	$query = $this->db->query($sql,$idmateri);
+	return $query->num_rows();
+}
 	//count students by course
-	public function countStudentByCourse($idcourse,$filter){
-		switch ($filter) {
-			case 'incomplete':
-				$sql = "SELECT id_user_course FROM user_course WHERE id_course = ? AND status = 'incomplete'";
-				break;
-			case 'completed':
-				$sql = "SELECT id_user_course FROM user_course WHERE id_course = ? AND status = 'completed'";
-				break;			
-			default:
-				$sql = "SELECT id_user_course FROM user_course WHERE id_course = ?  ";
-				break;
-		}
-		$query = $this->db->query($sql,$idcourse);
-		return $query->num_rows();
+public function countStudentByCourse($idcourse,$filter){
+	switch ($filter) {
+		case 'incomplete':
+		$sql = "SELECT id_user_course FROM user_course WHERE id_course = ? AND status = 'incomplete'";
+		break;
+		case 'completed':
+		$sql = "SELECT id_user_course FROM user_course WHERE id_course = ? AND status = 'completed'";
+		break;			
+		default:
+		$sql = "SELECT id_user_course FROM user_course WHERE id_course = ?  ";
+		break;
 	}
+	$query = $this->db->query($sql,$idcourse);
+	return $query->num_rows();
+}
 	/////////////
 	// MANAGE DISCUSSIONS
 	/////////////
 	//count all discussion
-	public function countAllDiscussion(){return $this->db->count_all('discussion');}
+public function countAllDiscussion(){return $this->db->count_all('discussion');}
 
 	/////////////
 	// MANAGE COMMENTS
