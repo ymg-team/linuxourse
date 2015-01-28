@@ -7,6 +7,7 @@ class manage extends base { //class for public
 		parent::__construct();
 		//only for member
 		$this->load->model('m_admin');
+		$this->load->model('m_course');
 	}
 
 	public function index(){//login view
@@ -92,6 +93,142 @@ public function dashboard(){
 	$this->baseManageView('manage/dashboard',$data);
 }
 
+////////////////////
+// COURSE MANAGEMENT
+////////////////////
+//add new course
+public function addcourse(){
+	if(!empty($_POST)){
+		// echo '<pre>';
+		// print_r($_POST);
+		// echo '</pre>';
+		//course data
+		$title = $_POST['input_title'];
+		$step = $_POST['input_step'];
+		$description = $_POST['input_description'];
+		$level = $_POST['input_level'];
+		$estimate = $_POST['input_estimate'];
+		$case_en = $_POST['input_caseen'];
+		$case_id = $_POST['input_caseid'];
+		$hint_en = $_POST['input_hinten'];
+		$hint_id = $_POST['input_hintid'];
+		$command = $_POST['input_command'];
+		$controller = $_POST['input_controller'];
+		if(isset($_POST['btnpost'])){//publish
+			$status = 'posted';
+			$redirect = site_url('manage/course?success=success add case');
+		}else if(isset($_POST['btndraft'])){//draft
+			$status = 'draft';
+			$redirect = site_url('manage/editcourse');
+		}else{
+			echo 'no action button set';
+		}
+		//insert to database
+		$data = array(
+			'id_level'=>$level,
+			'step'=>$step,
+			'title'=>$title,
+			'description'=>$description,
+			'estimate'=>$estimate,
+			'course_case_en'=>$case_en,
+			'course_case_id'=>$case_id,
+			'hint_en'=>$hint_en,
+			'hint_id'=>$hint_id,
+			'command'=>$command,
+			'custom_controller'=>$controller,
+			'status'=>$status,
+			'editdate'=>date('Y-m-d h:i:s'),
+			);
+		if($this->db->insert('course',$data)){
+			redirect($redirect);
+		}else{//error insert db
+			echo 'error insert database';
+		}
+	}	
+	//get id materi
+	$idmateri = $this->uri->segment(3);
+	$materi = $this->m_course->detMateri($idmateri);
+	$data = array(		
+		'totalstep' =>'',
+		'title' => 'Add Course Case : '.$materi['title'],
+		'script'=>'<script>function addForm(){$("#form-add").toggle("fast");}</script>',
+		'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+		'level'=>$this->m_course->showAllLevelByIdMateri($idmateri),
+		'case'=>$this->m_course->getCourseByMateri($idmateri),
+		);
+	$this->baseManageView('manage/addcourse',$data);
+	
+}
+//edit course
+public function editcourse(){
+	//if submiting post
+	if(!empty($_POST)){
+		$idcourse = $_POST['input_idcourse'];
+		$title = $_POST['input_title'];
+		$step = $_POST['input_step'];
+		$description = $_POST['input_description'];
+		$level = $_POST['input_level'];
+		$estimate = $_POST['input_estimate'];
+		$case_en = $_POST['input_caseen'];
+		$case_id = $_POST['input_caseid'];
+		$hint_en = $_POST['input_hinten'];
+		$hint_id = $_POST['input_hintid'];
+		$command = $_POST['input_command'];
+		$controller = $_POST['input_controller'];
+		if(isset($_POST['btnpost'])){//publish
+			$status = 'posted';
+			$redirect = site_url('manage/course?success=success edit case');
+		}else if(isset($_POST['btndraft'])){//draft
+			$status = 'draft';
+			$redirect = site_url('manage/editcourse');
+		}else{
+			echo 'no action button set';
+		}
+		//insert to database
+		$this->db->where('id_course',$idcourse);
+		$data = array(
+			'id_level'=>$level,
+			'step'=>$step,
+			'title'=>$title,
+			'description'=>$description,
+			'estimate'=>$estimate,
+			'course_case_en'=>$case_en,
+			'course_case_id'=>$case_id,
+			'hint_en'=>$hint_en,
+			'hint_id'=>$hint_id,
+			'command'=>$command,
+			'custom_controller'=>$controller,
+			'status'=>$status,
+			'editdate'=>date('Y-m-d h:i:s'),
+			);
+		if($this->db->update('course',$data)){
+			redirect($redirect);
+		}else{//error insert db
+			echo 'error insert database';
+		}
+	}
+
+	if(empty($this->uri->segment(3))){
+			//get lattest edited idcourse
+		$idcourse = $this->m_course->lastEditCourse();
+	}else{
+		$idcourse = $this->uri->segment(3);
+	}
+	//echo $idcourse;
+	$data = array(
+		'idcourse'=>$idcourse,
+		'title' => 'Edit Course Case',
+		'script'=>'<script>function addForm(){$("#form-add").toggle("fast");}</script>',
+		'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+		'editcase'=>$this->m_course->getCourseByIdCourse($idcourse),
+		);
+	$data['level'] = $this->m_course->showAllLevelByIdMateri($data['editcase']['id_materi']);
+	$data['case']= $this->m_course->getCourseByMateri($data['editcase']['id_materi']);
+	$this->baseManageView('manage/editcourse',$data);
+}
+//delete course
+
+
 	//manage materi-level-course
 public function course(){
 	//if using get post to search, redirect to uri segment
@@ -133,7 +270,7 @@ public function course(){
 			$data = array(
 				'title'=>'All Course',
 				'total'=>$config['total_rows'],
-				'script'=>'<script>$(document).ready(function(){$("#course").addClass("active")});</script>',
+				'script'=>'<script>$(document).ready(function(){$("#course").addClass("active");$("#course-all").addClass("active");});function addForm(){$("#form-add").toggle("fast");}</script>',
 				'view'=>$this->m_admin->showAllCourse($config['per_page'],$uri),//return all course data
 				);
 		}
@@ -144,7 +281,49 @@ public function course(){
 		$this->baseManageView('manage/course',$data);		
 	}
 }
+//get course by materi
+public function courseByMateri(){
+	//pagination setup
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>4,
+		'num_link'=>7,
+		'total_rows'=>$this->m_admin->countCourseByMateri($this->uri->segment(3)),
+		'base_url'=>site_url('manage/courseByMateri/'.$this->uri->segment(3)),
+		);
+	$uri = $this->uri->segment(4);
+	if(!$uri){
+		$uri = 0;
+	}
+	//end of pagination setup
+	$data = array(
+		'title'=>'Course By Materi',
+		'total'=>$config['total_rows'],
+		'script'=>'<script>$(document).ready(function(){$("#course").addClass("active");$("#listMateri").show();$("#course-bymateri").addClass("active");$("#by-materi-'.$this->uri->segment(3).'").addClass("active");});function addForm(){$("#form-add").toggle("fast");}</script>',
+		'view'=>$this->m_admin->showAllCourseByMateri($config['per_page'],$uri,$this->uri->segment(3)),//show course by materi
+		);
+	$this->pagination->initialize($config);
+	$data['link'] = $this->pagination->create_links();
+	$data['viewMateri'] =$this->m_admin->showAllMateri(10,0);
+	$this->baseManageView('manage/course',$data);
+}
+//check available step
+public function ajaxAvailableStep(){
+	$idmateri = $this->uri->segment(3);
+	$step = $this->uri->segment(4);
+	$params = array($idmateri,$step);
+	$sql = "SELECT step FROM course INNER JOIN level ON level.id_level=course.id_level INNER JOIN materi ON materi.id_materi = level.id_materi
+	WHERE materi.id_materi = ? AND course.step = ?";
+	$query = $this->db->query($sql,$params);
+	if($query->num_rows()>0){
+		echo '<strong style="color:red">Step is not available</strong>';
+	}else{
+		echo '<strong style="color:green">Step available</strong>';
+	}
+}
+//////////////
 //manage level
+//////////////
 public function level(){
 
 }
@@ -219,27 +398,31 @@ public function materiaction(){
 			break;
 		case 'edit'://delete 
 			// print_r($_POST);
-			$id = $_POST['id'];
-			$title = $_POST['input_title'];
-			$description = $_POST['input_description'];
+		$id = $_POST['id'];
+		$title = $_POST['input_title'];
+		$description = $_POST['input_description'];
 			//update datebase
-			$this->db->where('id_materi',$id);
-			$data = array('title'=>$title,'description'=>$description);
+		$this->db->where('id_materi',$id);
+		$data = array('title'=>$title,'description'=>$description);
 			if($this->db->update('materi',$data)){//success edit data
 				redirect(site_url('manage/materi?success=success, materi changed'));
 			}else{//failed update data
 				redirect(site_url('manage/materi?error=error, materi unchanged'));
 			}
-		break;
-		case 'changestatus'://change status
-			$id = $_POST['id'];//id materi
-			$status = $_GET['changeto'];//change to
-			$data  = array('status',$status);
-			//update status
-			if($this->db->update('materi',$data)){
-				
-			}
-		break;
+			break;
+		}
+	}
+//change materi status
+	public function changeMateriStatus(){
+	$status = $this->uri->segment(4);//status
+	$idmateri = $this->uri->segment(3);//get id materi
+	$data = array('status'=>$status);
+	$this->db->where('id_materi',$idmateri);
+	//update database
+	if($this->db->update('materi',$data)){
+		redirect(site_url('manage/materi?success=success, status changed'));
+	}else{
+		redirect(site_url('manage/materi?error=error, status unchanged'));
 	}
 }
 //logout

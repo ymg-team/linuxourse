@@ -97,7 +97,13 @@
                 <td><?php echo $this->m_admin->countStudentByMateri($v['id_materi'],null);?></td>
                 <td><?php echo $this->m_admin->countStudentByMateri($v['id_materi'],'incomplete');?></td>
                 <td><?php echo $this->m_admin->countStudentByMateri($v['id_materi'],'completed');?></td>
-                <td><a href="#">Publish</a></td>
+                <?php
+                if($v['status']=='published'){
+                  echo '<td style="color:green">Published <a href="'.site_url('manage/changeMateriStatus/'.$v['id_materi'].'/unpublish').'">change</a></td>';
+                }else{
+                   echo '<td style="color:red">Unpublish <a href="'.site_url('manage/changeMateriStatus/'.$v['id_materi'].'/published').'">change</a></td>';
+                }
+                ?>
                 <td><a href="<?php echo site_url('manage/materi?id='.$v['id_materi'])?>" class="admin-action">edit</a><a href="<?php echo site_url('manage/materiaction?act=delete&id='.$v['id_materi'])?>" onclick="return confirm('Are You Sure')" class="admin-action">delete</a></td>
               </tr>
               <?php $uri++;endforeach;?>

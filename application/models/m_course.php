@@ -177,6 +177,19 @@ class m_course extends CI_Model{
 	/******************
 	ALL ABOUT LEVEL
 	*******************/
+	//get the biggest step by materi
+	public function getTheBiggestStep($idmateri){
+		$sql = "SELECT step FROM course INNER JOIN level ON level.id_level = course.id_level INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE materi.id_materi = ? ORDER BY course.step DESC LIMIT 0,1";
+		$query = $this->db->query($sql,$idmateri);
+		if($query->num_rows()>0){
+			$query = $query->row_array();
+			return $query['step'];
+		}else{
+			return 0;
+		}
+	} 
+	
 	//get recent level
 	public function getMyRecentLevel($x,$y){//x =course y = materi
 		$params = array($x,$y);
@@ -212,10 +225,44 @@ class m_course extends CI_Model{
 			return array();
 		}
 	}
+	//show all level by id materi
+	public function showAllLevelByIdMateri($idmateri){
+		$this->db->where('id_materi',$idmateri);
+		$this->db->order_by('level','ASC');
+		$query = $this->db->get('level');
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 
 	/******************
 	ALL ABOUT COURSE
 	*******************/
+	//get lattest idcourse order by date
+	public function lastEditCourse(){
+		$sql = "SELECT id_course FROM course ORDER BY editdate DESC LIMIT 0,1";
+		$query = $this->db->query($sql);
+		$query = $query->row_array();
+		return $query['id_course'];
+	}
+	//check available step by id materi
+	public function ajaxAvailableStep($idmateri,$step){}
+	//all course by materi
+	public function getCourseByMateri($idmateri){
+		$sql = "SELECT course.step AS 'step',course.title AS 'title',level.level AS 'level',id_course FROM course
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE materi.id_materi = ?
+		ORDER BY course.step ASC";
+		$query = $this->db->query($sql,$idmateri);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 	//count DateDiff
 	public function countDiffCourse($iduser,$idmateri){
 		$sql = "SELECT DATEDIFF(NOW(),startdate) AS 'starteddate' FROM user_course
@@ -318,6 +365,22 @@ class m_course extends CI_Model{
 		INNER JOIN materi ON materi.id_materi = level.id_materi
 		WHERE course.step = ? AND materi.id_materi = ?";
 		$query = $this->db->query($sql,$params);
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
+	//show course by id course
+	public function getCourseByIdCourse($idcourse){
+		$sql = "SELECT course.title AS 'title', course.description AS 'description',course.estimate AS 'estimate',course.step AS 'step',course.command AS 'command',course.id_level AS 'id_level',
+		course.course_case_en AS 'course_case_en', course.course_case_id AS 'course_case_id', course.hint_id AS 'hint_id',
+		course.hint_en AS 'hint_en', course.custom_controller AS 'custom_controller' ,materi.id_materi AS 'id_materi'
+		FROM course 
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE course.id_course = ?";
+		$query = $this->db->query($sql,$idcourse);
 		if($query->num_rows()>0){
 			return $query->row_array();
 		}else{

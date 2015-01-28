@@ -43,6 +43,19 @@ class m_admin extends CI_Model{
 		$query = $this->db->query($sql,$idmateri);
 		return $query->num_rows();
 	}
+	//show all course by materi
+	public function showAllCourseByMateri($limit,$offset,$idmateri){
+		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
+		level.level AS 'level', materi.title AS 'materi'
+		FROM course
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE materi.id_materi = ".$idmateri."
+		ORDER BY materi.id_materi ASC,course.step ASC 
+		LIMIT ".$offset.",".$limit;
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){return $query->result_array();}else{return array();}
+	}
 	//////////////
 	// MANAGE LEVEL
 	/////////////
