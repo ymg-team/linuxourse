@@ -3,6 +3,7 @@
   <hr/>
   <ul class="side-nav">
     <li id="materi"><a href="<?php echo site_url('manage/materi')?>">Materi <span class="admin-label label"><?php echo $this->m_admin->countShowAllMateri()?></span></a></li>
+    <li id="level"><a href="<?php echo site_url('manage/level')?>">Level <span class="admin-label label"><?php echo $this->m_admin->countShowAllLevel()?></span></a></li>
     <li id="course"><a href="<?php echo site_url('manage/course')?>">Course <span class="admin-label label"><?php echo $this->m_admin->countShowAllCourse()?></span></a></li>
     <li id="certivicate"><a href="<?php echo site_url('manage/certivicate')?>">Certivicate <span class="admin-label label">?</span></a></li>
     <hr/>

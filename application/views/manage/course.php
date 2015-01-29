@@ -37,7 +37,7 @@
           <form style="float:tiny" method="get" name="q">
             <span class="row collapse" style="min-width:100%">
               <span class="large-11 columns">
-                <input type="text" placeholder="mater/level/course"></span>
+                <input type="text" placeholder="searching course"></span>
                 <span class="large-1 columns"><button type="submit" class="tiny">search</button>
                 </span>
               </span>
@@ -62,6 +62,7 @@
                 <th>On Going</th>
                 <th>Finished</th>
                 <th>Error Report</th>
+                <th>Status</th>
                 <th>action</th>
               </tr>
             </thead>
@@ -83,7 +84,8 @@
                   <td><?php echo $this->m_admin->countStudentByCourse($v['id_course'],'incomplete');?></td>
                   <td><?php echo $this->m_admin->countStudentByCourse($v['id_course'],'completed');?></td>
                   <td><a href="#">u:34|p:23|s:245</a></td>
-                  <td><a href="<?php echo site_url('manage/editcourse/'.$v['id_course'])?>" class="admin-action">edit</a><a class="admin-action">delete</a></td>
+                  <td><?php echo $v['status'];?></td>
+                  <td><a href="<?php echo site_url('manage/editcourse/'.$v['id_course'])?>" class="admin-action">edit</a></td>
                 </tr>
                 <?php $uri++;endforeach;?>
               </tbody>

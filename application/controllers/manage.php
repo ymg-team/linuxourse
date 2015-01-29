@@ -214,14 +214,13 @@ public function editcourse(){
 	}else{
 		$idcourse = $this->uri->segment(3);
 	}
-	//echo $idcourse;
 	$data = array(
 		'idcourse'=>$idcourse,
 		'title' => 'Edit Course Case',
-		'script'=>'<script>function addForm(){$("#form-add").toggle("fast");}</script>',
-		'viewMateri'=>$this->m_admin->showAllMateri(10,0),
-		'editcase'=>$this->m_course->getCourseByIdCourse($idcourse),
-		);
+		'script'=>'<script>$(document).ready(function(){$("#course").addClass("active");}function addForm(){$("#form-add").toggle("fast");}</script>',
+			'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+			'editcase'=>$this->m_course->getCourseByIdCourse($idcourse),
+			);
 	$data['level'] = $this->m_course->showAllLevelByIdMateri($data['editcase']['id_materi']);
 	$data['case']= $this->m_course->getCourseByMateri($data['editcase']['id_materi']);
 	$this->baseManageView('manage/editcourse',$data);
@@ -325,8 +324,156 @@ public function ajaxAvailableStep(){
 //manage level
 //////////////
 public function level(){
+	//using form
+	if(!empty($_POST)){
+		if(isset($_POST['btnadd'])){//new level
+			$idmateri = $_POST['input_materi'];
+			$title = $_POST['input_title'];
+			$level = $_POST['input_level'];
+			$description = $_POST['input_description'];
+			$data = array(
+				'id_materi'=>$idmateri,
+				'title'=>$title,
+				'level'=>$level,
+				'description'=>$description,
+				);
+			//insert to db
+			if($this->db->insert('level',$data)){
+				redirect(site_url('manage/level/bymateri/'.$idmateri));
+			}else{
+				echo 'failed insert to database';
+			}
+		}else if(isset($_POST['btnsave'])){//update level
+			$idlevel = $this->uri->segment(4);
+			$idmateri = $_POST['input_materi'];
+			$level = $_POST['input_level'];
+			$title = $_POST['input_title'];
+			$description = $_POST['input_description'];
+			$this->db->where('id_level',$idlevel);
+			$data = array(
+				'title'=>$title,
+				'level'=>$level,
+				'id_materi'=>$idmateri,
+				'description'=>$description,
+				);
+			if($this->db->update('level',$data)){
+				redirect(site_url('manage/level/bymateri/'.$idmateri));
+			}else{
+				echo 'problem update level';
+			}
+		}
+	}
+	//start pagination
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
+	//suspend pagination
+	if(!empty($this->uri->segment(3))){
+		switch ($this->uri->segment(3)) {
+			case 'search':
+				# code...
+			break;
+			case 'bymateri':
+			$idmateri = $this->uri->segment(4);
+			$data = array(
+				'title'=>'Level',
+				'total'=>$this->m_admin-> countLevelByMateri($idmateri),
+				'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+				'link'=>'',
+				'script'=>'<script>$(document).ready(function(){$("#by-materi-'.$idmateri.'").addClass("active");$("#level").addClass("active");$("#level-bymateri").addClass("active");$("#listMateri").show();});function addForm(){$("#form-add").toggle("fast");}</script>',
+				'view'=>$this->m_admin->showLevelByMateri($idmateri),
+				);
+			$this->baseManageView('manage/level',$data);
+			break;
+			case 'editlevel':
+			$idlevel = $this->uri->segment(4);
+			$data = array(
+				'title'=>'Edit Level',
+				'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+				'script'=>'<script>$(document).ready(function(){$("#level").addClass("active")});</script>',
+				'view'=>$this->m_admin->detailLevel($idlevel),
+				);
+			$this->baseManageView('manage/editlevel',$data);
+			break;
+			default:
+
+			echo 'something wrong';
+			break;
+		}
+	}else{//show all course
+		//resume pagination
+		$uri = $this->uri->segment(3);
+		if(!$uri){
+			$uri = 0;
+		}
+		$config['total_rows'] = $this->m_admin->countShowAllLevel();
+		$config['base_url'] = site_url('manage/level');
+		$this->pagination->initialize($config);
+		//end of pagination setup
+		$data = array(
+			'title'=>'Level',
+			'total'=>$config['total_rows'],
+			'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+			'script'=>'<script>$(document).ready(function(){$("#level").addClass("active");$("#level-all").addClass("active");});function addForm(){$("#form-add").toggle("fast");}</script>',
+			'link'=>$this->pagination->create_links(),
+			'view'=>$this->m_admin->showAllLevel($config['per_page'],$uri),//show all level
+			);
+		//view
+		$this->baseManageView('manage/level',$data);
+	}
+}
+//show level by materi
+public function levelbymateri(){
 
 }
+//review level
+public function reviewLevel(){
+	$idmateri = $this->uri->segment(3);
+	$sql = "SELECT level.level, level.title AS 'title',materi.title AS 'materi',level.id_level 
+	FROM level INNER JOIN materi ON materi.id_materi = level.id_materi
+	WHERE materi.id_materi = ?
+	ORDER BY materi.id_materi ASC";
+	$query =$this->db->query($sql,$idmateri);
+	if($query->num_rows()>0){
+		$level = $query->result_array();
+	}else{
+		$level = array();
+	}
+	echo '<table>';
+	echo '<thead><tr><td style="width:50px">Level</td><td>Name</td><td style="width:50px">Action</td></tr></thead>';
+	echo '<tbody>';
+	foreach($level as $l):
+		echo '<tr><td>'.$l['level'].'</td><td>'.$l['title'].'</td><td><a href="'.site_url('manage/level/editlevel/'.$l['id_level']).'">edit</a></td></tr>';
+	endforeach;
+	echo '</tbody>';
+}
+//add new materi
+public function addLevel(){
+	$idmateri = $_POST['input_materi'];
+	$title = $_POST['input_title'];
+	$level = $_POST['input_level'];
+	$description = $_POST['input_description'];
+}
+//check available level
+public function checkAvailableLevel(){
+	$level = $this->uri->segment(3);
+	$materi = $this->uri->segment(4);
+	$this->db->where('level',$level);
+	$this->db->where('id_materi',$materi);
+	$query = $this->db->get('level');
+	if($query->num_rows()>0){
+		echo '<strong style="color:red">Level not available</strong>';
+	}else{
+		echo '<strong style="color:green">Level available</strong>';
+	}
+
+}
+////////////////////////////
+///////////MATERI MANAGEMENT
+////////////////////////////
+
 //manage materi
 public function materi(){
 //start pagination
@@ -349,7 +496,7 @@ public function materi(){
 	//view only
 	$data = array(
 		'title'=>'All Materi',
-		'script'=>'<script>$(document).ready(function(){$("#materi").addClass("active")});function addForm(){$("#form-add").toggle("fast");}</script>',
+		'script'=>'<script>$(document).ready(function(){$("#materi").addClass("active")});function addForm(){$("#form-add").toggle("fast");} </script>',
 		'view'=>$this->m_admin->showAllMateri($config['per_page'],$uri),
 		);
 	if(!empty($_GET['id'])){//melakukan edit data

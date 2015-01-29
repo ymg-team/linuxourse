@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/normalize.css')?>">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/knowlinux.css')?>">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/manage.css')?>">
-	<link rel="icon" href="<?php echo base_url('assets/img/favicon.png')?>">
+	<link rel="icon" href="<?php echo base_url('assets/img/linuxourse-logo-black.png')?>">
 	<script type="text/javascript" src="<?php echo base_url('assets/js/vendor/modernizr.js')?>"></script>
 	<script src="<?php echo base_url('assets/js/vendor/jquery.js')?>"></script>
 	<?php

@@ -89,6 +89,7 @@
             <br/>
             <label>Custom Controller <small>max 50 character</small><input type="text" name="input_controller" value="<?php echo $editcase['custom_controller']?>"></label>
             <button name="btnpost" class="button small">Save</button> <button name="btndraft" class="button secondary small">draft</button>
+             <button onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></button>
           </form>
         </div>
 

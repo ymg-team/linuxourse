@@ -36,7 +36,7 @@
       <form style="float:tiny" method="get" name="q">
         <span class="row collapse" style="min-width:100%">
           <span class="large-11 columns">
-            <input type="text" placeholder="mater/level/course"></span>
+            <input type="text" placeholder="searching materi"></span>
             <span class="large-1 columns"><button type="submit" class="tiny">search</button>
             </span>
           </span>
@@ -58,7 +58,7 @@
           <label>Title<input type="text" name="input_title" value="<?php echo $editidmateri['title']?>"></label>
             <label>Description<textarea style="height:100px" name="input_description"><?php echo $editidmateri['description']?></textarea></label>
             <br/>
-            <button class="button small">save changes</button>
+            <button class="button small">save changes</button> <a href="<?php echo site_url('manage/materiaction?act=delete&id='.$editidmateri['id_materi'])?>" onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></a>
           </form>
         </div>
         <?php } ?>
@@ -104,7 +104,7 @@
                    echo '<td style="color:red">Unpublish <a href="'.site_url('manage/changeMateriStatus/'.$v['id_materi'].'/published').'">change</a></td>';
                 }
                 ?>
-                <td><a href="<?php echo site_url('manage/materi?id='.$v['id_materi'])?>" class="admin-action">edit</a><a href="<?php echo site_url('manage/materiaction?act=delete&id='.$v['id_materi'])?>" onclick="return confirm('Are You Sure')" class="admin-action">delete</a></td>
+                <td><a href="<?php echo site_url('manage/materi?id='.$v['id_materi'])?>" class="admin-action">edit</a></td>
               </tr>
               <?php $uri++;endforeach;?>
             </tbody>

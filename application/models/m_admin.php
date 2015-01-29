@@ -22,7 +22,7 @@ class m_admin extends CI_Model{
 	////////////////
 	public function showAllCourse($limit,$offset){
 		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
-		level.level AS 'level', materi.title AS 'materi'
+		level.level AS 'level', materi.title AS 'materi',course.status AS 'status'
 		FROM course
 		INNER JOIN level ON level.id_level = course.id_level
 		INNER JOIN materi ON materi.id_materi = level.id_materi
@@ -46,7 +46,7 @@ class m_admin extends CI_Model{
 	//show all course by materi
 	public function showAllCourseByMateri($limit,$offset,$idmateri){
 		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
-		level.level AS 'level', materi.title AS 'materi'
+		level.level AS 'level', materi.title AS 'materi',course.status AS 'status'
 		FROM course
 		INNER JOIN level ON level.id_level = course.id_level
 		INNER JOIN materi ON materi.id_materi = level.id_materi
@@ -60,12 +60,48 @@ class m_admin extends CI_Model{
 	// MANAGE LEVEL
 	/////////////
 	public function showAllLevel($limit,$offset){
-
+		$sql = "SELECT level.id_level AS 'id_level',level.title AS 'title',level.level AS 'level',materi.title AS 'materi',level.description AS 'description'
+		FROM level INNER JOIN materi ON level.id_materi = materi.id_materi LIMIT $offset,$limit";
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
 	}
+	public function countShowAllLevel(){
+		return $this->db->count_all_results('level');
+	}
+	//get detail level
+	public function detailLevel($idlevel){
+		$this->db->where('id_level',$idlevel);
+		$query= $this->db->get('level');
+		return $query->row_array();
+	}
+	//show level by materi
+	public function showLevelByMateri($idmateri){
+		$sql = "SELECT level.title AS 'title', level.level AS 'level', level.id_level AS 'id_level', level.description AS 'description',
+		materi.title AS 'materi' FROM level 
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE materi.id_materi = ?";
+		$query = $this->db->query($sql,$idmateri);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//count level by materi
 	public function countLevelByMateri($idmateri){
 		$this->db->where('id_materi',$idmateri);
 		$this->db->from('level');
 		return $this->db->count_all_results();
+	}
+	//total course by level
+	public function countCourseByLevel($idlevel){
+		$this->db->where('id_level',$idlevel);
+		$query = $this->db->get('course');
+		return $query->num_rows();
 	}
 	/////////////
 	// MANAGE MATERI
