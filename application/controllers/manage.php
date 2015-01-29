@@ -573,7 +573,7 @@ public function materiaction(){
 	}
 }
 //////////
-//stundent
+//students
 //////////
 //student management
 public function students(){
@@ -653,6 +653,12 @@ public function studentaction(){
 	$this->db->update('user',$data);
 	//redirect
 	redirect(site_url('manage/students'));
+}
+////////////////////////////
+//File and Folder Management
+////////////////////////////
+public function storage(){
+	
 }
 ////////
 //logout

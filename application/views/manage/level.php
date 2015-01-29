@@ -50,7 +50,7 @@
        <div class="large-10 columns">
         <nav class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
           <li role="menuitem"><a href="#">Manage</a></li>
-          <li role="menuitem" class="current"><a href="#">Course</a></li>
+          <li role="menuitem" class="current"><a href="#">Level</a></li>
         </nav>
         <br/>
         <?php if(!empty($_GET['success'])){//if add note ?>
