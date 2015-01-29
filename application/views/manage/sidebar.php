@@ -14,8 +14,8 @@
     <li id="discussions"><a href="<?php echo site_url('manage/discussions')?>">Discussions <span class="admin-label label"><?php echo $this->m_admin->countAllDiscussion()?></span></a></li>
     <li id="comments"><a href="<?php echo site_url('manage/comments')?>">Comments <span class="admin-label label"><?php echo $this->m_admin->countAllComment()?></span></a></li>
     <hr/>
-    <li id="admin"><a href="<?php echo site_url('manage/admin')?>">Admin <span class="admin-label label">4</span></a></li>
-    <li id="moderator"><a href="<?php echo site_url('manage/moderator')?>">Moderator <span class="admin-label label">245</span></a></li>
+    <li id="admin"><a href="<?php echo site_url('manage/admin')?>">Admin <span class="admin-label label"><?php echo $this->m_admin->countAllAdmin();?></span></a></li>
+    <li id="moderator"><a href="<?php echo site_url('manage/moderator')?>">Moderator <span class="admin-label label"><?php echo $this->m_admin->countAllModerator();?></span></a></li>
   </ul>
   <br/>
   <h3>Stats</h3>

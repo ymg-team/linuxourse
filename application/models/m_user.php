@@ -7,6 +7,17 @@ class m_user extends CI_Model{
 		//Do your magic here
 	}
 
+	//all students
+	public function allStudents($limit,$offset,$verfied){
+		$sql = "SELECT user.id_user,user.username, user.email,user.fullname,user.status,user.register_date,user.last_login,user.status,country.country
+		FROM user 
+		INNER JOIN country ON country.id_country = user.id_country
+		WHERE user.verified = $verfied AND user.level = 'student'
+		LIMIT $offset,$limit";
+		$query = $this->db->query($sql);
+		$student = $query->result_array();
+		return $student;
+	}
 	//total active student
 	public function countActiveStudent(){
 		$this->db->where('verified',1);

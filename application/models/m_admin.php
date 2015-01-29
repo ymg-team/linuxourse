@@ -123,7 +123,7 @@ public function countShowAllMateri(){return $this->db->count_all('materi');}
 	// MANAGE STUDENTS
 	/////////////
 	//count all students
-public function countAllStudents(){return $this->db->count_all('user');}
+public function countAllStudents(){$this->db->where('level','student');return $this->db->count_all_results('user');}
 	//count students by materi
 public function countStudentByMateri($idmateri,$filter){
 	switch ($filter) {
@@ -180,8 +180,11 @@ public function countAllDiscussion(){return $this->db->count_all('discussion');}
 	/////////////
 	// MANAGE ADMIN
 	/////////////
+	//count all admin
+	public function countAllAdmin(){$this->db->where('level','admin');return $this->db->count_all_results('user');}
 
 	/////////////
 	// MANAGE MODERATOR
 	/////////////
+	public function countAllModerator(){$this->db->where('level','moderator');return $this->db->count_all_results('user');}
 }

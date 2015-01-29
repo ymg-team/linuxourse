@@ -572,7 +572,91 @@ public function materiaction(){
 		redirect(site_url('manage/materi?error=error, status unchanged'));
 	}
 }
+//////////
+//stundent
+//////////
+//student management
+public function students(){
+	// $this->load->model('m_user');
+	//pagination start
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
+	//suspend pagination
+	if(!empty($this->uri->segment(3))){
+		switch ($this->uri->segment(3)) {
+			case 'status':
+			$status = $this->uri->segment(4);
+			//start show student by status
+			switch ($this->uri->segment(4)) {
+				case 'unverified':
+				$config['total_rows'] = $this->m_admin->countAllStudents();
+				$config['base_url'] = site_url('manage/student');
+				$this->pagination->initialize($config);
+				$uri = $this->uri->segment(5);
+				if(empty($uri)){$uri=0;}
+				//end of pagination
+				$data = array(
+					'title'=>'Studens',
+					'script'=>'<script>$(document).ready(function(){$("#students").addClass("active");$("#unverified").addClass("active")});</script>',
+					'view'=>$this->m_user->allStudents($config['per_page'],$uri,0),
+					'link'=> $this->pagination->create_links(),
+					'total'=>$config['total_rows'],
+					);
+				break;				
+				default:
+				echo 'Something wrong';
+				break;
+			}
+			//end of start show student by status
+			break;
+			case 'search':
+			$keyword = $this->uri->segment(4);
+			break;
+			default:
+			echo 'Something wrong';
+			break;
+		}
+	}else{//all student
+		//resume pagination
+		$config['total_rows'] = $this->m_admin->countAllStudents();
+		$config['base_url'] = site_url('manage/student');
+		$this->pagination->initialize($config);
+		$uri = $this->uri->segment(3);
+		if(empty($uri)){$uri=0;}
+		//end of pagination
+		$data = array(
+			'title'=>'Studens',
+			'script'=>'<script>$(document).ready(function(){$("#students").addClass("active");$("#all").addClass("active")});</script>',
+			'view'=>$this->m_user->allStudents($config['per_page'],$uri,1),
+			'link'=> $this->pagination->create_links(),
+			'total'=>$config['total_rows'],
+			);
+	}
+	//view
+	$this->baseManageView('manage/students',$data);
+}
+//student action
+public function studentaction(){
+	$iduser = $this->uri->segment(4);
+	$this->db->where('id_user',$iduser);
+	switch ($this->uri->segment(3)) {
+		case 'banned':
+		$data = array('status'=>'banned');
+		break;
+		case 'active':
+		$data = array('status'=>'active');
+		break;		
+	}
+	$this->db->update('user',$data);
+	//redirect
+	redirect(site_url('manage/students'));
+}
+////////
 //logout
+////////
 public function logout(){
 	$this->session->sess_destroy();
 	redirect(site_url('manage'));
