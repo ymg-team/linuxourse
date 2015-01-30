@@ -167,8 +167,18 @@ public function countStudentByCourse($idcourse,$filter){
 	/////////////
 	// MANAGE COMMENTS
 	/////////////
-	public function countAllComment(){return $this->db->count_all('discussion_comment');}//count all comments
-
+	public function countAllComment($status){$this->db->where('status',$status);return $this->db->count_all_results('discussion_comment');}//count all comments
+	//show all comments
+	public function allComments($limit,$offset,$status){
+		$sql = "SELECT discussion_comment.id_comment,discussion.title,discussion_comment.id_discussion AS 'id_discuss',user.username AS 'username',discussion_comment.updatedate AS 'updatedate',
+		discussion_comment.comment,discussion_comment.status AS 'status' FROM discussion_comment
+		INNER JOIN user ON user.id_user = discussion_comment.id_user
+		INNER JOIN discussion ON discussion.id_discuss = discussion_comment.id_discussion
+		WHERE discussion_comment.status = '$status'
+		LIMIT $offset,$limit";
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){return $query->result_array();}else{return array();}
+	}
 	/////////////
 	// MANAGE DIRECTORIES
 	/////////////

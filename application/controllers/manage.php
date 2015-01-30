@@ -730,6 +730,70 @@ public function setdiscussion(){
 	$this->db->update('discussion',$data);
 	redirect($this->agent->referrer());
 }
+//////////
+//COMMENTS
+//////////
+public function comments(){
+	$this->load->model('m_discussion');
+	//start pagination
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
+	if(!empty($this->uri->segment(4))){
+		switch ($this->uri->segment(4)) {
+			//show locked comments
+			case 'locked':
+				//resume pagination
+			$config['total_rows'] = $this->m_admin->countAllComment('locked');//count all posted comment
+			$config['base_url'] = site_url('manage/comments');
+			$this->pagination->initialize($config);
+			$uri = $this->uri->segment(5);
+			if(empty($uri)){$uri=0;}
+			//end of pagination
+			$data = array(
+				'title'=>'Manage Locked Discussion Comments',
+				'script'=>'<script>$(document).ready(function(){$("#comments").addClass("active");$("#locked").addClass("active")});</script>',
+				'link'=>$this->pagination->create_links(),
+				'total'=>'',
+				'view'=>$this->m_admin->allComments($config['per_page'],$uri,'locked'),
+				);
+			break;
+			//lock/unloack comment
+			case 'lock' || 'unlock':
+				$status = $this->uri->segment(4);
+				$id = $this->uri->segment(5);
+				$this->db->where('id_comment',$id);
+				$data = array('status'=>$status);
+				$this->db->update('discussion_comment',$data);
+				redirect($this->agent->referrer());
+			break;
+
+		default:
+				echo 'something wrong';
+		break;
+	}
+}else{
+		//show posted comments
+		//resume pagination
+		$config['total_rows'] = $this->m_admin->countAllComment('posted');//count all posted comment
+		$config['base_url'] = site_url('manage/comments');
+		$this->pagination->initialize($config);
+		$uri = $this->uri->segment(3);
+		if(empty($uri)){$uri=0;}
+		//end of pagination
+		$data = array(
+			'title'=>'Manage Discussion Comments',
+			'script'=>'<script>$(document).ready(function(){$("#comments").addClass("active");$("#all").addClass("active")});</script>',
+			'link'=>$this->pagination->create_links(),
+			'total'=>'',
+			'view'=>$this->m_admin->allComments($config['per_page'],$uri,'posted'),
+			);
+	}
+	$this->baseManageView('manage/comments',$data);
+
+}
 
 ////////
 //logout
