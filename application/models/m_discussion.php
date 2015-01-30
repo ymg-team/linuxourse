@@ -44,10 +44,28 @@ class m_discussion extends CI_Model{
 	//show all discussion no filter
 	public function show_discussion($limit,$offset){
 		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
-		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
-		discussion.type AS 'type',discussion.views AS 'views'
+		discussion.title AS 'title',discussion.content AS 'content',discussion.postdate AS 'postdate',discussion.updatedate AS 'updatedate',
+		discussion.type AS 'type',discussion.views AS 'views',discussion.status
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.status = 'posted'
+		ORDER BY discussion.id_discuss DESC
+		LIMIT ".$offset." , ".$limit;
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+	//show lock discussion
+	public function showLockDiscussion($limit,$offset){
+		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
+		discussion.title AS 'title',discussion.content AS 'content',discussion.postdate AS 'postdate',discussion.updatedate AS 'updatedate',
+		discussion.type AS 'type',discussion.views AS 'views',discussion.status
+		FROM discussion
+		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.status = 'locked'
 		ORDER BY discussion.id_discuss DESC
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);

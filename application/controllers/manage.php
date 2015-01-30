@@ -658,8 +658,79 @@ public function studentaction(){
 //File and Folder Management
 ////////////////////////////
 public function storage(){
-	
+	$data = array(
+		'title'=>'Storage Management',
+		'link'=>'',
+		);
+	$this->baseManageView('manage/storage',$data);
 }
+
+////////////
+//DISCUSSION
+////////////
+public function discussions(){
+	$this->load->model('m_discussion');
+	//start pagination
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
+	//suspend pagination
+	if(!empty($this->uri->segment(4))){//manage/discussion/sort/locked
+		switch ($this->uri->segment(4)) {
+			case 'locked':
+			//resume pagination
+			$config['total_rows'] = $this->m_admin->countAllDiscussion();//count all lock discussion
+			$config['base_url'] = site_url('manage/discussion/sort/locked');
+			$this->pagination->initialize($config);
+			$uri = $this->uri->segment(5);
+			if(empty($uri)){$uri=0;}
+			//end of pagination
+			$data = array(
+				'title'=>'Manage Discussion',
+				'script'=>'<script>$(document).ready(function(){$("#discussions").addClass("active");$("#locked").addClass("active")});</script>',
+				'link'=>$this->pagination->create_links(),
+				'total'=>'',
+				'view'=>$this->m_discussion->showLockDiscussion($config['per_page'],$uri),
+				);
+			break;
+			case 'search':
+				# code...
+			break;
+			default:
+			echo 'something wrong';
+			break;
+		}
+	} else {
+		//resume pagination
+		$config['total_rows'] = $this->m_admin-> countAllDiscussion();
+		$config['base_url'] = site_url('manage/discussion');
+		$this->pagination->initialize($config);
+		$uri = $this->uri->segment(3);
+		if(empty($uri)){$uri=0;}
+		//end of pagination
+		$data = array(
+			'title'=>'Manage Discussion',
+			'script'=>'<script>$(document).ready(function(){$("#discussions").addClass("active");$("#all").addClass("active")});</script>',
+			'link'=>$this->pagination->create_links(),
+			'total'=>'',
+			'view'=>$this->m_discussion->show_discussion($config['per_page'],$uri),
+			);
+	}
+	$this->baseManageView('manage/discussions',$data);
+}
+//change discussion status
+public function setdiscussion(){
+	$status = $this->uri->segment(3);
+	$id = $this->uri->segment(4);
+	//update db
+	$this->db->where('id_discuss',$id);
+	$data = array('status'=>$status);
+	$this->db->update('discussion',$data);
+	redirect($this->agent->referrer());
+}
+
 ////////
 //logout
 ////////

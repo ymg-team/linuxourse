@@ -160,7 +160,9 @@ public function countStudentByCourse($idcourse,$filter){
 	// MANAGE DISCUSSIONS
 	/////////////
 	//count all discussion
-public function countAllDiscussion(){return $this->db->count_all('discussion');}
+	public function countAllDiscussion(){$this->db->where('status','posted');return $this->db->count_all_results('discussion');}
+	//count all lock discussion
+	public function countAllLockDiscussion(){$this->db->where('status','locked');return $this->db->count_all_results('discussion');}
 
 	/////////////
 	// MANAGE COMMENTS

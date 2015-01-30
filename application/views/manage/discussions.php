@@ -34,10 +34,6 @@
         }
       });
     }
-    $(document).ready(function(){
-      $('#input_materi').val(<?php echo $view['id_materi'];?>);
-      reviewLevel();
-    });
   </script>
   <!--body-->
   <section  id="welcome">
@@ -54,7 +50,7 @@
        <div class="large-10 columns">
         <nav class="breadcrumbs" role="menubar" aria-label="breadcrumbs">
           <li role="menuitem"><a href="#">Manage</a></li>
-          <li role="menuitem" class="current"><a href="#">Course</a></li>
+          <li role="menuitem" class="current"><a href="#">Discussions</a></li>
         </nav>
         <br/>
         <?php if(!empty($_GET['success'])){//if add note ?>
@@ -68,7 +64,12 @@
           <a href="#" class="close">&times;</a>
         </div>
         <?php }?>
-        <?php $this->load->view('manage/extentions/levelfilter')?>
+        <br/>
+        <dl class="sub-nav">
+          <dt>Filter:</dt>
+          <dd id="all"><a href="<?php echo site_url('manage/discussions')?>">All</a></dd>
+          <dd id="locked"><a href="<?php echo site_url('manage/discussions/sort/locked')?>">Locked</a></dd>
+        </dl>
         <div class="admin-content-white">
           <form style="float:tiny" method="get" name="q">
             <span class="row collapse" style="min-width:100%">
@@ -78,44 +79,47 @@
                 </span>
               </span>
             </form>
-            <!-- data from db -->
-            <div id="form-add">
-             <div class="row">
-              <div class="large-6 columns">
-                <!-- add level -->
-                <h4>Edit Level</h4>
-                <form action="" method="POST">
-                  <label>Materi
-                    <select onchange="reviewLevel()" id="input_materi" name="input_materi" required>
-                      <option value="">Choose Materi</option>
-                      <?php foreach($viewMateri as $vm):?>
-                        <option value="<?php echo $vm['id_materi']?>"><?php echo $vm['title']?></option>
-                      <?php endforeach;?>
-                    </select>
-                  </label>
-                  <label>Level Title
-                    <input type="text" name="input_title" value="<?php echo $view['title']?>" required/>
-                  </label>
-                  <label>Level Step <span id="levelstatus"></span>
-                    <input onkeyup="checkLevel()" type="number" id="input_level" name="input_level" value="<?php echo $view['level']?>" required>
-                  </label>
-                  <label>Description
-                    <textarea name="input_description" required><?php echo $view['description']?></textarea>
-                  </label>
-                  <br/>
-                  <button name="btnsave" class="button small">save changes</button>
-                  <button onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></button>
-                </form>
-                <!-- end of add level      -->
-              </div>
-              <div class="large-6 columns">
-                <!-- review level -->
-                <h4>Review Level</h4>
-                <div id="reviewLevel"></div>
-                <!-- end of review level -->
-              </div>
-            </div>
-          </div>
+
+            <center class="pagination"><?php echo $link;?></center>
+            <table>
+              <thead>
+                <tr>
+                 <th>title</th>
+                 <th>post</th>
+                 <th>update</th>
+                 <th>user</th>
+                 <th>type</th>
+                 <th>views</th>
+                 <th>status</th>
+                 <th>action</th>
+               </tr>
+             </thead>
+             <tbody>
+              <?php foreach($view as $v):?>
+                <tr>
+                  <td><?php echo $v['title'];?></td>
+                  <td><?php echo $v['postdate'];?></td>
+                  <td><?php echo $v['updatedate'];?></td>
+                  <td><a target="_blank" href="<?php echo site_url('student/v/'.$v['username'])?>"><?php echo $v['username'];?></a></td>
+                  <td><?php echo $v['type'];?></td>
+                  <td><?php echo $v['views'];?></td>
+                  <td><?php echo $v['status'];?></td>
+                  <td>
+                    <?php switch ($v['status']) {
+                      case 'posted':
+                      echo '<a href="'.site_url('manage/setdiscussion/locked/'.$v['id_discuss']).'"><span class="fi-lock"></span> lock</a>';
+                      break;
+                      case 'locked':
+                      echo '<a href="'.site_url('manage/setdiscussion/posted/'.$v['id_discuss']).'"><span class="fi-unlock"></span> unlock</a>';
+                      break;
+                    }?>
+                    <a href="<?php echo site_url('discussion/open/'.str_replace('=','',base64_encode(base64_encode($v['id_discuss']))))?>">read</a>
+                  </td>
+                </tr>
+              <?php endforeach;?>
+            </tbody>
+          </table>
+          <center class="pagination"><?php echo $link;?></center>
           <!-- data from db -->
         </div>
       </div>
