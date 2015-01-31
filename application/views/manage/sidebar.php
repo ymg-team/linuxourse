@@ -16,20 +16,20 @@
     <li id="discussions"><a href="<?php echo site_url('manage/discussions')?>">Discussions <span class="admin-label label"><?php echo $this->m_admin->countAllDiscussion()?></span></a></li>
     <li id="comments"><a href="<?php echo site_url('manage/comments')?>">Comments <span class="admin-label label"><?php echo $this->m_admin->countAllComment('posted')?></span></a></li>
     <hr/>
-    <li id="superuser"><a href="<?php echo site_url('manage/admin')?>">SuperUser <span class="admin-label label"><?php echo $this->m_admin->countAllAdmin();?></span></a></li>
+    <li id="superuser"><a href="<?php echo site_url('manage/superuser')?>">SuperUser <span class="admin-label label"><?php echo $this->m_admin->countSuperUser('all');?></span></a></li>
   </ul>
   <br/>
-  <h3>Stats</h3>
+  <!-- <h3>Stats</h3>
   <hr/>
   <ul class="side-nav">
     <li id="coursestats"><a href="#">Course</a></li>
     <li id="studentstats"><a href="#">Students</a></li>
     <li id="discussionstats"><a href="#">Discussion</a></li>            
-  </ul>
+  </ul> -->
    <h3>Profile</h3>
   <hr/>
   <ul class="side-nav">
-   <li id="coursestats"><a href="#">Edit</a></li>
+   <li id="profile"><a href="<?php echo site_url('manage/profile')?>">Edit</a></li>
   <li><a href="<?php echo site_url('manage/logout');?>">Logout</a></li>         
   </ul>
 </div>

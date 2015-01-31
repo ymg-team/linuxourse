@@ -160,9 +160,9 @@ public function countStudentByCourse($idcourse,$filter){
 	// MANAGE DISCUSSIONS
 	/////////////
 	//count all discussion
-	public function countAllDiscussion(){$this->db->where('status','posted');return $this->db->count_all_results('discussion');}
+public function countAllDiscussion(){$this->db->where('status','posted');return $this->db->count_all_results('discussion');}
 	//count all lock discussion
-	public function countAllLockDiscussion(){$this->db->where('status','locked');return $this->db->count_all_results('discussion');}
+public function countAllLockDiscussion(){$this->db->where('status','locked');return $this->db->count_all_results('discussion');}
 
 	/////////////
 	// MANAGE COMMENTS
@@ -197,14 +197,32 @@ public function countStudentByCourse($idcourse,$filter){
 	/////////////
 	public function countAllFiles(){return $this->db->count_all('ls_dir');}
 
-	/////////////
-	// MANAGE ADMIN
-	/////////////
-	//count all admin
-	public function countAllAdmin(){$this->db->where('level','admin');$this->db->or_where('level','moderator');return $this->db->count_all_results('user');}
-
-	/////////////
-	// MANAGE MODERATOR
-	/////////////
-	public function countAllModerator(){$this->db->where('level','moderator');return $this->db->count_all_results('user');}
+	///////////////////
+	//MANAGE SUPER USER
+	///////////////////
+	public function countSuperUser($level){
+		if($level == 'admin' || $level == 'moderator'){
+			$this->db->where('level',$level);
+		}
+		$this->db->where('status','active');
+		$query = $this->db->get('user_manage');
+		return $query->num_rows();
+	}
+	//show super user
+	public function showSuperUser($limit,$offset,$level){
+		if($level == 'admin' || $level == 'moderator'){
+			$this->db->where('level',$level);
+		}
+		$this->db->where('status','active');
+		$query = $this->db->get('user_manage',$limit,$offset);
+		return $query->result_array();
+	}
+	/////////////////
+	// MANAGE PROFILE
+	/////////////////
+	public function myProfile($id){
+		$this->db->where('id_user_manage',$id);
+		$query = $this->db->get('user_manage');
+		return $query->row_array();
+	}
 }

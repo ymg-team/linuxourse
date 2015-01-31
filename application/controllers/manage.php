@@ -843,15 +843,15 @@ public function news(){
 		}
 	}
 	//start pagination
-$config = array(
-	'per_page'=>13,
-	'uri_segment'=>3,
-	'num_link'=>7,
-	);
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
 	//suspend pagination
-if(!empty($this->uri->segment(4))){
-	switch ($this->uri->segment(4)) {
-		case 'draft':
+	if(!empty($this->uri->segment(4))){
+		switch ($this->uri->segment(4)) {
+			case 'draft':
 				$config['total_rows'] = $this->m_admin->countNews('draft');//count all posted comment
 				$config['base_url'] = site_url('manage/news');
 				$this->pagination->initialize($config);
@@ -868,13 +868,13 @@ if(!empty($this->uri->segment(4))){
 				break;
 				//edit news
 				case 'edit':
-					$id = $this->uri->segment(5);
-					$data = array(
-						'title'=>'edit news',
-						'script'=>'<script>$(document).ready(function(){$("#news").addClass("active");$(".form-add").show()});</script>',
-						'edit'=>$this->m_news->news_item($id),
-						'link'=>'',
-						);					
+				$id = $this->uri->segment(5);
+				$data = array(
+					'title'=>'edit news',
+					'script'=>'<script>$(document).ready(function(){$("#news").addClass("active");$(".form-add").show()});</script>',
+					'edit'=>$this->m_news->news_item($id),
+					'link'=>'',
+					);					
 				break;
 				//delete news
 				case 'delete':
@@ -903,7 +903,102 @@ if(!empty($this->uri->segment(4))){
 		);
 }
 $this->baseManageView('manage/news',$data);
+}
+//////////////
+//edit profile
+//////////////
+public function profile(){
+	//if do action woth form
+	$data = array(
+		'title'=>'myprofile',
+		'script'=>'<script>$(document).ready(function(){$("#profile").addClass("active");});</script>',
+		'profile'=>$this->m_admin->myProfile($this->session->userdata['manage_login']['id_user']),
+		);
+	if(!empty($_POST)){
+		//validation
+		$this->load->library('form_validation');
+		//set rules
+		$this->form_validation->set_rules('input_username', 'Username', 'required|is_unique[user_manage.username]');//is unique
+		$this->form_validation->set_rules('input_fullname', 'Fullname', 'required');//is unique
+		$this->form_validation->set_rules('input_email', 'Email', 'required|valid_email');//is unique
+		//end of validation
+		if($this->form_validation->run()){//data valid
+			$data = array(
+				'username'=>$_POST['input_username'],
+				'email'=>$_POST['input_email'],
+				'fullname'=>$_POST['input_fullname'],
+				);
+			$this->db->where('id_user_manage',$_POST['id_user_manage']);
+			$this->db->update('user_manage',$data);
+			redirect(site_url('manage/profile?success=data saved'));
+		}
+	}
+	$this->baseManageView('manage/profile',$data);
+}
+///////////////////
+//Manage Super User
+///////////////////
+public function superuser(){
+	//start pagination
+	$config = array(
+		'per_page'=>13,
+		'uri_segment'=>3,
+		'num_link'=>7,
+		);
+	//suspend pagination
+	if(!empty($_POST)){
 
+	}
+	if(!empty($this->uri->segment(4) && $this->uri->segment(3)!= 'sort')){//chang status
+		$action = $this->uri->segment(4);
+		if($action == 'admin' || $action == 'moderator'){
+			$level = $this->uri->segment(4);
+			$this->db->where('id_user_manage',$this->uri->segment(5));
+			$data = array('level'=>$level);
+			$this->db->update('user_manage',$data);
+		}else if($action == 'active' || $action == 'banned'){
+			$status = $this->uri->segment(4);
+			$this->db->where('id_user_manage',$this->uri->segment(5));
+			$data = array('status'=>$status);
+			$this->db->update('user_manage',$data);
+		}
+		redirect($this->agent->referrer());
+	}else if($this->uri->segment(3)=='sort'){
+		if($this->uri->segment(4) == 'banned'){//show banned user
+
+		}else{ //show moderator and admin
+			//resume pagination
+		$config['total_rows'] =  $this->m_admin->countSuperUser($this->uri->segment(4));//count all posted comment
+		$config['base_url'] = site_url('manage/superuser/'.$this->uri->segment(3).'/'.$this->uri->segment(4));
+		$this->pagination->initialize($config);
+		$uri = $this->uri->segment(5);
+		if(empty($uri)){$uri=0;}
+		//end of pagination
+		$data = array(
+			'title'=>'Manage Super User',
+			'script'=>'<script>$(document).ready(function(){$("#superuser").addClass("active");$("#'.$this->uri->segment(4).'").addClass("active")});</script>',
+			'link'=>$this->pagination->create_links(),
+			'view'=>$this->m_admin->showSuperUser($config['per_page'],$uri,$this->uri->segment(4)),
+			);	 
+	}
+}else{
+		//normal view
+		//resume pagination
+		$config['total_rows'] =  $this->m_admin->countSuperUser('all');//count all posted comment
+		$config['base_url'] = site_url('manage/superuser');
+		$this->pagination->initialize($config);
+		$uri = $this->uri->segment(3);
+		if(empty($uri)){$uri=0;}
+		//end of pagination
+		$data = array(
+			'title'=>'Manage Super User',
+			'script'=>'<script>$(document).ready(function(){$("#superuser").addClass("active");$("#all").addClass("active")});</script>',
+			'link'=>$this->pagination->create_links(),
+			'view'=>$this->m_admin->showSuperUser($config['per_page'],$uri,'all'),
+			);	  
+	}
+	$this->baseManageView('manage/superuser',$data);
+	
 }
 
 ////////
