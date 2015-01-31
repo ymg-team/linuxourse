@@ -762,19 +762,19 @@ public function comments(){
 			break;
 			//lock/unloack comment
 			case 'lock' || 'unlock':
-				$status = $this->uri->segment(4);
-				$id = $this->uri->segment(5);
-				$this->db->where('id_comment',$id);
-				$data = array('status'=>$status);
-				$this->db->update('discussion_comment',$data);
-				redirect($this->agent->referrer());
+			$status = $this->uri->segment(4);
+			$id = $this->uri->segment(5);
+			$this->db->where('id_comment',$id);
+			$data = array('status'=>$status);
+			$this->db->update('discussion_comment',$data);
+			redirect($this->agent->referrer());
 			break;
 
-		default:
-				echo 'something wrong';
-		break;
-	}
-}else{
+			default:
+			echo 'something wrong';
+			break;
+		}
+	}else{
 		//show posted comments
 		//resume pagination
 		$config['total_rows'] = $this->m_admin->countAllComment('posted');//count all posted comment
@@ -792,6 +792,117 @@ public function comments(){
 			);
 	}
 	$this->baseManageView('manage/comments',$data);
+
+}
+
+/////////////
+//MANAGE NEWS
+/////////////
+public function news(){
+	$this->load->model('m_news');
+	//if submit form
+	if(!empty($_POST)){//add form
+		if(isset($_POST['btnpublish']) || isset($_POST['btndraft'])){
+			$now = date('Y-m-d h:i:s');//current time
+			$title = $_POST['input_title'];
+			$content = $_POST['input_content'];
+			if(isset($_POST['btnpublish'])){
+				$status = 'published';
+			}else if(isset($_POST['btndraft'])){
+				$status = 'draft';
+			}
+			$data = array(
+				'id_user'=>$this->session->userdata['manage_login']['id_user'],
+				'title'=>$title,
+				'content'=>$content,
+				'postdate'=>$now,
+				'updatedate'=>$now,
+				'status'=>$status,
+				);
+			$this->db->insert('news',$data);
+			redirect(site_url('manage/news'));
+		}else if(isset($_POST['btnedit']) || isset($_POST['btneditdraft'])){
+			$this->db->where('id_news',$this->uri->segment(5));
+			$now = date('Y-m-d h:i:s');//current time
+			$title = $_POST['input_title'];
+			$content = $_POST['input_content'];
+			if(isset($_POST['btnedit'])){
+				$status = 'published';
+			}else if(isset($_POST['btneditdraft'])){
+				$status = 'draft';
+			}
+			$data = array(
+				'title'=>$title,
+				'content'=>$content,
+				'updatedate'=>$now,
+				'id_user'=>$this->session->userdata['manage_login']['id_user'],
+				'status'=>$status,
+				);
+			$this->db->update('news',$data);
+			redirect(site_url('manage/news'));
+		}
+	}
+	//start pagination
+$config = array(
+	'per_page'=>13,
+	'uri_segment'=>3,
+	'num_link'=>7,
+	);
+	//suspend pagination
+if(!empty($this->uri->segment(4))){
+	switch ($this->uri->segment(4)) {
+		case 'draft':
+				$config['total_rows'] = $this->m_admin->countNews('draft');//count all posted comment
+				$config['base_url'] = site_url('manage/news');
+				$this->pagination->initialize($config);
+				$uri = $this->uri->segment(5);
+				if(empty($uri)){$uri=0;}
+				//end of pagination
+				$data = array(
+					'title'=>'Manage News',
+					'script'=>'<script>$(document).ready(function(){$("#news").addClass("active");$("#draft").addClass("active")});</script>',
+					'link'=>$this->pagination->create_links(),
+					'total'=>'',
+					'view'=>$this->m_news->draftNewsList($config['per_page'],$uri,'posted'),
+					);
+				break;
+				//edit news
+				case 'edit':
+					$id = $this->uri->segment(5);
+					$data = array(
+						'title'=>'edit news',
+						'script'=>'<script>$(document).ready(function(){$("#news").addClass("active");$(".form-add").show()});</script>',
+						'edit'=>$this->m_news->news_item($id),
+						'link'=>'',
+						);					
+				break;
+				//delete news
+				case 'delete':
+				$id = $this->uri->segment(5);
+				$this->db->where('id_news',$id);
+				$this->db->delete('news');
+				redirect(site_url('manage/news'));
+				break;
+				default:
+				# code...
+				break;
+			}
+		}else{
+	$config['total_rows'] = $this->m_admin->countNews('published');//count all posted comment
+	$config['base_url'] = site_url('manage/news');
+	$this->pagination->initialize($config);
+	$uri = $this->uri->segment(3);
+	if(empty($uri)){$uri=0;}
+		//end of pagination
+	$data = array(
+		'title'=>'Manage News',
+		'script'=>'<script>$(document).ready(function(){$("#news").addClass("active");$("#published").addClass("active")});</script>',
+		'link'=>$this->pagination->create_links(),
+		'total'=>'',
+		'view'=>$this->m_news-> news_list($config['per_page'],$uri,'posted'),
+		);
+}
+$this->baseManageView('manage/news',$data);
 
 }
 

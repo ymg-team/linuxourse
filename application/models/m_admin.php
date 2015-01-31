@@ -180,6 +180,14 @@ public function countStudentByCourse($idcourse,$filter){
 		if($query->num_rows()>0){return $query->result_array();}else{return array();}
 	}
 	/////////////
+	//MANAGE NEWS
+	/////////////
+	//count news
+	public function countNews($status){
+		$this->db->where('status',$status);
+		return $this->db->count_all_results('news');
+	}
+	/////////////
 	// MANAGE DIRECTORIES
 	/////////////
 	public function countAllDirectories(){return $this->db->count_all('available_dir');}
@@ -193,7 +201,7 @@ public function countStudentByCourse($idcourse,$filter){
 	// MANAGE ADMIN
 	/////////////
 	//count all admin
-	public function countAllAdmin(){$this->db->where('level','admin');return $this->db->count_all_results('user');}
+	public function countAllAdmin(){$this->db->where('level','admin');$this->db->or_where('level','moderator');return $this->db->count_all_results('user');}
 
 	/////////////
 	// MANAGE MODERATOR

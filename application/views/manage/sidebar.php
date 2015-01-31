@@ -9,15 +9,14 @@
     <hr/>
     <li id="storage"><a href="<?php echo site_url('manage/storage')?>">Directory|File <span class="admin-label label"><?php echo $this->m_admin->countAllDirectories()?>|<?php echo $this->m_admin->countAllFiles()?></span></a></li>
     <hr/>
-    <li id="news"><a href="<?php echo site_url('manage/storage')?>">News <span class="admin-label label"><?php echo $this->m_admin->countAllDirectories()?>|<?php echo $this->m_admin->countAllFiles()?></span></a></li>
+    <li id="news"><a href="<?php echo site_url('manage/news')?>">News <span class="admin-label label"><?php echo $this->m_admin->countNews('published')?></span></a></li>
     <hr/>
     <li id="students"><a href="<?php echo site_url('manage/students')?>">Student <span class="admin-label label"><?php echo $this->m_admin->countAllStudents();?></span></a></li>
     <hr/>
     <li id="discussions"><a href="<?php echo site_url('manage/discussions')?>">Discussions <span class="admin-label label"><?php echo $this->m_admin->countAllDiscussion()?></span></a></li>
     <li id="comments"><a href="<?php echo site_url('manage/comments')?>">Comments <span class="admin-label label"><?php echo $this->m_admin->countAllComment('posted')?></span></a></li>
     <hr/>
-    <li id="admin"><a href="<?php echo site_url('manage/admin')?>">Admin <span class="admin-label label"><?php echo $this->m_admin->countAllAdmin();?></span></a></li>
-    <li id="moderator"><a href="<?php echo site_url('manage/moderator')?>">Moderator <span class="admin-label label"><?php echo $this->m_admin->countAllModerator();?></span></a></li>
+    <li id="superuser"><a href="<?php echo site_url('manage/admin')?>">SuperUser <span class="admin-label label"><?php echo $this->m_admin->countAllAdmin();?></span></a></li>
   </ul>
   <br/>
   <h3>Stats</h3>
