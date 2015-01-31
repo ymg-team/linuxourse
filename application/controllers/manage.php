@@ -916,11 +916,19 @@ public function profile(){
 		);
 	if(!empty($_POST)){
 		//validation
+		if(md5(md5($_POST['input_recentpassword'])) != $this->session->userdata['manage_login']['password']){
+			redirect(site_url('manage/profile?error=! Recent password not matched'));
+		}
 		$this->load->library('form_validation');
 		//set rules
 		$this->form_validation->set_rules('input_username', 'Username', 'required|is_unique[user_manage.username]');//is unique
 		$this->form_validation->set_rules('input_fullname', 'Fullname', 'required');//is unique
 		$this->form_validation->set_rules('input_email', 'Email', 'required|valid_email');//is unique
+		//is change password
+		if(!empty($_POST['input_changepassword'])){
+			$this->form_validation->set_rules('input_changepassword', 'New Password', 'required');//is unique
+			$this->form_validation->set_rules('input_changepasswordagain', 'New Password Again', 'required|matches[input_changepassword]');//is unique
+		}
 		//end of validation
 		if($this->form_validation->run()){//data valid
 			$data = array(
@@ -928,6 +936,9 @@ public function profile(){
 				'email'=>$_POST['input_email'],
 				'fullname'=>$_POST['input_fullname'],
 				);
+			if(!empty($_POST['input_changepassword'])){
+				$data['password'] = md5(md5($_POST['input_changepassword']));
+			}
 			$this->db->where('id_user_manage',$_POST['id_user_manage']);
 			$this->db->update('user_manage',$data);
 			redirect(site_url('manage/profile?success=data saved'));

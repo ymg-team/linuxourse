@@ -22,7 +22,7 @@
           <a href="#" class="close">&times;</a>
         </div>
         <?php }else if(!empty($_GET['error'])){?>
-        <div data-alert class="alert-box error">
+        <div data-alert class="alert-box alert">
           <?php echo $_GET['error'];?>
           <a href="#" class="close">&times;</a>
         </div>
@@ -43,8 +43,16 @@
                 <label>Email
                   <input name="input_email" type="email" name="input_username" value="<?php echo $profile['email']?>"></label>
                   <label>Fullname
-                  <input type="hidden" name="id_user_manage" value="<?php echo $profile['id_user_manage']?>">
-                  <input name="input_fullname" type="text" name="input_username" value="<?php echo $profile['fullname']?>"></label>
+                    <input type="hidden" name="id_user_manage" value="<?php echo $profile['id_user_manage']?>">
+                    <input name="input_fullname" type="text" name="input_username" value="<?php echo $profile['fullname']?>"></label>
+                    <hr/>
+                    <label>change password
+                    <input name="input_changepassword" type="password" name="input_username" value=""></label>
+                    <label>confirm change password
+                    <input name="input_changepasswordagain" type="password" name="input_username" value=""></label>
+                    <hr/>
+                    <label>recent password
+                    <input name="input_recentpassword" type="password" name="input_username" value="" required></label>
                     <button class="button small" name="btnsave">Save Changes</button>
                   </form>
                 </div>
