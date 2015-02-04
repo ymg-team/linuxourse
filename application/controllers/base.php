@@ -6,6 +6,7 @@ class base extends CI_Controller {
 	{
 		parent::__construct();
 		//load all model
+		date_default_timezone_set('Asia/Jakarta');
 		$this->load->model('m_user');
 		$this->load->model('m_course');
 		// $this->load->model('m_admin');
@@ -116,6 +117,7 @@ class base extends CI_Controller {
 			return array();
 		}
 	}
+
 }
 
 /* End of file base.php */

@@ -237,11 +237,62 @@ class regex extends base { //class for public
 		// echo '<hr/>';
 		// echo $updateterminal; 
 		}
-		public function check_fault(){
+		
+		//rewind check
+		public function checkrewind(){
+			$terminal = strip_tags($_POST['terminal']);//remove all html tag
+		//replace space
+			$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;
+		//get id user course
+			$usercourseid = $_POST['usercourseid'];
+		//decrypt id  usercourse
+			$idusercourse = str_replace('','=',$usercourseid);
+			$idusercourse = base64_decode(base64_decode($idusercourse));
+		//get course data by id user course
+		// echo $idusercourse;
+			$course_data = $this->m_course->detCourseByUserCourse($idusercourse);
+		//start regex, get command only from terminal
+			preg_match_all('#\$(.*):#Us', $terminal,$reg_terminal,PREG_SET_ORDER);
+		// print_r($reg_terminal);//show preg match result
+			$reg_result = $reg_terminal;
+			$command_list = array();
+			$command_db = explode(':', $course_data['command']);
+		//destroy command_db
+		//create new array
+			foreach($reg_result as $rs):
+				array_push($command_list, trim($rs[1]));
+			endforeach;
+		// print_r($command_db);
+		// echo '<br/>';
+		// print_r($command_list);
+		//cek command list and command db
+			foreach($command_db as $cbase):
+				if(in_array(trim($cbase),$command_list)){
+				// echo $cbase.' in array </br>';
+					$course = TRUE;
+				}else{
+					$course = FALSE;
+				// echo $cbase.' not in array </br>';
+				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+					redirect(site_url('regex/check_fault'));
+				}
+				endforeach;
+			//set session case = true
+				if($course = TRUE){
+					echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
+					$sessiondata['coursestatus'] = $course;
+					$this->session->set_userdata($sessiondata);	
+				}			
+		//matching input command and database command
+		// echo '<hr/>';
+		// echo $updateterminal; 
+			}
+
+			public function check_fault(){
 		//set session case = fault
-			$course = FALSE;
-			$sessiondata['coursestatus'] = $course;
-			$this->session->set_userdata($sessiondata);
-			echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+				$course = FALSE;
+				$sessiondata['coursestatus'] = $course;
+				$this->session->set_userdata($sessiondata);
+				echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+			}
 		}
-	}

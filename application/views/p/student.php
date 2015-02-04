@@ -15,42 +15,53 @@
 <div class="row">
 	<br/>
 	<div class="base-content" class="large-10 columns">
-		<div class="large-offset-1 large-10 columns">
+		<div class="large-12 columns">
 			<center>
-				<h4>Courses</h4>
+				<h1>Joined Courses</h1>
 				<div class="row">
 					<?php foreach($userCourse as $uc):
 					$totalnow = $this->m_course->countCourseStepByMateri($uc['id_materi'],$uc['id_level'],$uc['id_course']);
 					$totalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
-					$percentage = number_format(($totalnow*100)/$totalCourse,1);
+					$progress = number_format(($totalnow*100)/$totalCourse,1);
 					$id = base64_encode(base64_encode($uc['id_level']));
 					$id = str_replace('=', '', $id);
+					if(!empty($uc['logo'])){$logo = base_url('assets/img/logo/'.$uc['logo']);}
+					else{$logo = base_url('assets/img/logo/other logo.png'); }
 					?>
-					<a id="btn_course_item" href="<?php echo site_url('course/syllabus/'.$id);?>">
+					<a id="btn_course_item" href="#btn_resume">
 						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
 							<div class="materi-item">
+								<center>
+									<img src="<?php echo $logo?>"/>
+								</center>
 								<div class="materi-title">
-									<h5><?php echo $uc['title']?></h5>								
+									<h4><?php echo $uc['title'];?></h4>								
 								</div>
-								<hr/>
-								<h2><strong><?php echo $percentage;?>%</strong></h2>
-								<small>recent : <?php echo $uc['lastdate']?></small>
-								<p><div style="height:10px" class="radius progress success">
-									<span style="float:left;color:#fff;width:<?php echo $percentage?>%;" class="meter"></span>
-								</div></p> 
+								<div class="course-detail">
+									<?php echo $uc['description'];?>
+								</div>
+								<div class="thumb-progress row">
+									<div class="small-12 columns">
+										<div class="small-10 columns">
+											<div style="height:10px;margin-top:5px" class="radius progress">
+												<span style="float:left;color:#fff;width:<?php echo $progress;?>%;" class="meter"></span>
+											</div>
+										</div>
+										<div style="float:left" class="small-2 columns">
+											<?php echo $progress;?>%
+										</div>
+									</div>
+								</div>
+								<a href="<?php echo site_url('course/syllabus/'.$id.'/'.str_replace(' ', '_', $uc['title']))?>" class="button">start</a>
 							</div>
-							<span style="float:left">
-							<strong>Start</strong> 13/01/2014
-							<br/>
-							<strong>End</strong> 23/05/2015
-							</span> 
-						</div>	
+						</div>					
 					</a>
+					
 				<?php endforeach;?>
 			</div>
-			<hr/>
+			<br/>
 			<div class="row">
-				<h4>Badge Collections</h4>
+				<h1>Badge Collections</h1>
 			</div>
 		</center>
 		<br/>

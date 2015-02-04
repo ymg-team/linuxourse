@@ -1,9 +1,31 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#btndown").click(function() {
+			$('html, body').animate({
+				scrollTop: $("#btndown").offset().top
+			}, 800);
+		});
+		$(window).scroll(function(){
+			if ($(this).scrollTop() > 100) {
+				$("#btntop").fadeIn();
+			} else {
+				$("#btntop").fadeOut();
+			}
+		});
+
+		$("#btntop").click(function(){
+			$('html, body').animate({scrollTop : 0},800);
+			return false;
+		});
+	});
+</script>
+<a class="button" style="display:none;padding:10px;position: fixed;right: 0;bottom: 0;" id="btntop"><span style="font-size:2rem"; class="fi-arrow-up"></span></a>
 
 <!-- body -->
 <section id="welcome">
 	<div class="row">
 		<div class="large-7 columns">
-			<img style="width:90%" src="<?php echo base_url('assets/img/home-view.png')?>">
+			<img style="width:90%;margin-top:20px" src="<?php echo base_url('assets/img/home-view.png')?>">
 			<br/><br/>
 			<hr/>
 			<div class="welcome_message">
@@ -19,7 +41,7 @@
 			<div class="home_login">
 				<br/>
 				<dl style="padding:0;border:1px solid #fff" class="tabs" data-tab>
-					<dd class="small-6 columns active"><a class="tab-home" role="tab" href="#register">Register</a></dd>
+					<dd  class="small-6 columns active"><a class="tab-home" role="tab" href="#register">Register</a></dd>
 					<dd class="small-6 columns"><a class="tab-home" role="tab" href="#login">Login</a></dd>
 				</dl>
 				<div style="padding:5px 5px 0 5px;background-color:#fff" class="tabs-content">
@@ -82,7 +104,7 @@
 		</div>
 	</section>
 	<section style="border-bottom:solid #C6C6C6 1px" id="btndown">
-		<center><a href="#home_center"><img style="width:40px"  src="<?php echo base_url('assets/img/btn-down.png')?>"></a></center>
+		<center><a id="btndown"><img style="width:40px"  src="<?php echo base_url('assets/img/btn-down.png')?>"></a></center>
 	</section>
 	<section id="home_center">
 		<div class="row">
@@ -123,7 +145,7 @@
 
 		<!-- success register modal -->
 		<div id="registerSuccess" class="reveal-modal small" data-reveal>
-		<h2>Register Success</h2>
+			<h2>Register Success</h2>
 			<p class="lead">You're now students</p>
 			<p>you can login using email/username and password which you have made!</p>
 			<a class="close-reveal-modal">&#215;</a>

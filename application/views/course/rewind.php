@@ -65,7 +65,7 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		'<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata("dir")?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>';
 		$('#terminal').html(html);
 	}
-	//check result
+	//check result for rewind mode
 	function check(){
 		$('#loadercheck').show();//show loader
 		//$('#linuxCommand').attr('readonly','readonly');//readonly terminal
@@ -73,7 +73,7 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		usercourseid = '<?php echo $this->uri->segment(3)?>';
 		<?php if(!empty($course['custom_controller'])){ //if use custom controller?>
 			url='<?php echo site_url("regex/".$course["custom_controller"]);?>';
-			<?php }else{//use default controller?>
+		<?php }else{//use default controller?>
 				url='<?php echo site_url("regex/check");?>';
 				<?php }	?>
 				$.ajax({
@@ -97,14 +97,19 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 				<!-- sidebar -->
 				<div style="background-color:#F5F5F5" class="full-height large-3 columns">
 					<ul style="/*background-color:#e7e7e7*/" class="button-group">
-						<li style="width:20%"><a href="<?php echo site_url('course/syllabus/'.str_replace('=', '', base64_encode(base64_encode($detCourse['id_materi']))))?>" class="small secondary button"><strong>Back</strong></a></li>
-						<li style="width:80%"><a style="width:100%" href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown">Level <?php echo $recentIdlevel['level']?></a><br>
+						<li style="width:20%"><a href="<?php echo site_url('course/review/'.$this->uri->segment(4))?>" class="small secondary button"><strong>Back</strong></a></li>
+						<li style="width:80%"><a style="width:100%" href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown">Level <?php echo $detCourse['level']?></a><br>
 							<ul style="max-width:none" id="drop1" data-dropdown-content class="dropdownme f-dropdown" aria-hidden="true" tabindex="-1">
 								<?php foreach($courseList as $cl):?>
 									<li>
 										<?php 
+										//get id materi
+										$completedstep = $this->m_course->getCompletedStep(base64_decode(base64_decode(str_replace('', '=', $this->uri->segment(4)))));
+										//course detail
+										$step = $detCourse['step'];
+										$course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail course by id materi and step
 										//check if completed course
-										if($cl['step'] <= $detCourse['step']){
+										if($cl['step'] <= $completedstep){
 											$title = '<span style="color:gray">'.$cl['title'].'
 											<span class="fi-check"></span></span>';
 											$link = site_url('rewind');

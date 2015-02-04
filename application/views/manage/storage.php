@@ -1,4 +1,8 @@
 <script type="text/javascript">
+  $(document).ready(function(){
+    getDirectory();
+  });
+
   function addDir(){
     $('#addDir').toggle('fast');
     $('#addFile').hide('fast');
@@ -6,6 +10,27 @@
   function addFile(){
     $('#addFile').toggle('fast');
     $('#addDir').hide('fast');
+  }
+  //change directory
+  function changeDirectory(dir){
+    $('#location').val(dir);
+    getDirectory(dir);
+  }
+  //get directory
+  function getDirectory(){
+    $('#listcontent').html('<center>loading content...</center>');
+    directory = $('#location').val();
+    url= '<?php echo site_url("manage/getdirectory")?>';
+    $.ajax({
+      url:url,
+      data:{dir:directory},
+      success:function(response){
+        $('#listcontent').html(response);
+      },
+      error:function(){
+        alert('something wrong');
+      }
+    });
   }
 </script>
 <!--body-->
@@ -43,14 +68,13 @@
         <dd class="active"><a href="#">All</a></dd>
       </dl>
       <div class="admin-content-white">
-        <form style="float:tiny" method="get" name="q">
-          <span class="row collapse" style="min-width:100%">
-            <span class="large-10 columns">
-              <input id="location" type="text" placeholder="location"></span>
-              <span class="large-2 columns"><button type="submit" class="tiny">jump to location</button>
-              </span>
+
+        <span class="row collapse" style="min-width:100%">
+          <span class="large-10 columns">
+            <input id="location" type="text" placeholder="location" value="/"></span>
+            <span class="large-2 columns"><button  onclick="getDirectory()" class="button tiny">jump to location</button>
             </span>
-          </form>
+          </span>
           <!-- data from db -->
           <?php
           $uri = $this->uri->segment(3)+1;
@@ -58,8 +82,8 @@
             $uri = 1;
           }
           ?>
-          <a style="width:100px;" onclick="addDir()"><span style="font-size:30px;padding:5px;background-color:#008cba;color:#fff" class="fi-folder-add"></span></a>
-          <a style="width:100px;" onclick="addFile()"><span style="font-size:30px;padding:5px;background-color:#008cba;color:#fff" class="fi-page-add"></span></a>
+          <a style="width:100px;" onclick="addDir()"><span style="font-size:15px;padding:5px;background-color:#008cba;color:#fff" class="fi-folder-add"> Add Directory</span></a>
+          <a style="width:100px;" onclick="addFile()"><span style="font-size:15px;padding:5px;background-color:#008cba;color:#fff" class="fi-page-add"> Add File</span></a>
           <hr/>
           <?php if(!empty($editidmateri)){?>
           <div style="width:400px">
@@ -94,18 +118,16 @@
                 <button class="button small">add</button>
               </form>
             </div>
-            <center class="pagination"><?php echo $link;?></center>
             <div class="row">
-              <div class="small-1 columns"><span style="font-size:20px" class="fi-folder"></span></div>
-              <div class="small-8 columns">name</div>
-              <div clas="small-2 columns"><a href="#">rename</a><a href="#">delete</a></div>
+              <div class="large-12 columns">
+              <a onclick="changeDirectory('/')">/</a>
+              </div>
+              <div class="large-12 columns">
+                <a onclick="changeDirectory('/')">..</a>
+              </div>
             </div>
-            <div class="row">
-              <div class="small-1 columns"><span style="font-size:20px" class="fi-page-copy"></span></div>
-              <div class="small-8 columns">name</div>
-              <div clas="small-2 columns"><a href="#">rename</a><a href="#">delete</a></div>
-            </div>
-            <center class="pagination"><?php echo $link;?></center>
+            <div id="listcontent"></div>
+
             <!-- data from db -->
           </div>
         </div>

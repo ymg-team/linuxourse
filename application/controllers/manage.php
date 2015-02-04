@@ -59,61 +59,61 @@ class manage extends base { //class for public
 				$this->baseManageView('manage/login',$data);
 			}
 			
-		} else { //if validation is false
-			$data['title'] = 'login failed';
-			$this->baseManageView('manage/login',$data);
-		}
-			//end of login process
-	}else{
-		$data = array(
-			'title'=>'Manage'
-			);
-		$this->baseManageView('manage/login',$data);	
-	}		
-}
+			} else { //if validation is false
+				$data['title'] = 'login failed';
+				$this->baseManageView('manage/login',$data);
+			}
+				//end of login process
+		}else{
+			$data = array(
+				'title'=>'Manage'
+				);
+			$this->baseManageView('manage/login',$data);	
+		}		
+	}
 //validate login
 //login validation
-public function validate_credentials(){
-	$username = $this->input->post('input_username');
-	$password = md5(md5($this->input->post('input_password')));
+	public function validate_credentials(){
+		$username = $this->input->post('input_username');
+		$password = md5(md5($this->input->post('input_password')));
 		//cek apakah tersedia di database
-	if($this->m_admin->can_login($username,$password)){
-		return true;
-	}else{
-		$this->form_validation->set_message('validate_credentials','username and password not match');
-		return false;
+		if($this->m_admin->can_login($username,$password)){
+			return true;
+		}else{
+			$this->form_validation->set_message('validate_credentials','username and password not match');
+			return false;
+		}
 	}
-}
 
 //show dashboard after login
-public function dashboard(){
-	$data=array(
-		'title'=>'Manage Title',
-		);	
-	$this->baseManageView('manage/dashboard',$data);
-}
+	public function dashboard(){
+		$data=array(
+			'title'=>'Manage Title',
+			);	
+		$this->baseManageView('manage/dashboard',$data);
+	}
 
 ////////////////////
 // COURSE MANAGEMENT
 ////////////////////
 //add new course
-public function addcourse(){
-	if(!empty($_POST)){
+	public function addcourse(){
+		if(!empty($_POST)){
 		// echo '<pre>';
 		// print_r($_POST);
 		// echo '</pre>';
 		//course data
-		$title = $_POST['input_title'];
-		$step = $_POST['input_step'];
-		$description = $_POST['input_description'];
-		$level = $_POST['input_level'];
-		$estimate = $_POST['input_estimate'];
-		$case_en = $_POST['input_caseen'];
-		$case_id = $_POST['input_caseid'];
-		$hint_en = $_POST['input_hinten'];
-		$hint_id = $_POST['input_hintid'];
-		$command = $_POST['input_command'];
-		$controller = $_POST['input_controller'];
+			$title = $_POST['input_title'];
+			$step = $_POST['input_step'];
+			$description = $_POST['input_description'];
+			$level = $_POST['input_level'];
+			$estimate = $_POST['input_estimate'];
+			$case_en = $_POST['input_caseen'];
+			$case_id = $_POST['input_caseid'];
+			$hint_en = $_POST['input_hinten'];
+			$hint_id = $_POST['input_hintid'];
+			$command = $_POST['input_command'];
+			$controller = $_POST['input_controller'];
 		if(isset($_POST['btnpost'])){//publish
 			$status = 'posted';
 			$redirect = site_url('manage/course?success=success add case');
@@ -1022,4 +1022,52 @@ public function logout(){
 	//
 	// AJAX ONLY - ajax for admin manage
 	//
+public function getDirectory(){
+	$directory = $_GET['dir'];
+	$directory = str_replace('%2f', '/', $directory);
+	$path = $directory;
+	if($path == '/'){$path='';}
+		////get directory
+	$sqldir = "SELECT * FROM available_dir WHERE directory LIKE '".$directory."%'";
+	$querydir = $this->db->query($sqldir);
+	$mydir = array();
+	$dir = $querydir->result_array();
+	foreach($dir as $d):
+		$resultdir = explode('/', $d['directory']);
+	array_push($mydir, $resultdir[1]);
+	endforeach;
+	foreach($mydir as $md):
+	if($md != $directory){
+	echo '
+	<div class="row">
+		<div class="small-1 columns"><span style="font-size:20px" class="fi-folder"></span></div>
+		<div class="small-8 columns">'.$md.'/</div>
+		<div class="small-2 columns"><a onclick="changeDirectory(\''.$path.'/'.$md.'\')"> <strong>open</strong> </a> | <a onclick="editFile()" href="">edit</a> | <a onclick="deleteFile()" href="#">delete</a></div>
+	</div>
+	';
+	}
+	endforeach;
+	// print_r($mydir);
+		//replace same folder
+
+		////get file
+	$sqlfile = "SELECT id_ls_dir,type,name,attributes,content FROM ls_dir
+	INNER JOIN available_dir ON available_dir.id = ls_dir.id_available_dir
+	WHERE available_dir.directory = '$directory'";
+	$queryfile = $this->db->query($sqlfile);
+	$myfile = array();
+	$file = $queryfile->result_array();
+	foreach($file as $f):
+		$attributes = str_replace('|', ' ', $f['attributes']);
+	echo '
+	<div class="row">
+		<div class="small-1 columns"><span style="font-size:20px" class="fi-page-copy"></span></div>
+		<div class="small-8 columns">'.$f['type'].$attributes.' '.$f['name'].'</div>
+		<div class="small-2 columns"><a onclick=""> <strong>open</strong> </a> | <a onclick="editFile('.$f['id_ls_dir'].')" href="">edit</a> | <a onclick="deleteFile('.$f['id_ls_dir'].')" href="#">delete</a></div>
+	</div>
+	';
+	endforeach;
+
+	if(empty($mydir) && empty($file)){echo '<center>Directory Not Found</center>';}
+}
 }

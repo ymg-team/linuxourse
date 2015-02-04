@@ -45,14 +45,16 @@ class course extends base { //class for public
 	}
 	//materi -> syllabus detail
 	public function syllabus(){//show all syllabus by id_materi
-		$this->memberOnly();
+		//$this->memberOnly();
 		$id = $this->uri->segment(3);//get id materi
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));//decoding id to get id_materi
 		//cek is user have started
-		if($this->m_course->isStudentStarted($this->session->userdata['student_login']['id_user'],$id)){
+		if(!empty($this->session->userdata['student_login'])){
+			if($this->m_course->isStudentStarted($this->session->userdata['student_login']['id_user'],$id)){
 			redirect(site_url('course/review/'.$this->uri->segment(3)));//redirect to syllabus view
 		}
+	}
 		$detMateri = $this->m_course->detMateri($id);//detail of materi
 		$data = array(
 			'title'=>$detMateri['title'],//show materi title
@@ -65,6 +67,7 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
+		error_reporting(0);
 		//set default active directoru
 		$this->session->set_userdata('dir','/home/user');
 		$this->session->set_userdata('command','');
@@ -77,7 +80,38 @@ class course extends base { //class for public
 		//recent idlevel
 		$data['recentIdlevel'] = $this->m_course->courseListMenu($data['detCourse']['step'],$data['detCourse']['id_level'],$data['detCourse']['id_materi']);
 		$data['courseList']=$this->m_course->courseByLevel($data['recentIdlevel']['id_level']);//show course b y id level
-		$this->emptyBaseView('course/start',$data);
+		//is course completed
+		if(empty($data['recentIdlevel']) && empty($data['courseList'])){
+			//change course status
+			$this->db->where('id_user_course',$id);
+			$this->db->update('user_course',array('status'=>'completed')); 
+			echo 'course completed';
+		}else{
+			//change course status
+			$this->db->where('id_user_course',$id);
+			$this->db->update('user_course',array('status'=>'incomplete'));
+			$this->emptyBaseView('course/start',$data);
+		}
+	}
+	//rewind course
+	public function rewind(){
+		$this->session->set_userdata('dir','/home/user');
+		$this->session->set_userdata('command','');
+		$this->memberOnly();
+		//get id course on segment 3
+
+		$id = $this->uri->segment(3);//id_course
+		$id = str_replace('', '=', $id);
+		$id = base64_decode(base64_decode($id));
+		$data['detCourse'] = $this->m_course->detCourseByIdCourse($id);//get all user course data
+		$data['title'] = $data['detCourse']['leveltitle'];
+		//recent idlevel
+		$data['recentIdlevel'] = $data['detCourse']['id_level'];
+		$data['courseList']=$this->m_course->courseByLevel($data['recentIdlevel']);//show course b y id level
+		//get last course step
+
+		//is course completed
+		$this->emptyBaseView('course/rewind',$data);
 	}
 	//next step
 	public function next(){
@@ -105,17 +139,20 @@ class course extends base { //class for public
 			}else{//change to next level
 				// next step not available -> change level
 				$nextlevel = $this->m_course->isNextLevelAvailable($idlevel,$idmateri);
+				//echo $nextlevel;
 				// echo 'next course no available';
+				print_r($nextlevel);
 				if(!empty($nextlevel)){
+					echo 'this materi not completed';
 					$next_idlevel = $nextlevel['id_level'];
 					//get next_idcourse 
-					$next_idcourse = $this->m_course->getIdCourseByLevel($nextlevel);
+					$next_idcourse = $this->m_course->getIdCourseByLevel($nextlevel['id_level']);
 					$next_idcourse = $next_idcourse['id_course'];
 					//update db
 					$this->db->where('id_user_course',$id_user_course);
 					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idlevel);
 					$this->db->update('user_course',$data);
-				redirect($this->agent->referrer());//back to start course
+					redirect($this->agent->referrer());//back to start course
 				}else{
 					echo 'this materi is completed';
 				}

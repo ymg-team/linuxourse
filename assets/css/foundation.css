@@ -3215,7 +3215,7 @@ meta.foundation-version {
                                           float: left; }
                                           .tabs dd > a, .tabs .tab-title > a {
                                             display: block;
-                                            background-color: #E8E8E8;
+                                            background-color: #F4f4f4;
                                             color: #000;
                                             padding: 1rem 2rem;
                                             font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
@@ -3228,7 +3228,7 @@ meta.foundation-version {
                                               background-color: #fff;
                                               color:#000; }
                                               .tabs dd.active a, .tabs .tab-title.active a {
-                                                background-color: white;
+                                                background-color: #E8E8E8;
                                                 color: #222222; }
                                                 .tabs dd{
                                                   background-color: #000;

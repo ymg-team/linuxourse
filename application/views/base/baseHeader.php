@@ -8,6 +8,11 @@
 	<link rel="icon" href="<?php echo base_url('assets/img/linuxourse-logo-black.png')?>">
 	<script type="text/javascript" src="<?php echo base_url('assets/js/vendor/modernizr.js')?>"></script>
 	<script src="<?php echo base_url('assets/js/vendor/jquery.js')?>"></script>
+	<script>
+		$(document).ready(function(){
+			$('#progressanimate').toggle('slow');
+		});
+	</script>
 	<?php
 	//custom js setup
 	if(!empty($script)){
