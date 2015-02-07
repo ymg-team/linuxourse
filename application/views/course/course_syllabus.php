@@ -1,5 +1,27 @@
+<script>
+	function lattestCompletedStudents(idmateri){
+		content = $('#completedstudent').html();
+		// alert(content);
+		if(content == ''){//if completed student no view
+			$('#completedstudent').html('<center><img style="width:30px" src="<?php echo base_url("assets/img/loader.gif")?>"></center>');
+			//alert('div is empty');
+			url = '<?php echo ''?>';
+		}else{
+			//alert('div not empty');
+			return false;//do no action
+		}		
+	}
+</script>
 <section id="title">
 	<center>
+		<?php
+		if(!empty($materi['logo'])){
+			$logo = base_url('assets/img/logo/'.$materi['logo']);
+		}else {
+			$logo = base_url('assets/img/logo/other logo.png');
+		}
+		?>
+		<img src="<?php echo $logo?>">
 		<h1 style="margin:0"><?php echo $materi['title'];?></h1>
 		<p><?php echo $materi['description'];?></p>
 		<hr/>
@@ -15,7 +37,7 @@
 				<div class="row">
 					<dl style="border-top:1px solid #E8E8E8" class="tabs" data-tab>
 						<dd style="width:50%" class="active"><a href="#mycourse">Course Syllabus</a></dd>
-						<dd style="width:50%"><a href="#finishedcourse">Student Has Completed</a></dd>
+						<dd style="width:50%"><a onclick="lattestCompletedStudents(<?php echo $materi['id_materi']?>)" href="#completedstudent">Student Has Completed</a></dd>
 					</dl>
 					<br/>
 					<div class="tabs-content">
@@ -55,11 +77,7 @@
 							<?php endforeach ?>
 							<!-- end of syllabus list-->
 						</div>
-						<div class="content" id="finishedcourse">
-							<!-- start of completed user -->
-							<a data-tooltip aria-haspopup="true" title="Username"  href=""><img src=""></a>
-							<!-- end of completed user -->
-						</div>					  
+						<div class="content" id="completedstudent"></div>					  
 					</div>
 
 				</div>

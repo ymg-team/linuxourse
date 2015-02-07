@@ -383,7 +383,7 @@ class m_course extends CI_Model{
 	//show course by level
 	public function courseByLevel($x){//x = id level
 		$sql = "SELECT id_course, step, course.id_level AS 'id_level',course.title AS 'title',course.description AS 'description',
-		level.level AS 'level' 
+		level.level AS 'level',course.estimate 
 		FROM course 
 		INNER JOIN level ON level.id_level = course.id_level
 		WHERE course.id_level = ?

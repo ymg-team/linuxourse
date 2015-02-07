@@ -23,6 +23,7 @@ class p extends base { //class for public
 		}
 		$data = array(
 			'title'=>'',//will print LINUXOURSE
+			'allMateri'=>$this->m_course->showAllMateri(),
 			);
 		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
 		$this->baseView('p/home',$data);

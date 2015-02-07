@@ -45,6 +45,21 @@ class m_user extends CI_Model{
 	/*
 	* ALL ABOUT STUDENT
 	*/
+	//get students completed materi
+	public function getCompletedStudents($idmateri,$limit,$offset){
+		$params = array($idmateri,$limit,$offset);
+		//join user_course and user
+		$sql = "SELECT user.username FROM user INNER JOIN user_course
+		ON user_course.id_user  = user.id_user
+		WHERE user_course.id_materi = ?
+		LIMIT ?,?";
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){
+			return $query->result_array();//get all completed students by ajax
+		}else{
+			return array();//show empty array
+		}
+	}
 	//student data by username
 	public function getDataByUsername($username){
 		$this->db->where('username',$username);
@@ -95,20 +110,6 @@ class m_user extends CI_Model{
 		}
 	}
 
-	//get student completed materi
-	public function getCompletedStudents($idmateri){
-		$sql = "SELECT user.username FROM user
-		INNER JOIN user_course ON user_course.id_user = user.id_user
-		INNER JOIn materi ON materi.id_materi = user_course.id_materi
-		WHERE id_materi =?
-		";
-		$query = $this->db->query($sql,$idmateri);
-		if($query->num_rows()>0){
-			return $query->result_array();
-		}else{
-			return array();
-		}
-	}
 	//count active student on 1 materi
 
 	/*

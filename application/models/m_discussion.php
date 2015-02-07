@@ -33,7 +33,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.id_discuss = ?";
+		WHERE discussion.id_discuss = ? AND discussion.status = 'posted'";
 		$query = $this->db->query($sql,$id_discuss);
 		if($query->num_rows()>0){
 			return $query->row_array();
@@ -111,6 +111,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.status = 'posted'
 		ORDER BY discussion.views DESC
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);
@@ -127,7 +128,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.type = '".$type."' 
+		WHERE discussion.type = '".$type."' AND discussion.status='posted' 
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);
 		if($query->num_rows()>0){
@@ -143,6 +144,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
+		WHERE discussion.status = 'posted'
 		ORDER BY discussion.views DESC
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);

@@ -3,6 +3,8 @@ by yussan @xyussanx
 28 Oct 2014*/
 body{font-size: 12px}
 ul.menu{list-style: none;line-height: 1.2}
+/*home only*/
+
 #progressanimate{display:none;}
 .activemenu{border-bottom: 2px solid #008cba;}
 .logo{margin-top:5px;width:155px;height:40px;background-color:#000;background-image: url('img/logo.png');background-size: cover}
@@ -19,7 +21,8 @@ ul.menu{list-style: none;line-height: 1.2}
 #home_header{border-bottom: 4px solid #D5D5D5;width:100%;position:fixed;background-color:#fff;z-index:100;}
 #home_center{padding:40px;}
 .divideroftopmenu{width:100%;height: 40px}
-#home_user{padding:40px;background-color: #E8E8E8}
+#home_user{padding:40px;background-color: #004257}
+#home_user h3,#home_user  h5{color:#fff;}
 #footer{padding:10px;background-color: #000;color:#B3B3B3;}
 #footer h3{font-size: 14px;color:#B3B3B3;}
 #footer p{line-height:0;font-size: 12px;color:#B3B3B3;}
@@ -33,7 +36,7 @@ ul.menu{list-style: none;line-height: 1.2}
 .whitebutton:hover,.whitebutton:active{background-color: gray;color:#FFF;}
 /*learn*/
 .materi-item:hover{background-color: #F4F4F4;}
-.materi-item{float:left;border:1px solid lightgray;width:100%;}
+.materi-item{float:left;border:1.5px solid rgb(0, 96, 128);width:100%;}
 .materi-item small{color:gray;}
 .materi-title{height: 35px;padding:0.1em;}
 .learn_sidebar{padding:0  10px;margin-top:0;background-color: #F5F5F5}

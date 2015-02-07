@@ -120,34 +120,74 @@
 				<div class="large-3 columns"><p></p></div>
 			</div>
 		</section>
-		<section id="home_user">
-			<div class="row">
-				<div class="large-4 columns">
-					<center>
-						<h5>Total Student</h5>
-						<strong><h3><?php echo $this->m_user->countActiveStudent();?></h3></strong>
-					</center>
+		<!-- available course -->
+		<section id="otherCourse">
+			<center>
+				<div class="row">		
+					<div class="large-12 collapse" columns>
+						<h1 style="margin:0">Available Course Materi</h1>
+						<p>improve the mastery of Linux by following other courses</p>
+						<!-- skill completion -->
+						<div class="row">
+							<?php 
+							foreach($allMateri as $am):	
+							$idMateri = base64_encode(base64_encode($am['id_materi']));
+							$idMateri = str_replace('=', '', $idMateri);
+							$titleMateri = str_replace(' ', '-', $am['title']);
+							if(!empty($am['logo'])){$logo = base_url('assets/img/logo/'.$am['logo']);}
+							else{$logo = base_url('assets/img/logo/other logo.png'); }
+							?>
+							<a id="btn_course_item" href="#btn_resume">
+								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
+									<div style="background-color:#fff" class="materi-item">
+										<center>
+											<img src="<?php echo $logo?>"/>
+										</center>
+										<div class="materi-title">
+											<h4><?php echo $am['title'];?></h4>								
+										</div>
+										<div class="course-detail">
+											<?php echo $am['description'];?>
+										</div>
+										<a href="<?php echo site_url('course/syllabus/'.$idMateri.'/'.$titleMateri)?>" class="button">start</a>
+									</div>
+								</div>					
+							</a>						
+						<?php endforeach;?>				
+					</div>
 				</div>
-				<div class="large-4 columns">
-					<center>
-						<h5>Total Materi</h5>
-						<strong><h3><?php echo $this->db->count_all_results('materi');?></h3></strong>
-					</center>
-				</div>
-				<div class="large-4 columns">
-					<center>
-						<h5>Total Course</h5>
-						<strong><h3><?php echo $this->db->count_all_results('course');?></h3></strong>
-					</center>
-				</div>			
 			</div>
-		</section>
-
-		<!-- success register modal -->
-		<div id="registerSuccess" class="reveal-modal small" data-reveal>
-			<h2>Register Success</h2>
-			<p class="lead">You're now students</p>
-			<p>you can login using email/username and password which you have made!</p>
-			<a class="close-reveal-modal">&#215;</a>
+		</center>
+	</section>
+	<!-- stats -->
+	<section id="home_user">
+		<div class="row">
+			<div class="large-4 columns">
+				<center>
+					<h5>Total Student</h5>
+					<strong><h3><?php echo $this->m_user->countActiveStudent();?></h3></strong>
+				</center>
+			</div>
+			<div class="large-4 columns">
+				<center>
+					<h5>Total Materi</h5>
+					<strong><h3><?php echo $this->db->count_all_results('materi');?></h3></strong>
+				</center>
+			</div>
+			<div class="large-4 columns">
+				<center>
+					<h5>Total Course</h5>
+					<strong><h3><?php echo $this->db->count_all_results('course');?></h3></strong>
+				</center>
+			</div>			
 		</div>
+	</section>
+
+	<!-- success register modal -->
+	<div id="registerSuccess" class="reveal-modal small" data-reveal>
+		<h2>Register Success</h2>
+		<p class="lead">You're now students</p>
+		<p>you can login using email/username and password which you have made!</p>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
 

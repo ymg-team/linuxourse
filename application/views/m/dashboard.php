@@ -247,7 +247,7 @@
 					<h1 style="margin:0">Available Course Materi</h1>
 					<p>improve the mastery of Linux by following other courses</p>
 					<!-- skill completion -->
-					<div style="background-color:#fff" class="row">
+					<div class="row">
 						<?php $myIdMateri = array();
 						foreach($myMateri as $mm):
 							array_push($myIdMateri, $mm['id_materi']);
@@ -273,7 +273,7 @@
 								?>
 								<a id="btn_course_item" href="#btn_resume">
 									<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-										<div class="materi-item">
+										<div style="background-color:#fff" class="materi-item">
 											<center>
 												<img src="<?php echo $logo?>"/>
 											</center>

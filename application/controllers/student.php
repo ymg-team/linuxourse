@@ -18,4 +18,9 @@ class student extends base { //class for public
 		$data['title'] = $data['student']['fullname'];
 		$this->baseView('p/student',$data);
 	}
+	//students has completed materi
+	public function completedmateri(){
+		$limit=$_GET['limit'];
+		$offset=$_GET['offset'];
+	}
 }
