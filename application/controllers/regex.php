@@ -243,14 +243,14 @@ class regex extends base { //class for public
 			$terminal = strip_tags($_POST['terminal']);//remove all html tag
 		//replace space
 			$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;
-		//get id user course
-			$usercourseid = $_POST['usercourseid'];
+		//get id course
+			$idcourse = $_POST['idcourse'];
 		//decrypt id  usercourse
-			$idusercourse = str_replace('','=',$usercourseid);
-			$idusercourse = base64_decode(base64_decode($idusercourse));
-		//get course data by id user course
-		// echo $idusercourse;
-			$course_data = $this->m_course->detCourseByUserCourse($idusercourse);
+			$idcourse = str_replace('','=',$idcourse);
+			$idcourse = base64_decode(base64_decode($idcourse));
+		//get course data by id course
+			$course_data = $this->m_course->detCourseByIdCourse($idcourse);
+			print_r($course_data);
 		//start regex, get command only from terminal
 			preg_match_all('#\$(.*):#Us', $terminal,$reg_terminal,PREG_SET_ORDER);
 		// print_r($reg_terminal);//show preg match result
@@ -274,7 +274,7 @@ class regex extends base { //class for public
 					$course = FALSE;
 				// echo $cbase.' not in array </br>';
 				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
-					redirect(site_url('regex/check_fault'));
+					//redirect(site_url('regex/check_fault'));
 				}
 				endforeach;
 			//set session case = true

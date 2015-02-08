@@ -70,16 +70,16 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		$('#loadercheck').show();//show loader
 		//$('#linuxCommand').attr('readonly','readonly');//readonly terminal
 		terminal = $('#terminal').html();
-		usercourseid = '<?php echo $this->uri->segment(3)?>';
+		idcourse = '<?php echo $this->uri->segment(3)?>';//get id course
 		<?php if(!empty($course['custom_controller'])){ //if use custom controller?>
 			url='<?php echo site_url("regex/".$course["custom_controller"]);?>';
 		<?php }else{//use default controller?>
-				url='<?php echo site_url("regex/check");?>';
+				url='<?php echo site_url("regex/checkrewind");?>';
 				<?php }	?>
 				$.ajax({
 					url:url,
 					type:'post',
-					data:{terminal:terminal,usercourseid:usercourseid},
+					data:{terminal:terminal,idcourse:idcourse},
 					success:function(data){
 					$('#loadercheck').hide();//show loader
 					// $('#test').html(data);

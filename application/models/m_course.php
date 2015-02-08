@@ -26,11 +26,16 @@ class m_course extends CI_Model{
 	}
 	//usercourse data by id user course
 	public function detUserCourse($idUserCourse){
-		$sql = "SELECT course.step AS 'step',user_course.id_level AS 'id_level',level.level AS 'level',level.title AS 'leveltitle',user_course.id_materi as 'id_materi',
-		user_course.id_user AS 'id_user',user_course.id_course AS 'id_course'
+		$sql = "SELECT user.fullname,course.step AS 'step',user_course.id_level AS 'id_level',level.level AS 'level',
+		level.title AS 'leveltitle',user_course.id_materi as 'id_materi',
+		materi.title AS 'materititle',
+		user_course.id_user AS 'id_user',user_course.id_course AS 'id_course',
+		user_course.startdate,user_course.lastdate,user_course.status
 		FROM user_course
+		INNER JOIN user ON user_course.id_user = user.id_user
 		INNER JOIN course ON user_course.id_course = course.id_course
 		INNER JOIN level ON user_course.id_level = level.id_level
+		INNER JOIN materi ON user_course.id_materi = materi.id_materi
 		WHERE user_course.id_user_course = ?";
 		$query = $this->db->query($sql,$idUserCourse);
 		if($query->num_rows()>0){
@@ -42,7 +47,7 @@ class m_course extends CI_Model{
 	//get course detail by id course
 	public function detCourseByIdCourse($idcourse){
 		$sql = "SELECT course.step AS 'step',course.id_level AS 'id_level',level.level AS 'level',level.title AS 'leveltitle',materi.id_materi as 'id_materi',
-		course.id_course AS 'id_course'
+		course.id_course AS 'id_course',course.command
 		FROM course
 		INNER JOIN level ON course.id_level = level.id_level
 		INNER JOIN materi ON materi.id_materi = level.id_materi
@@ -88,9 +93,11 @@ class m_course extends CI_Model{
 	//usercourse data by id user n materi
 	public function detUserCourseByMateriNUser($idmateri,$iduser){
 		$params = array($idmateri,$iduser);
-		$sql = "SELECT user_course.lastdate,user_course.startdate,user_course.id_user_course AS 'id_user_course', course.step as 'step',user_course.id_level as 'id_level',user_course.id_materi as 'id_materi',
+		$sql = "SELECT user_course.lastdate,user_course.startdate,user_course.id_user_course AS 'id_user_course', course.step as 'step',
+		user_course.id_level as 'id_level',user_course.id_materi as 'id_materi',
 		user_course.id_user as 'id_user',user_course.id_course as 'id_course',level.level AS 'level'
 		FROM user_course
+		INNER JOIN materi ON user_course.id_materi = materi.id_materi
 		INNER JOIN course ON user_course.id_course = course.id_course
 		INNER JOIN level ON user_course.id_level = level.id_level
 		WHERE user_course.id_materi = ? AND user_course.id_user = ?";
@@ -542,5 +549,12 @@ class m_course extends CI_Model{
 		}else{
 			return array();
 		}	
+	}
+	//get signature
+	public function signature($date){
+		$date = date('Y/m/d', strtotime($date));
+		$sql = "SELECT * FROM signature WHERE startdate <= '$date' AND enddate >= '$date'";
+		$query = $this->db->query($sql);
+		return $query = $query->row_array();
 	}
 }

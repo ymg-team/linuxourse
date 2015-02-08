@@ -99,7 +99,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%'
+		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%' AND discussion.status = 'posted'
 		ORDER BY discussion.id_discuss DESC";
 		$query = $this->db->query($sql);
 		return $query->num_rows();
@@ -180,7 +180,7 @@ class m_discussion extends CI_Model{
 		discussion_comment.comment AS 'comment'
 		FROM discussion_comment
 		INNER JOIN user ON discussion_comment.id_user = user.id_user
-		WHERE discussion_comment.id_discussion = ?";
+		WHERE discussion_comment.id_discussion = ? AND discussion_comment.status = 'posted'";
 		$query = $this->db->query($sql,$id_discuss);
 		if($query->num_rows()>0){
 			return $query->result_array();
