@@ -18,6 +18,8 @@ class regex extends base { //class for public
 
 	public function execcommand(){
 		$command = $_GET['command'];
+		//remove new line with regex
+		$command = preg_replace('/[\n]/', '', $command);
 		//history setup
 		//get all command have exec from session
 		$history = array();
@@ -48,9 +50,10 @@ class regex extends base { //class for public
 			redirect(site_url('regex/ls?command='.$command));
 		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
-		} 
-		else if(in_array('cat',$commandArray)){//cat file
+		} else if(in_array('cat',$commandArray)){//cat file
 			redirect(site_url('regex/cat?command='.$command));
+		} else if(in_array('touch',$commandArray)){//touch new file
+			redirect(site_url('regex/touch?command='.$command));
 		}
 		$specialcommand = array(
 			'history'=>$myhistory,
@@ -81,7 +84,7 @@ class regex extends base { //class for public
 			if(!empty($result)){
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$result.'</pre>';			
 			} else {
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'No command "'.$command.'" found </pre>';
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':<br/>'.'No command "'.$command.'" found </pre>';
 			}
 		}
 	}
@@ -177,6 +180,17 @@ class regex extends base { //class for public
 	//nano
 	public function nano(){
 
+	}
+	//touch
+	public function touch(){
+		$command = $_GET['command'];
+		//cek pwd
+		//only /home/user can touch new file
+		if($this->session->userdata('dir')!='/home/user'){
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ location not allowed </pre>';
+		}else{
+			echo 'yes you can';
+		}
 	}
 	//delete history
 	public function deletehistory(){
