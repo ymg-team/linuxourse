@@ -60,36 +60,36 @@ class m_command extends CI_Model{
 					echo '<span class="terminal-showdir">/'.$insidedir[0].'</span> ';
 				}
 				array_push($showdir, $insidedir[0]);
-			endforeach;
+				endforeach;
 			//print file
-			foreach($lsfile as $lf):
-				echo $lf['name'].' ';
-			endforeach;
+				foreach($lsfile as $lf):
+					echo $lf['name'].' ';
+				endforeach;
 			//if active directory is /home/user, show file on session
-			if($directory == '/home/user'):
-				$sessionfile = $this->session->userdata('myfile');
+				if($directory == '/home/user'):
+					$sessionfile = $this->session->userdata('myfile');
 				foreach($sessionfile as $sf):
 					echo $sf['name'].' ';
 				endforeach;
-			endif;
+				endif;
 			//end if
-			echo '</pre>';
-		}else{
-			switch ($options) {
+				echo '</pre>';
+			}else{
+				switch ($options) {
 				case '-l': //-l
 					//get all file and links
-					$sqlfile = "SELECT name,type,attributes FROM ls_dir
+				$sqlfile = "SELECT name,type,attributes FROM ls_dir
 				INNER JOIN available_dir ON available_dir.id = ls_dir.id_available_dir
 				WHERE available_dir.directory = ? AND name NOT LIKE '.%'";
-					$queryfile = $this->db->query($sqlfile,$directory);
-					if($queryfile->num_rows()>0){
-						$lsfile = $queryfile->result_array();
-					}else{
-						$lsfile = array();
-					}
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
+				$queryfile = $this->db->query($sqlfile,$directory);
+				if($queryfile->num_rows()>0){
+					$lsfile = $queryfile->result_array();
+				}else{
+					$lsfile = array();
+				}
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
 					//print folder
-					foreach($lsdir as $ld):
+				foreach($lsdir as $ld):
 						if($directory == '/'){//only for root
 							//only replace first match
 							$dir = preg_replace('/\//', '', $ld['directory'],1).'/ ';//using
@@ -101,36 +101,36 @@ class m_command extends CI_Model{
 							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">/'.$insidedir[0].'</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
-					endforeach;
+						endforeach;
 					//print file
-					foreach($lsfile as $lf):
-						$attributes = str_replace('|',' ', $lf['attributes']);
+						foreach($lsfile as $lf):
+							$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'];
-					endforeach;
+						endforeach;
 					//if active directory is /home/user, show file on session
-					if($directory == '/home/user'):
-						$sessionfile = $this->session->userdata('myfile');
+						if($directory == '/home/user'):
+							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
 							echo '<br/>-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].' ';
 						endforeach;
-					endif;
+						endif;
 					//end if
-					echo '</pre>';
-					break;
+						echo '</pre>';
+						break;
 				case '-a': //-a
 					//get all file and links
-					$sqlfile = "SELECT name FROM ls_dir
+				$sqlfile = "SELECT name FROM ls_dir
 				INNER JOIN available_dir ON available_dir.id = ls_dir.id_available_dir
 				WHERE available_dir.directory = ?";
-					$queryfile = $this->db->query($sqlfile,$directory);
-					if($queryfile->num_rows()>0){
-						$lsfile = $queryfile->result_array();
-					}else{
-						$lsfile = array();
-					}
+				$queryfile = $this->db->query($sqlfile,$directory);
+				if($queryfile->num_rows()>0){
+					$lsfile = $queryfile->result_array();
+				}else{
+					$lsfile = array();
+				}
 					//print dir
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
-					foreach($lsdir as $ld):
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
+				foreach($lsdir as $ld):
 						if($directory == '/'){//only for root
 							//only replace first match
 							$dir = preg_replace('/\//', '', $ld['directory'],1).'/ ';//using
@@ -142,35 +142,35 @@ class m_command extends CI_Model{
 							echo '<span class="terminal-showdir">/'.$insidedir[0].'</span> ';
 						}
 						array_push($showdir, $insidedir[0]);
-					endforeach;
+						endforeach;
 					//print file
-					foreach($lsfile as $lf):
-						echo $lf['name'].' ';
-					endforeach;
+						foreach($lsfile as $lf):
+							echo $lf['name'].' ';
+						endforeach;
 					//if active directory is /home/user, show file on session
-					if($directory == '/home/user'):
-						$sessionfile = $this->session->userdata('myfile');
+						if($directory == '/home/user'):
+							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
 							echo $sf['name'].' ';
 						endforeach;
-					endif;
+						endif;
 					//end if
-					echo '</pre>';
-					break;
+						echo '</pre>';
+						break;
 				case '-la'||'-al': //-la || -al
 					//get all file and links
-					$sqlfile = "SELECT name,type,attributes FROM ls_dir
+				$sqlfile = "SELECT name,type,attributes FROM ls_dir
 				INNER JOIN available_dir ON available_dir.id = ls_dir.id_available_dir
 				WHERE available_dir.directory = ?";
-					$queryfile = $this->db->query($sqlfile,$directory);
-					if($queryfile->num_rows()>0){
-						$lsfile = $queryfile->result_array();
-					}else{
-						$lsfile = array();
-					}
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$command.'<br/>:';
+				$queryfile = $this->db->query($sqlfile,$directory);
+				if($queryfile->num_rows()>0){
+					$lsfile = $queryfile->result_array();
+				}else{
+					$lsfile = array();
+				}
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ ls '.$command.'<br/>:';
 					//print folder
-					foreach($lsdir as $ld):
+				foreach($lsdir as $ld):
 						if($directory == '/'){//only for root
 							//only replace first match
 							$dir = preg_replace('/\//', '', $ld['directory'],1).'/ ';//using
@@ -182,46 +182,57 @@ class m_command extends CI_Model{
 							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">/'.$insidedir[0].'</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
-					endforeach;
+						endforeach;
 					//print file
-					foreach($lsfile as $lf):
-						$attributes = str_replace('|',' ', $lf['attributes']);
+						foreach($lsfile as $lf):
+							$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'].'<br/>';
-					endforeach;
+						endforeach;
 					//if active directory is /home/user, show file on session
-					if($directory == '/home/user'):
-						$sessionfile = $this->session->userdata('myfile');
+						if($directory == '/home/user'):
+							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
 							echo '-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].'<br/>';
 						endforeach;
-					endif;
+						endif;
 					//end if
-					echo '</pre>';
-					break;
+						echo '</pre>';
+						break;
+					}
+				}
 			}
-		}
-	}
 	//using cat
-	public function cat($directory){
+			public function cat($directory){
 		//get file name
-		$dirArray = explode('/', $directory);
+				$dirArray = explode('/', $directory);
 		//file name is last index
-		$filename = end($dirArray);
+				$filename = end($dirArray);
 		//get real directory name
-		$directory = str_replace('/'.$filename,'',$directory);
+				$directory = str_replace('/'.$filename,'',$directory);
 		//cek on database
-		$params = array($filename,$directory);
-		$sql = "SELECT content FROM ls_dir
+				$params = array($filename,$directory);
+				$sql = "SELECT content FROM ls_dir
 				INNER JOIN available_dir ON ls_dir.id_available_dir = available_dir.id
 				WHERE ls_dir.name = ? AND available_dir.directory = ? ";
-		$query = $this->db->query($sql,$params);
+				$query = $this->db->query($sql,$params);
 		if($query->num_rows()>0){//print content k
 			$query = $query->row_array();
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
-				.$query['content'].'</pre>';
-		}else{//file or directory not found
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:
-			file or directory not found</pre>';
+			.$query['content'].'</pre>';
+		}else{
+			$found = FALSE;
+			foreach($this->session->userdata('myfile') as $mv):
+				if($mv['name']==$filename){
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
+					.$mv['content'].'</pre>';
+					$found = TRUE;
+				}
+				endforeach;
+			}
+			//found or not
+			if($found == FALSE){
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:file not found</pre>';				
+			}
 		}
+		
 	}
-}
