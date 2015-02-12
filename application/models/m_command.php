@@ -65,6 +65,14 @@ class m_command extends CI_Model{
 			foreach($lsfile as $lf):
 				echo $lf['name'].' ';
 			endforeach;
+			//if active directory is /home/user, show file on session
+			if($directory == '/home/user'):
+				$sessionfile = $this->session->userdata('myfile');
+				foreach($sessionfile as $sf):
+					echo $sf['name'].' ';
+				endforeach;
+			endif;
+			//end if
 			echo '</pre>';
 		}else{
 			switch ($options) {
@@ -99,6 +107,14 @@ class m_command extends CI_Model{
 						$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'];
 					endforeach;
+					//if active directory is /home/user, show file on session
+					if($directory == '/home/user'):
+						$sessionfile = $this->session->userdata('myfile');
+						foreach($sessionfile as $sf):
+							echo '<br/>-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].' ';
+						endforeach;
+					endif;
+					//end if
 					echo '</pre>';
 					break;
 				case '-a': //-a
@@ -131,6 +147,14 @@ class m_command extends CI_Model{
 					foreach($lsfile as $lf):
 						echo $lf['name'].' ';
 					endforeach;
+					//if active directory is /home/user, show file on session
+					if($directory == '/home/user'):
+						$sessionfile = $this->session->userdata('myfile');
+						foreach($sessionfile as $sf):
+							echo $sf['name'].' ';
+						endforeach;
+					endif;
+					//end if
 					echo '</pre>';
 					break;
 				case '-la'||'-al': //-la || -al
@@ -164,6 +188,14 @@ class m_command extends CI_Model{
 						$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'].'<br/>';
 					endforeach;
+					//if active directory is /home/user, show file on session
+					if($directory == '/home/user'):
+						$sessionfile = $this->session->userdata('myfile');
+						foreach($sessionfile as $sf):
+							echo '-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].'<br/>';
+						endforeach;
+					endif;
+					//end if
 					echo '</pre>';
 					break;
 			}

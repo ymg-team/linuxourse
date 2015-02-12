@@ -67,10 +67,30 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
-		error_reporting(0);
-		//set default active directoru
+		//error_reporting(0);
+		//set public directory on session
+		// $publicdirectory = array(
+		// 	array(
+
+		// 		);
+		// 	);
+		//end of set public directory
+		//set public file on session
+		$publicfile = array(
+			array(
+				'name'=>'publicfile',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				'content'=>'this is content inside public file',
+				)
+			);
+		$this->session->set_userdata('myfile',$publicfile);
+		//end of set public file
+		//set default active directory on session
 		$this->session->set_userdata('dir','/home/user');
 		$this->session->set_userdata('command','');
+		//end of set default directory
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
 		$id = str_replace('', '=', $id);
@@ -243,6 +263,6 @@ class course extends base { //class for public
 			$this->dompdf->render();
 			$title = 'Linuxourse Certificate '.$data['detUserCourse']['materi'];
 			$this->dompdf->stream($title.".pdf");//pdf file name
-	}		
-}
+		}		
+	}
 }

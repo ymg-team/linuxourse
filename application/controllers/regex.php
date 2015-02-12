@@ -19,7 +19,7 @@ class regex extends base { //class for public
 	public function execcommand(){
 		$command = $_GET['command'];
 		//remove new line with regex
-		$command = preg_replace('/[\n]/', '', $command);
+		$commandclear = preg_replace('/[\n]/', '', $command);
 		//history setup
 		//get all command have exec from session
 		$history = array();
@@ -84,7 +84,7 @@ class regex extends base { //class for public
 			if(!empty($result)){
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$result.'</pre>';			
 			} else {
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':<br/>'.'No command "'.$command.'" found </pre>';
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'No command "'.$commandclear.'" found </pre>';
 			}
 		}
 	}
@@ -184,13 +184,39 @@ class regex extends base { //class for public
 	//touch
 	public function touch(){
 		$command = $_GET['command'];
+		$commandarray = explode(' ', $command);
+		$filename = $commandarray[1];
 		//cek pwd
 		//only /home/user can touch new file
 		if($this->session->userdata('dir')!='/home/user'){
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ location not allowed </pre>';
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
 		}else{
-			echo 'yes you can';
+			//adding new file to session;
+			$getfile = array();
+			$newfile = array(
+					'name'=>$filename,
+					'permissions'=>'rwx------',
+					'create'=>date('dMY H:i'),
+					'owner'=>$this->session->userdata['student_login']['username'],
+					'content'=>'',
+				);
+			foreach ($this->session->userdata('myfile') as $mf) {
+				if($mf['name']==$filename){
+					redirect(site_url('regex/errortouch/'.$filename));
+				}else{
+					array_push($getfile, $mf);
+				}
+			}
+			array_push($getfile, $newfile);
+			// print_r($getfile);
+			$this->session->set_userdata('myfile',$getfile);
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
 		}
+	}
+	//error touch
+	public function errorTouch(){
+		$filename = $this->uri->segment(3);
+		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ touch '.$filename.' <br/>:"'.$filename.'" already available</pre>';
 	}
 	//delete history
 	public function deletehistory(){
