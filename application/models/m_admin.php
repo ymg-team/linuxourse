@@ -20,6 +20,32 @@ class m_admin extends CI_Model{
 	////////////////
 	// MANAGE COURSE
 	////////////////
+	//search course
+	public function searchCourse($keyword,$limit,$offset){
+		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
+		level.level AS 'level', materi.title AS 'materi',course.status AS 'status'
+		FROM course
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE course.title LIKE '%".$keyword."%'
+		ORDER BY materi.id_materi ASC,course.step ASC 
+		LIMIT ".$offset.",".$limit;
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){return $query->result_array();}else{return array();}//
+	}
+	//count search course
+	public function countSearchCourse($keyword){
+		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
+		level.level AS 'level', materi.title AS 'materi',course.status AS 'status'
+		FROM course
+		INNER JOIN level ON level.id_level = course.id_level
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE course.title LIKE '%".$keyword."%'
+		ORDER BY materi.id_materi ASC,course.step ASC";
+		$query = $this->db->query($sql);
+		return $query->num_rows();//show result count
+	}
+	//show all course
 	public function showAllCourse($limit,$offset){
 		$sql = "SELECT course.id_course AS 'id_course',course.title AS 'title', course.step AS 'step',course.description AS 'description',
 		level.level AS 'level', materi.title AS 'materi',course.status AS 'status'

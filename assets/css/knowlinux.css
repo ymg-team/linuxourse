@@ -53,7 +53,9 @@ ul.menu{list-style: none;line-height: 1.2}
 .result{}
 .result>.item{margin:10px;padding:10px;color:#fff;background-color: #000;min-height: 500px}
 #linuxCommand{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;font-family: monospace}
-#linuxCommand:focus{border:0;box-shadow: none};
+#linuxCommand:focus{border:0;box-shadow: none}
+#nano{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;font-family: monospace}
+#nano:focus{border:0;box-shadow: none};
 .dropdownme{max-width: none}
 /*other course*/
 #otherCourse{padding: 40px;background-color: #008cba;color:#fff;}

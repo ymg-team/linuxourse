@@ -54,6 +54,8 @@ class regex extends base { //class for public
 			redirect(site_url('regex/cat?command='.$command));
 		} else if(in_array('touch',$commandArray)){//touch new file
 			redirect(site_url('regex/touch?command='.$command));
+		} else if(in_array('nano',$commandArray)){//nano -> edit file
+			redirect(site_url('regex/nano?command='.$command));
 		}
 		$specialcommand = array(
 			'history'=>$myhistory,
@@ -179,13 +181,35 @@ class regex extends base { //class for public
 	}
 	//nano
 	public function nano(){
-
+		$command = $_GET['command'];
+		$commandarray = explode(' ', $command);
+		$filename = $commandarray[1];//get filename
+		//only ca use nano on /home/user
+		if($this->session->userdata('dir')!='/home/user'){
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
+		}else{
+			//is file on session
+			$found = FALSE;
+			foreach($this->session->userdata('myfile') as $mf):
+				if($filename == $mf['name']):
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/></pre>';
+					echo '<textarea style="font-family:monospace" id="nano" autofocus>'.$mf['content'].'</textarea>';
+					echo '<span style="font-family:monospace;color:#000;background-color:#fff">save = ^x</span>';
+					$found = TRUE;//found file to be 'nano'
+				endif;
+			endforeach;
+			//found or not
+			if($found==FALSE){
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+			}
+		}
 	}
 	//touch
 	public function touch(){
 		$command = $_GET['command'];
 		$commandarray = explode(' ', $command);
-		$filename = $commandarray[1];
+		$filename = $commandarray[1];//get filename
+		//only ca use nano on /home/user
 		//cek pwd
 		//only /home/user can touch new file
 		if($this->session->userdata('dir')!='/home/user'){

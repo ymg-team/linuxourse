@@ -34,10 +34,10 @@
         <?php }?>
         <?php $this->load->view('manage/extentions/coursefilter')?>
         <div class="admin-content-white">
-          <form style="float:tiny" method="get" name="q">
+          <form style="float:tiny" method="get" name="q" action="">
             <span class="row collapse" style="min-width:100%">
               <span class="large-11 columns">
-                <input type="text" placeholder="searching course"></span>
+                <input name="q" type="text" placeholder="searching course"></span>
                 <span class="large-1 columns"><button type="submit" class="tiny">search</button>
                 </span>
               </span>

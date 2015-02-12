@@ -251,6 +251,19 @@ public function course(){
 				case 'search':
 				$keyword = $this->uri->segment(4);
 				$config['uri_segment']=5;
+				$config['total_rows']=$this->m_admin->countSearchCourse($keyword);
+				$config['base_url']=site_url('manage/course');//get lattest location]
+				$uri = $this->uri->segment(5);
+				if(!$uri){
+					$uri = 0;
+				}
+				//end of pagination setup
+				$data = array(
+					'title'=>'All Course',
+					'total'=>$config['total_rows'],
+					'script'=>'<script>$(document).ready(function(){$("#course").addClass("active");$("#course-all").addClass("active");});function addForm(){$("#form-add").toggle("fast");}</script>',
+					'view'=>$this->m_admin->searchCourse($keyword,$config['per_page'],$uri),//return all course data
+					);
 				break;
 				default:
 				

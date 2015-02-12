@@ -189,6 +189,15 @@ class discussion extends base { //class for public
 		}		
 	}
 
+	//delete topic
+	public function deletetopic(){
+		$idtopik = $_GET['id'];
+		$idtopik = str_replace('','=',base64_decode(base64_decode($idtopik)));
+		$this->db->where('id_discuss');
+		$this->db->delete('discussion');
+		redirect('discussion/mytopics');
+	}
+
 	//search discussion
 	public function search(){
 		if(!empty($_GET['q'])){
