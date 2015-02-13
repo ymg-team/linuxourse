@@ -452,6 +452,13 @@ class discussion extends base { //class for public
 			echo 'error save to database';
 		}
 	}
+	public function deleteAnswer(){
+		$id = $_GET['id'];
+		$id = str_replace('', '=', base64_decode(base64_decode($id)));
+		$this->db->where('id_comment',$id);
+		$this->db->delete('discussion_comment');
+		redirect(site_url('discussion/myanswers'));
+	}
 	/*
 	* Action after login
 	*/

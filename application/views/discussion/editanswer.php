@@ -41,6 +41,7 @@
 						<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
 						<br/>
 						<button class="button" type="submit">Edit Answer</button>
+						<a href="<?php echo site_url('discussion/deleteanswer?id='.$this->uri->segment(3))?>" class="button alert medium">Delete</a>
 					</div>
 					
 				</div>
