@@ -1,16 +1,16 @@
 d<script type="text/javascript">
-  $(document).ready(function(){
-    getDirectory();    
-  });
+$(document).ready(function(){
+  getDirectory();    
+});
 
-  function addDir(){
-    $('#addDir').toggle('fast');
-    $('#addFile').hide('fast');
-  }
-  function addFile(){
-    $('#addFile').toggle('fast');
-    $('#addDir').hide('fast');
-  }
+function addDir(){
+  $('#addDir').toggle('fast');
+  $('#addFile').hide('fast');
+}
+function addFile(){
+  $('#addFile').toggle('fast');
+  $('#addDir').hide('fast');
+}
   //add new dir
   function procAddDir(){
     pwd = $('#location').val();
@@ -35,10 +35,70 @@ d<script type="text/javascript">
       }
     });
   }
+  //add new file
+  function procAddFile(){
+    pwd = $('#location').val();
+    //get file name
+    type = $('#filetype').val();
+    name = $('#filename').val();
+    attributes = $('#fileattributes').val();
+    content = $('#filecontent').val();
+    //ajax process
+    url='<?php echo site_url("manage/crudStorage?act=addfile")?>';
+    $.ajax({
+      url:url,
+      data:{dir:pwd,type:type,name:name,attributes:attributes,content:content},
+      success:function(){
+        alert('Success Update File');
+        $('#editFile').hide('fast');
+        getDirectory();//show lattest directory
+      },
+      error:function(){
+        alert('Error Add File, File is available')
+      }
+    });
+  }
+  //delete file
+  function deleteFile(id){
+    confirmation = confirm('are you sure');
+    url='<?php echo site_url("manage/crudStorage?act=deletefile")?>';
+    if(confirmation==1){
+      $.ajax({
+        url:url,
+        data:{id:id},
+        success:function(){
+          alert('Delete file success');
+          getDirectory();
+        },
+        error:function(){
+          alert('Error delete file');
+        }
+      });
+    }
+  }
   //change directory
   function changeDirectory(dir){
     $('#location').val(dir);
     getDirectory(dir);
+  }
+  //edit file : show
+  function editFileView(id){
+    // alert('betul');
+    $.ajax({
+      url:'<?php echo site_url("manage/crudStorage?act=vieweditfile")?>',
+      data:{id:id},
+      success:function(response){
+        $('#editFile').html(response);
+        $('#editFile').show('fast');
+      },
+      error:function(){
+        alert('Something wrong, please refresh page');
+      }
+    });
+  }
+  //update file on db
+  function procEditFile(){
+
   }
   //back directory
   function backDirectory(){
@@ -91,6 +151,32 @@ d<script type="text/javascript">
     $('#recentNewDir').val(dir);
     $('#editDir').show('fast');
   }
+  //edit file :: view
+  function editFile(dir){
+    $('#editNewFile').val(dir);
+    $('#recentNewFile').val(dir);
+    $('#editFile').show('fast');
+  }
+  //process edit file
+  function processEditFile(){
+    id = $('#editfileid').val();
+    type = $('#editfiletype').val();
+    name = $('#editfilename').val();
+    attributes = $('#editfileattributes').val();
+    content = $('#editfilecontent').val();
+    //process edit file    
+    $.ajax({
+      url:'<?php echo site_url("manage/crudstorage?act=proceditfile");?>',
+      data:{id:id,type:type,name:name,attributes:attributes,content:content},
+      success:function(){
+        alert('Success add file');
+        getDirectory();
+      },
+      error:function(){
+        alert('Error update file');
+      }
+    });
+  }
   //process edit directory
   function procEditDir(){
     newdir = $('#editNewDir').val();//new dir name
@@ -107,9 +193,9 @@ d<script type="text/javascript">
         getDirectory();//show lattest directory
       },
       error:function(){
-         alert('Error update direktori/direktori not available');
-      }
-    });
+       alert('Error update direktori/direktori not available');
+     }
+   });
   }
 </script>
 <!--body-->
@@ -165,45 +251,50 @@ d<script type="text/javascript">
           <hr/>
           <div id="editDir" class="form-add">
             <label>Directory Name <a onclick="return  $('#editDir').hide('fast');">[X]</a> 
-            <input type="text" id="editNewDir"></label>
-            <input type="hidden" id="recentNewDir">
+              <input type="text" id="editNewDir"></label>
+              <input type="hidden" id="recentNewDir">
+              <br/>
+              <a onclick="procEditDir()" class="button small">save changes</a>
+            </div>
+            <div id="editFile" class="form-add"></div>
+            <div id="addDir" class="form-add">
+             <label>Directory Name<input type="text" id="newDir"></label>
              <br/>
-             <a onclick="procEditDir()" class="button small">save changes</a>
-          </div>
-          <div id="addDir" class="form-add">
-           <label>Directory Name<input type="text" id="newDir"></label>
-           <br/>
-           <a onclick="procAddDir()" class="button small">add</a>
-         </div>
-         <div id="addFile" class="form-add">
-          <form id="form_AddFile" method="post">
-            <label>File Name<input type="text" name="input_title"></label>
+             <a onclick="procAddDir()" class="button small">add</a>
+           </div>
+           <div id="addFile" class="form-add">
+            <label>File Name<input id="filename" type="text"></label>
             <label>Type
-              <select>
+              <select id="filetype">
                 <option value="-">file</option>
                 <option value="s">softlink</option>
               </select>
             </label>
             <br/>
-            <button class="button small">add</button>
-          </form>
-        </div>
-        <div class="row">
-          <div class="large-12 columns">
-            <a onclick="changeDirectory('/')">/</a>
+            <label>Attributes
+              <input type="text" id="fileattributes" value="rwx--x--x:0 user user 7000 1Jan2015 24:00">
+            </label>
+            <label>Content
+              <textarea id="filecontent"></textarea>
+            </label>
+            <br/>
+            <button onclick="procAddFile()" class="button small">add file</button>
           </div>
-          <div class="large-12 columns">
-            <a onclick="backDirectory()">..</a>
+          <div class="row">
+            <div class="large-12 columns">
+              <a onclick="changeDirectory('/')">/</a>
+            </div>
+            <div class="large-12 columns">
+              <a onclick="backDirectory()">..</a>
+            </div>
           </div>
+          <div id="listcontent"></div>
+          <!-- data from db -->
         </div>
-        <div id="listcontent"></div>
-
-        <!-- data from db -->
       </div>
+      <!-- end of content -->
     </div>
-    <!-- end of content -->
   </div>
-</div>
-<!--end login form -->
+  <!--end login form -->
 </section>
 <!--endof body-->

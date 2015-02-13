@@ -1080,43 +1080,90 @@ public function getDirectory(){
 	echo '
 	<div class="row">
 		<div class="small-1 columns"><span style="font-size:20px" class="fi-page-copy"></span></div>
-		<div class="small-8 columns">'.$f['type'].$attributes.' '.$f['name'].'</div>
-		<div class="small-2 columns"><a onclick=""> <strong>open</strong> </a> | <a onclick="editFile('.$f['id_ls_dir'].')" href="">edit</a> | <a onclick="deleteFile('.$f['id_ls_dir'].')">delete</a></div>
+		<div class="small-8 columns"><a onclick="">'.$f['type'].$attributes.' '.$f['name'].'</a></div>
+		<div class="small-2 columns"><a onclick="editFileView('.$f['id_ls_dir'].')">edit</a> | <a onclick="deleteFile('.$f['id_ls_dir'].')">delete</a></div>
 	</div>
 	';
 	endforeach;
 
-	if(empty($mydir) && empty($file)){echo '<center>Directory Not Found</center>';}
+	if(empty($dir) && empty($file)){echo '<center>Empty Directory</center>';}
 }
 //add file / directory
 public function crudStorage(){
 	switch ($_GET['act']) {
 		case 'addfile':
-			
+		$dir = $_GET['dir'];
+			//get directory id
+		$sql = "SELECT id FROM available_dir WHERE directory = '".$dir."'";
+		$query = $this->db->query($sql);
+		$query = $query->row_array();
+		$id_dir = $query['id'];
+			//insert new file data
+		$data = array(
+			'id_available_dir'=>$id_dir,
+			'type'=>$_GET['type'],
+			'name'=>$_GET['name'],
+			'attributes'=>$_GET['attributes'],
+			'content'=>$_GET['content']
+			);
+		return $this->db->insert('ls_dir',$data);
 		break;
 		case 'adddir':
-			$name = $_GET['name'];
-			return $this->db->insert('available_dir',array('directory'=>$name));
+		$name = $_GET['name'];
+		return $this->db->insert('available_dir',array('directory'=>$name));
 		break;
 		case 'vieweditfile':
-			
+		$id = $_GET['id'];
+		$this->db->where('id_ls_dir',$id);
+		$ls_dir = $this->db->get('ls_dir');
+		$ls_dir = $ls_dir->row_array();
+		echo '
+		<a onclick="return  $(\'#editFile\').hide(\'fast\');">[X]</a><br/>
+		<input type="hidden" id="editfileid" value="'.$ls_dir['id_ls_dir'].'">
+		<label>File Name<input id="editfilename" type="text" value="'.$ls_dir['name'].'"></label>
+		<label>Type
+			<select id="editfiletype">
+				<option value="-">file</option>
+				<option value="s">softlink</option>
+			</select>
+		</label>
+		<br/>
+		<label>Attributes
+			<input type="text" id="editfileattributes" value="'.$ls_dir['attributes'].'">
+		</label>
+		<label>Content
+			<textarea id="editfilecontent">'.$ls_dir['content'].'</textarea>
+		</label>
+		<br/>
+		<button onclick="processEditFile()" class="button small">save changes</button>
+		';
 		break;
-		case 'editfile':
-			# code...
+		case 'proceditfile'://update database for ls_dir
+			$this->db->where('id_ls_dir',$_GET['id']);
+			$data = array(
+				'name'=>$_GET['name'],
+				'type'=>$_GET['type'],
+				'attributes'=>$_GET['attributes'],
+				'content'=>$_GET['content'],
+				);
+			return $this->db->update('ls_dir',$data);
 		break;
 		case 'editdir':
-			$olddir = $_GET['olddir'];
-			$newdir = $_GET['newdir'];
-			$this->db->where('directory',$olddir);
-			return $this->db->update('available_dir',array('directory'=>$newdir));
+		$olddir = $_GET['olddir'];
+		$newdir = $_GET['newdir'];
+		$this->db->where('directory',$olddir);
+		return $this->db->update('available_dir',array('directory'=>$newdir));
 		break;
-		case 'deletefile':			
+		case 'deletefile':		
+		$id = $_GET['id'];
+		$this->db->where('id_ls_dir',$id);
+		return $this->db->delete('ls_dir');	
 		break;
 		case 'deletedir':
-			$name = $_GET['dir'];
-			echo $name;
-			$this->db->where('directory',$name);
-			return $this->db->delete('available_dir');
+		$name = $_GET['dir'];
+		echo $name;
+		$this->db->where('directory',$name);
+		return $this->db->delete('available_dir');
 		break;
 	}
 }
