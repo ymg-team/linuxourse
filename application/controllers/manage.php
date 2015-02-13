@@ -1045,19 +1045,24 @@ public function getDirectory(){
 	$querydir = $this->db->query($sqldir);
 	$mydir = array();
 	$dir = $querydir->result_array();
-	foreach($dir as $d):
-		$resultdir = explode('/', $d['directory']);
-	array_push($mydir, $resultdir[1]);
-	endforeach;
-	foreach($mydir as $md):
-	if($md != $directory){
-	echo '
-	<div class="row">
-		<div class="small-1 columns"><span style="font-size:20px" class="fi-folder"></span></div>
-		<div class="small-8 columns">'.$md.'/</div>
-		<div class="small-2 columns"><a onclick="changeDirectory(\''.$path.'/'.$md.'\')"> <strong>open</strong> </a> | <a onclick="editFile()" href="">edit</a> | <a onclick="deleteFile()" href="#">delete</a></div>
-	</div>
-	';
+	$showdir = array();
+	foreach($dir as $md):
+	if($directory == '/'){//if on root
+		$dir = str_replace($directory.'/', '', $md['directory']);
+	}else{//except root
+		$dir = str_replace($directory, '', $md['directory']);
+	}
+	$dir = explode('/', $dir);
+	// print_r($dir);
+	if($md['directory'] != $directory && !in_array($dir[1], $showdir)){	
+		echo '
+		<div class="row">
+			<div class="small-1 columns"><span style="font-size:20px" class="fi-folder"></span></div>
+			<div class="small-8 columns"><a onclick="changeDirectory(\''.$path.'/'.$dir[1].'\')">'.$dir[1].'/ </a></div>
+			<div class="small-2 columns"><a onclick="editDirectory(\''.$md['directory'].'\')">edit</a> | <a onclick="deleteDirectory(\''.$md['directory'].'\')">delete</a></div>
+		</div>
+		';
+		array_push($showdir, $dir[1]);
 	}
 	endforeach;
 	// print_r($mydir);
@@ -1076,11 +1081,43 @@ public function getDirectory(){
 	<div class="row">
 		<div class="small-1 columns"><span style="font-size:20px" class="fi-page-copy"></span></div>
 		<div class="small-8 columns">'.$f['type'].$attributes.' '.$f['name'].'</div>
-		<div class="small-2 columns"><a onclick=""> <strong>open</strong> </a> | <a onclick="editFile('.$f['id_ls_dir'].')" href="">edit</a> | <a onclick="deleteFile('.$f['id_ls_dir'].')" href="#">delete</a></div>
+		<div class="small-2 columns"><a onclick=""> <strong>open</strong> </a> | <a onclick="editFile('.$f['id_ls_dir'].')" href="">edit</a> | <a onclick="deleteFile('.$f['id_ls_dir'].')">delete</a></div>
 	</div>
 	';
 	endforeach;
 
 	if(empty($mydir) && empty($file)){echo '<center>Directory Not Found</center>';}
+}
+//add file / directory
+public function crudStorage(){
+	switch ($_GET['act']) {
+		case 'addfile':
+			
+		break;
+		case 'adddir':
+			$name = $_GET['name'];
+			return $this->db->insert('available_dir',array('directory'=>$name));
+		break;
+		case 'vieweditfile':
+			
+		break;
+		case 'editfile':
+			# code...
+		break;
+		case 'editdir':
+			$olddir = $_GET['olddir'];
+			$newdir = $_GET['newdir'];
+			$this->db->where('directory',$olddir);
+			return $this->db->update('available_dir',array('directory'=>$newdir));
+		break;
+		case 'deletefile':			
+		break;
+		case 'deletedir':
+			$name = $_GET['dir'];
+			echo $name;
+			$this->db->where('directory',$name);
+			return $this->db->delete('available_dir');
+		break;
+	}
 }
 }

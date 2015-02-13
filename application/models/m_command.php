@@ -57,7 +57,7 @@ class m_command extends CI_Model{
 				}
 				$insidedir = explode('/', $dir);
 				if(!in_array($insidedir[0], $showdir)){
-					echo '<span class="terminal-showdir">/'.$insidedir[0].'</span> ';
+					echo '<span class="terminal-showdir">'.$insidedir[0].'/</span> ';
 				}
 				array_push($showdir, $insidedir[0]);
 				endforeach;
@@ -98,7 +98,7 @@ class m_command extends CI_Model{
 						}
 						$insidedir = explode('/', $dir);
 						if(!in_array($insidedir[0], $showdir)){
-							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">/'.$insidedir[0].'</span><br/>';
+							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
@@ -139,7 +139,7 @@ class m_command extends CI_Model{
 						}
 						$insidedir = explode('/', $dir);
 						if(!in_array($insidedir[0], $showdir)){
-							echo '<span class="terminal-showdir">/'.$insidedir[0].'</span> ';
+							echo '<span class="terminal-showdir">'.$insidedir[0].'/</span> ';
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
@@ -179,7 +179,7 @@ class m_command extends CI_Model{
 						}
 						$insidedir = explode('/', $dir);
 						if(!in_array($insidedir[0], $showdir)){
-							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">/'.$insidedir[0].'</span><br/>';
+							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;

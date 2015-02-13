@@ -1,6 +1,6 @@
-<script type="text/javascript">
+d<script type="text/javascript">
   $(document).ready(function(){
-    getDirectory();
+    getDirectory();    
   });
 
   function addDir(){
@@ -11,10 +11,43 @@
     $('#addFile').toggle('fast');
     $('#addDir').hide('fast');
   }
+  //add new dir
+  function procAddDir(){
+    pwd = $('#location').val();
+    newDir = $('#newDir').val();
+    url = '<?php echo site_url("manage/crudStorage?act=adddir")?>';
+    if(pwd == '/'){
+      dir = '/'+newDir;
+    }else{
+      dir = pwd+'/'+newDir;
+    }
+    //insert to database
+    $.ajax({
+      url:url,
+      data:{name:dir},
+      success:function(){
+        alert('Success Add New Directory');
+        $('#newDir').val('');
+        getDirectory();//show lattest directory
+      },  
+      error:function(){
+        alert('Error Add Directory, Directory is available');
+      }
+    });
+  }
   //change directory
   function changeDirectory(dir){
     $('#location').val(dir);
     getDirectory(dir);
+  }
+  //back directory
+  function backDirectory(){
+    pwd = $('#location').val();
+    if(pwd == '/'){
+      alert('your location is ROOT');
+    }else{
+      alert('back to parent');
+    }
   }
   //get directory
   function getDirectory(){
@@ -29,6 +62,52 @@
       },
       error:function(){
         alert('something wrong');
+      }
+    });
+  }
+  //delete directory
+  function deleteDirectory(dir){
+    confirmation = confirm('Are You Sure');
+    // alert(dir);
+    if(confirmation == 1){
+      ///delete from db
+      url='<?php echo site_url("manage/crudstorage?act=deletedir")?>';
+      $.ajax({
+        url:url,
+        data:{dir:dir},
+        success:function(response){
+          alert('Success delete directory');
+          getDirectory();//show lattest directory
+        },
+        error:function(){
+          alert('Error delete direktori/direktori not available');
+        }
+      });
+    }
+  }
+  //edit directory :: view
+  function editDirectory(dir){
+    $('#editNewDir').val(dir);
+    $('#recentNewDir').val(dir);
+    $('#editDir').show('fast');
+  }
+  //process edit directory
+  function procEditDir(){
+    newdir = $('#editNewDir').val();//new dir name
+    olddir = $('#recentNewDir').val();//old dir name
+    url = '<?php echo site_url("manage/crudstorage?act=editdir")?>';
+    //update database
+    $.ajax({
+      url:url,
+      data:{newdir:newdir,olddir:olddir},
+      success:function(response){
+        // alert(response);
+        alert('Success update directory');
+        $('#editDir').hide('fast');
+        getDirectory();//show lattest directory
+      },
+      error:function(){
+         alert('Error update direktori/direktori not available');
       }
     });
   }
@@ -68,7 +147,6 @@
         <dd class="active"><a href="#">All</a></dd>
       </dl>
       <div class="admin-content-white">
-
         <span class="row collapse" style="min-width:100%">
           <span class="large-10 columns">
             <input id="location" type="text" placeholder="location" value="/"></span>
@@ -85,55 +163,47 @@
           <a style="width:100px;" onclick="addDir()"><span style="font-size:15px;padding:5px;background-color:#008cba;color:#fff" class="fi-folder-add"> Add Directory</span></a>
           <a style="width:100px;" onclick="addFile()"><span style="font-size:15px;padding:5px;background-color:#008cba;color:#fff" class="fi-page-add"> Add File</span></a>
           <hr/>
-          <?php if(!empty($editidmateri)){?>
-          <div style="width:400px">
-            <form method="POST" action="<?php echo site_url('manage/materiaction?act=edit')?>">
-              <p>add date : <?php echo date('Y-M-d H:i:s',strtotime($editidmateri['adddate']))?><br/>
-                status : <?php echo $editidmateri['status']?></p>
-                <input name="id" type="hidden" value="<?php echo $editidmateri['id_materi']?>">
-                <label>Title<input type="text" name="input_title" value="<?php echo $editidmateri['title']?>"></label>
-                <label>Description<textarea style="height:100px" name="input_description"><?php echo $editidmateri['description']?></textarea></label>
-                <br/>
-                <button class="button small">save changes</button> <a href="<?php echo site_url('manage/materiaction?act=delete&id='.$editidmateri['id_materi'])?>" onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></a>
-              </form>
-            </div>
-            <?php } ?>
-            <div id="addDir" class="form-add">
-              <form method="post" action="<?php echo site_url('manage/addmateri');?>">
-                <label>Directory Name<input type="text" name="input_title"></label>
-                <br/>
-                <button class="button small">add</button>
-              </form>
-            </div>
-            <div id="addFile" class="form-add">
-              <form method="post" action="<?php echo site_url('manage/addmateri');?>">
-                <label>File Name<input type="text" name="input_title"></label>
-                <label>Type
-                  <select>
-                    <option value="-">file</option>
-                    <option value="s">softlink</option>
-                  </select>
-                </label>
-                <br/>
-                <button class="button small">add</button>
-              </form>
-            </div>
-            <div class="row">
-              <div class="large-12 columns">
-              <a onclick="changeDirectory('/')">/</a>
-              </div>
-              <div class="large-12 columns">
-                <a onclick="changeDirectory('/')">..</a>
-              </div>
-            </div>
-            <div id="listcontent"></div>
-
-            <!-- data from db -->
+          <div id="editDir" class="form-add">
+            <label>Directory Name <a onclick="return  $('#editDir').hide('fast');">[X]</a> 
+            <input type="text" id="editNewDir"></label>
+            <input type="hidden" id="recentNewDir">
+             <br/>
+             <a onclick="procEditDir()" class="button small">save changes</a>
+          </div>
+          <div id="addDir" class="form-add">
+           <label>Directory Name<input type="text" id="newDir"></label>
+           <br/>
+           <a onclick="procAddDir()" class="button small">add</a>
+         </div>
+         <div id="addFile" class="form-add">
+          <form id="form_AddFile" method="post">
+            <label>File Name<input type="text" name="input_title"></label>
+            <label>Type
+              <select>
+                <option value="-">file</option>
+                <option value="s">softlink</option>
+              </select>
+            </label>
+            <br/>
+            <button class="button small">add</button>
+          </form>
+        </div>
+        <div class="row">
+          <div class="large-12 columns">
+            <a onclick="changeDirectory('/')">/</a>
+          </div>
+          <div class="large-12 columns">
+            <a onclick="backDirectory()">..</a>
           </div>
         </div>
-        <!-- end of content -->
+        <div id="listcontent"></div>
+
+        <!-- data from db -->
       </div>
     </div>
-    <!--end login form -->
-  </section>
+    <!-- end of content -->
+  </div>
+</div>
+<!--end login form -->
+</section>
 <!--endof body-->
