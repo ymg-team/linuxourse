@@ -56,6 +56,8 @@ class regex extends base { //class for public
 			redirect(site_url('regex/touch?command='.$command));
 		} else if(in_array('nano',$commandArray)){//nano -> edit file
 			redirect(site_url('regex/nano?command='.$command));
+		} else if(in_array('mkdir',$commandArray)){//mkdir : create new directory
+			redirect(site_url('regex/mkdir?command='.$command));
 		}
 		$specialcommand = array(
 			'history'=>$myhistory,
@@ -193,21 +195,21 @@ class regex extends base { //class for public
 			foreach($this->session->userdata('myfile') as $mf):
 				if($filename == $mf['name']):
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/></pre>';
-					echo '<textarea style="font-family:monospace" id="nano" autofocus>'.$mf['content'].'</textarea>';
-					echo '<span style="font-family:monospace;color:#000;background-color:#fff">save = ^x</span>';
+				echo '<textarea style="font-family:monospace" id="nano" autofocus>'.$mf['content'].'</textarea>';
+				echo '<span style="font-family:monospace;color:#000;background-color:#fff">save = ^x</span>';
 					$found = TRUE;//found file to be 'nano'
-				endif;
-			endforeach;
+					endif;
+					endforeach;
 			//found or not
-			if($found==FALSE){
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+					if($found==FALSE){
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+					}
+				}
 			}
-		}
-	}
-	//touch
-	public function touch(){
-		$command = $_GET['command'];
-		$commandarray = explode(' ', $command);
+	//touch : create new empty file [WORK]
+			public function touch(){
+				$command = $_GET['command'];
+				$commandarray = explode(' ', $command);
 		$filename = $commandarray[1];//get filename
 		//only ca use nano on /home/user
 		//cek pwd
@@ -218,11 +220,11 @@ class regex extends base { //class for public
 			//adding new file to session;
 			$getfile = array();
 			$newfile = array(
-					'name'=>$filename,
-					'permissions'=>'rwx------',
-					'create'=>date('dMY H:i'),
-					'owner'=>$this->session->userdata['student_login']['username'],
-					'content'=>'',
+				'name'=>$filename,
+				'permissions'=>'rwx------',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				'content'=>'',
 				);
 			foreach ($this->session->userdata('myfile') as $mf) {
 				if($mf['name']==$filename){
@@ -236,6 +238,43 @@ class regex extends base { //class for public
 			$this->session->set_userdata('myfile',$getfile);
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
 		}
+	}
+	//mkdir : create new empty directory
+	public function mkdir(){
+		$command = $_GET['command'];
+		$commandarray = explode(' ', $command);
+		$directoryname = $commandarray[1];//get directoryname
+		if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
+		//cek location
+		if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
+		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
+		}else{//can create new file
+			$getdir = array();
+			$newdir = array(
+				'name'=>$directoryname,
+				'permissions'=>'rwx------',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				);
+			//get all directory on session
+			foreach ($this->session->userdata('mydir') as $md) {
+				if($md['name']==$directoryname){
+					redirect(site_url('regex/errorMessage/?error=can\'t create, directory is available&command='.$command));
+				}else{
+					array_push($getdir, $md);
+				}
+			}
+			array_push($getdir,$newdir);
+			// print_r($getfile);
+			$this->session->set_userdata('mydir',$getdir);
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
+		}
+	}
+	//error  message for all
+	public function errorMessage(){
+		$command = $_GET['command'];//get error command from terminal
+		$error = $_GET['error'];//get error message
+		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:"'.$error.'"</pre>';
 	}
 	//error touch
 	public function errorTouch(){

@@ -19,6 +19,7 @@
         }
       });
     }
+    function addForm(){$("#form-add").toggle("fast");}
     //auto setup level
     $(document).ready(function(){
       $('#selectcat').val(<?php echo $editcase['id_level']?>);

@@ -104,7 +104,7 @@
                   </label>
                   <br/>
                   <button name="btnsave" class="button small">save changes</button>
-                  <button onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></button>
+                  <a href="<?php echo site_url('manage/deleteLevel/'.$view['id_level'])?>" onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></a>
                 </form>
                 <!-- end of add level      -->
               </div>

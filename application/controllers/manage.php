@@ -202,7 +202,7 @@ public function editcourse(){
 			'editdate'=>date('Y-m-d h:i:s'),
 			);
 		if($this->db->update('course',$data)){
-			redirect($redirect);
+			redirect($this->agent->referrer());
 		}else{//error insert db
 			echo 'error insert database';
 		}
@@ -227,8 +227,7 @@ public function editcourse(){
 }
 //delete course
 
-
-	//manage materi-level-course
+//manage materi-level-course
 public function course(){
 	//if using get post to search, redirect to uri segment
 	if(!empty($_GET['q'])){
@@ -338,6 +337,9 @@ public function ajaxAvailableStep(){
 //////////////
 public function level(){
 	//using form
+	if(isset($_GET['q'])){
+		redirect(site_url('manage/level/search/'.$_GET['q']));
+	}
 	if(!empty($_POST)){
 		if(isset($_POST['btnadd'])){//new level
 			$idmateri = $_POST['input_materi'];
@@ -386,7 +388,16 @@ public function level(){
 	if(!empty($this->uri->segment(3))){
 		switch ($this->uri->segment(3)) {
 			case 'search':
-				# code...
+				$keyword = $this->uri->segment(4);
+				$data = array(
+				'title'=>'Search Level',
+				'total'=>'',
+				'link'=>'',
+				'viewMateri'=>$this->m_admin->showAllMateri(10,0),
+				'script'=>'<script>$(document).ready(function(){$("#level").addClass("active")});</script>',
+				'view'=>$this->m_admin->searchLevel($keyword),
+				);
+				$this->baseManageView('manage/level',$data);
 			break;
 			case 'bymateri':
 			$idmateri = $this->uri->segment(4);
@@ -440,6 +451,13 @@ public function level(){
 //show level by materi
 public function levelbymateri(){
 
+}
+//delete level
+public function deleteLevel(){//delete a level
+	$idlevel = $this->uri->segment(3);
+	$this->db->where('id_level',$idlevel);
+	$this->db->delete('level');
+	redirect('manage/level');
 }
 //review level
 public function reviewLevel(){

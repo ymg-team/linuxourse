@@ -64,7 +64,12 @@
 						<p><div id="progressanimate" style="height:10px" class="radius progress">
 							<span style="float:left;color:#fff;width:<?php echo $recentMateriPercentage;?>%;" class="meter"></span>
 						</div></p>
-						<p><a style="width:30%" class="button" href="<?php echo site_url('course/start/'.$id)?>">Resume</a>
+						<?php
+		//show recent course id
+						$idRecentCourse = base64_encode(base64_encode($recentCourse['id_user_course']));
+						$idRecentCourse = str_replace('=', '', $idRecentCourse);
+						?>
+						<p><a style="width:30%" class="button" href="<?php echo site_url('course/start/'.$idRecentCourse)?>">Resume</a>
 							<br/>
 							<a id="btnoverview">Overview Recent Course</a>
 						</p>
@@ -111,6 +116,8 @@
 									$log = $diff->m.' Months ago';
 								}else if($diff->d != 0){
 									$log = $diff->d.' Days ago';
+								}else{
+									$log = 'today';
 								}
 								?>
 								<a onmouseout="hidelast('<?php echo $id?>')" onmouseover="showlast('<?php echo $id?>')" href="<?php echo site_url('course/review/'.$id)?>">
@@ -228,11 +235,6 @@
 						</table>
 						<br/><br/>
 					<?php endforeach ?>
-					<?php
-		//show recent course id
-					$idRecentCourse = base64_encode(base64_encode($recentCourse['id_user_course']));
-					$idRecentCourse = str_replace('=', '', $idRecentCourse);
-					?>
 					<a href="<?php echo site_url('course/start/'.$idRecentCourse)?>" class="button large">resume</a>
 					<br/>
 				</div>

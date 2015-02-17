@@ -117,6 +117,19 @@ class m_admin extends CI_Model{
 			return array();
 		}
 	}
+	//search materi
+	public function searchLevel($keyword){
+		$sql = "SELECT level.title AS 'title', level.level AS 'level', level.id_level AS 'id_level', level.description AS 'description',
+		materi.title AS 'materi' FROM level 
+		INNER JOIN materi ON materi.id_materi = level.id_materi
+		WHERE level.title LIKE '%".$keyword."%'";
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 	//count level by materi
 	public function countLevelByMateri($idmateri){
 		$this->db->where('id_materi',$idmateri);

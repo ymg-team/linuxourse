@@ -9,6 +9,7 @@ class m_command extends CI_Model{
 	//check available dir
 	public function cekAvailableDir($dir){
 		$this->db->where('directory',$dir);
+		//check from database
 		$query = $this->db->get('available_dir');
 		if($query->num_rows()>0){
 			return true;
@@ -48,7 +49,7 @@ class m_command extends CI_Model{
 			//print result
 			//print dir
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
-			foreach($lsdir as $ld)://worked
+				foreach($lsdir as $ld)://worked
 				if($directory == '/'){//only for root
 					//only replace first match
 					$dir = preg_replace('/\//', '', $ld['directory'],1).'/ ';//using
@@ -61,18 +62,25 @@ class m_command extends CI_Model{
 				}
 				array_push($showdir, $insidedir[0]);
 				endforeach;
-			//print file
+				//print directory from session
+				if($directory == '/home/user'):
+					$sessiondir = $this->session->userdata('mydir');
+				foreach($sessiondir as $sd):
+					echo '<span class="terminal-showdir">'.$sd['name'].'/</span> ';
+				endforeach;
+				endif;
+				//print file
 				foreach($lsfile as $lf):
 					echo $lf['name'].' ';
 				endforeach;
-			//if active directory is /home/user, show file on session
+				//if active directory is /home/user, show file on session
 				if($directory == '/home/user'):
 					$sessionfile = $this->session->userdata('myfile');
 				foreach($sessionfile as $sf):
 					echo $sf['name'].' ';
 				endforeach;
 				endif;
-			//end if
+				//end if
 				echo '</pre>';
 			}else{
 				switch ($options) {
@@ -88,7 +96,7 @@ class m_command extends CI_Model{
 					$lsfile = array();
 				}
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ '.$command.'<br/>:';
-					//print folder
+				//print folder
 				foreach($lsdir as $ld):
 						if($directory == '/'){//only for root
 							//only replace first match
@@ -102,23 +110,30 @@ class m_command extends CI_Model{
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
-					//print file
+						//print directory from session
+						if($directory == '/home/user'):
+							$sessiondir = $this->session->userdata('mydir');
+						foreach($sessiondir as $sd):
+							echo $sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
+						endforeach;
+						endif;
+						//print file
 						foreach($lsfile as $lf):
 							$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'];
 						endforeach;
-					//if active directory is /home/user, show file on session
+						//if active directory is /home/user, show file on session
 						if($directory == '/home/user'):
 							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
 							echo '<br/>-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].' ';
 						endforeach;
 						endif;
-					//end if
+						//end if
 						echo '</pre>';
 						break;
 				case '-a': //-a
-					//get all file and links
+				//get all file and links
 				$sqlfile = "SELECT name FROM ls_dir
 				INNER JOIN available_dir ON available_dir.id = ls_dir.id_available_dir
 				WHERE available_dir.directory = ?";
@@ -143,6 +158,13 @@ class m_command extends CI_Model{
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
+						//print directory from session
+						if($directory == '/home/user'):
+							$sessiondir = $this->session->userdata('mydir');
+						foreach($sessiondir as $sd):
+							echo '<span class="terminal-showdir">'.$sd['name'].'/</span> ';
+						endforeach;
+						endif;
 					//print file
 						foreach($lsfile as $lf):
 							echo $lf['name'].' ';
@@ -183,44 +205,51 @@ class m_command extends CI_Model{
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
-					//print file
+						//print directory from session
+						if($directory == '/home/user'):
+							$sessiondir = $this->session->userdata('mydir');
+						foreach($sessiondir as $sd):
+							echo $sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
+						endforeach;
+						endif;
+						//print file
 						foreach($lsfile as $lf):
 							$attributes = str_replace('|',' ', $lf['attributes']);
 						echo $lf['type'].$attributes.' '.$lf['name'].'<br/>';
 						endforeach;
-					//if active directory is /home/user, show file on session
+						//if active directory is /home/user, show file on session
 						if($directory == '/home/user'):
 							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
 							echo '-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].'<br/>';
 						endforeach;
 						endif;
-					//end if
+						//end if
 						echo '</pre>';
 						break;
 					}
 				}
 			}
-	//using cat
+			//using cat
 			public function cat($directory){
-		//get file name
+				//get file name
 				$dirArray = explode('/', $directory);
-		//file name is last index
+				//file name is last index
 				$filename = end($dirArray);
-		//get real directory name
+				//get real directory name
 				$directory = str_replace('/'.$filename,'',$directory);
-		//cek on database
+				//cek on database
 				$params = array($filename,$directory);
 				$sql = "SELECT content FROM ls_dir
 				INNER JOIN available_dir ON ls_dir.id_available_dir = available_dir.id
 				WHERE ls_dir.name = ? AND available_dir.directory = ? ";
 				$query = $this->db->query($sql,$params);
+				$found = FALSE;
 		if($query->num_rows()>0){//print content k
 			$query = $query->row_array();
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
 			.$query['content'].'</pre>';
 		}else{
-			$found = FALSE;
 			foreach($this->session->userdata('myfile') as $mv):
 				if($mv['name']==$filename){
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'

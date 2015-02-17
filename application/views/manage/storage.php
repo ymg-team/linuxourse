@@ -49,8 +49,8 @@ function addFile(){
       url:url,
       data:{dir:pwd,type:type,name:name,attributes:attributes,content:content},
       success:function(){
-        alert('Success Update File');
-        $('#editFile').hide('fast');
+        alert('Success add File');
+        $('#addFile').hide('fast');
         getDirectory();//show lattest directory
       },
       error:function(){
@@ -169,7 +169,8 @@ function addFile(){
       url:'<?php echo site_url("manage/crudstorage?act=proceditfile");?>',
       data:{id:id,type:type,name:name,attributes:attributes,content:content},
       success:function(){
-        alert('Success add file');
+        alert('Success edit file');
+        $('#editFile').hide('fast');
         getDirectory();
       },
       error:function(){

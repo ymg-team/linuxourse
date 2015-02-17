@@ -50,14 +50,16 @@ $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 							$last = date_create(date('Y-m-d', strtotime($detCourse['lastdate'])));
 							$diff=date_diff($last,$today);
 							if($diff->y != 0){
-								$log = $diff->y.' Years';
+								$log = $diff->y.' Years Ago';
 							}else if($diff->m != 0){
-								$log = $diff->m.' Months';
+								$log = $diff->m.' Months Ago';
 							}else if($diff->d != 0){
-								$log = $diff->d.' Days';
+								$log = $diff->d.' Days Ago';
+							} else {
+								$log = 'Today';
 							}
 							?>
-							<p style="margin:0"><strong>Course Has Been Start <?php echo $log;?> Ago  </strong></p> 
+							<p style="margin:0"><strong>Course Has Been Start <?php echo $log;?>  </strong></p> 
 							<hr/>
 							<?php foreach ($level as $l):
 							$totalnow = $this->m_course->countCourseStepByLevel($recentCourseStep,$l['id_level']);

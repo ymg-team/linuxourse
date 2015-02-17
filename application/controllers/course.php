@@ -87,6 +87,17 @@ class course extends base { //class for public
 			);
 		$this->session->set_userdata('myfile',$publicfile);
 		//end of set public file
+		//start create public file
+		$publicdir = array(
+			array(
+				'name'=>'publicdirectory',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				)
+			);
+		$this->session->set_userdata('mydir',$publicdir);
+		//end of create public file
 		//set default active directory on session
 		$this->session->set_userdata('dir','/home/user');
 		$this->session->set_userdata('command','');
