@@ -60,6 +60,8 @@ class regex extends base { //class for public
 			redirect(site_url('regex/mkdir?command='.$command));
 		} else if(in_array('rm',$commandArray)){//rm :: remove file or directory
 			redirect(site_url('regex/rm?command='.$command));
+		} else if($this->isIOStandart($commandArray)){//redirection :: standar input output
+			redirect(site_url('regex/iostandart?command='.$command));
 		} else {
 			//if not using custom controller command
 			$specialcommand = array(
@@ -338,6 +340,13 @@ class regex extends base { //class for public
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": No such file or directory</pre>';				
 				}
 			}
+		}
+	//input output standart
+		public function iostandart(){
+			$command = $_GET['command'];
+			//check apakah menggunakan option atau tidak
+			$commandArray = explode(' ', $command);
+			echo 'using redirection';
 		}
 	//ALL ABOUT COURSE CHECK
 	//check result

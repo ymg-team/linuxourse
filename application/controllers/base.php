@@ -14,7 +14,7 @@ class base extends CI_Controller {
 
 	public function index()
 	{
-		echo '404';	 
+		echo '404';
 	}
 
 	//base view
@@ -61,8 +61,8 @@ class base extends CI_Controller {
 		if(!empty($recentcommand)){
 			foreach($recentcommand as $rc):
 				array_push($history,$rc);
-			endforeach;	
-		}		
+			endforeach;
+		}
 		array_push($history, $command);
 		$sessiondata['command'] = $history;
 		//add history to season
@@ -81,17 +81,17 @@ class base extends CI_Controller {
 			'ls-a'=>'.hiddendirectory <br/>mydirectory',
 			'ls'=>'mydirectory',
 			'y'=>'confirmed',
-			);
+		);
 		//command is special command or not
 		$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
 		if(array_key_exists($trimcommand,$specialcommand)){//found
 			echo '<pre>student@linux-ecourse:~$ '.$command.$specialcommand[$trimcommand].'</pre>';
 		} else {//not found
 			$result = shell_exec($command);
-		// echo '<pre>student@linux-ecourse:~$ '.$command.
-		// 	$result.'</pre>';
+			// echo '<pre>student@linux-ecourse:~$ '.$command.
+			// 	$result.'</pre>';
 			if(!empty($result)){
-				echo '<pre>student@linux-ecourse:~$ '.$command.$result.'</pre>';			
+				echo '<pre>student@linux-ecourse:~$ '.$command.$result.'</pre>';
 			} else {
 				echo '<pre>student@linux-ecourse:~$ '.$command.'No command "'.$command.'" found </pre>';
 			}
@@ -102,77 +102,89 @@ class base extends CI_Controller {
 		$found = false;
 		switch ($type){
 			case 'dir':
-			foreach($this->session->userdata('mydir') as $list):
-				if($list['name']==$name){
-					$found = true;
-				}
-				endforeach;					
+				foreach($this->session->userdata('mydir') as $list):
+					if($list['name']==$name){
+						$found = true;
+					}
+				endforeach;
 				break;
-				case 'file':
+			case 'file':
 				foreach($this->session->userdata('myfile') as $list):
 					if($list['name']==$name){
 						$found = true;
 					}
-					endforeach;	
-					break;
-					default:
-					$found = false;
-					break;
-				}
-				if($found == true){
-					return true;
-				}else{
-					return false;
-				}
-			}
+				endforeach;
+				break;
+			default:
+				$found = false;
+				break;
+		}
+		if($found == true){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	//rm file or directory
-			public function rmAttributes($type,$name){
-				$files = array();
-				$directories = array();
-				switch ($type) {
-					case 'dir':
-					$sessionDir = $this->session->userdata('mydir');
-					foreach($sessionDir as $sd):
-						if($sd['name'] != $name):
-							array_push($directories, $sd);
-						endif;
-					endforeach;
-					//set session
-					$this->session->set_userdata('mydir',$directories);
-					break;
-					case 'file':
-					$sessionFile = $this->session->userdata('myfile');
-					foreach($sessionFile as $sf):
-						if($sf['name'] != $name):
-							array_push($files, $sf);
-						endif;
-					endforeach;
-					//set session
-					$this->session->set_userdata('myfile',$files);
-					break;
-					default:
-					echo 'Something wrong, please refresh page';
-					break;
-				}
+	public function rmAttributes($type,$name){
+		$files = array();
+		$directories = array();
+		switch ($type) {
+			case 'dir':
+				$sessionDir = $this->session->userdata('mydir');
+				foreach($sessionDir as $sd):
+					if($sd['name'] != $name):
+						array_push($directories, $sd);
+					endif;
+				endforeach;
+				//set session
+				$this->session->set_userdata('mydir',$directories);
+				break;
+			case 'file':
+				$sessionFile = $this->session->userdata('myfile');
+				foreach($sessionFile as $sf):
+					if($sf['name'] != $name):
+						array_push($files, $sf);
+					endif;
+				endforeach;
+				//set session
+				$this->session->set_userdata('myfile',$files);
+				break;
+			default:
+				echo 'Something wrong, please refresh page';
+				break;
+		}
+	}
+	//is input output standart
+	public function isIOStandart($commandArray){
+		//standart input output
+		$standartio = array('>','<','>>','1>','0<','2>');
+		$status = false;
+		foreach($standartio as $io):
+			if(in_array($io,$commandArray)){
+				$status = true;
 			}
+			endforeach;
+		return $status;//found or not
+	}
 	//return to row array
-				public function returnToRow($query){
-					if($query->num_rows()>0){
-						return $query->row_array();
-					}else{
-						return array();
-					}
-				}
+	public function returnToRow($query){
+		if($query->num_rows()>0){
+			return $query->row_array();
+		}else{
+			return array();
+		}
+	}
 	//return to result array
-				public function returnToResult($query){
-					if($query->num_rows()>0){
-						return $query->result_array();
-					}else{
-						return array();
-					}
-				}
+	public function returnToResult($query){
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
 
-			}
+}
 
-			/* End of file base.php */
+/* End of file base.php */
 /* Location: ./application/controllers/base/base.php */
