@@ -97,28 +97,82 @@ class base extends CI_Controller {
 			}
 		}
 	}
-	//add command to history
-	public function addHistory($command){
-
-	}
+	//check available file/directory on session :: /home/user
+	public function searchAttributes($type,$name){
+		$found = false;
+		switch ($type){
+			case 'dir':
+			foreach($this->session->userdata('mydir') as $list):
+				if($list['name']==$name){
+					$found = true;
+				}
+				endforeach;					
+				break;
+				case 'file':
+				foreach($this->session->userdata('myfile') as $list):
+					if($list['name']==$name){
+						$found = true;
+					}
+					endforeach;	
+					break;
+					default:
+					$found = false;
+					break;
+				}
+				if($found == true){
+					return true;
+				}else{
+					return false;
+				}
+			}
+	//rm file or directory
+			public function rmAttributes($type,$name){
+				$files = array();
+				$directories = array();
+				switch ($type) {
+					case 'dir':
+					$sessionDir = $this->session->userdata('mydir');
+					foreach($sessionDir as $sd):
+						if($sd['name'] != $name):
+							array_push($directories, $sd);
+						endif;
+					endforeach;
+					//set session
+					$this->session->set_userdata('mydir',$directories);
+					break;
+					case 'file':
+					$sessionFile = $this->session->userdata('myfile');
+					foreach($sessionFile as $sf):
+						if($sf['name'] != $name):
+							array_push($files, $sf);
+						endif;
+					endforeach;
+					//set session
+					$this->session->set_userdata('myfile',$files);
+					break;
+					default:
+					echo 'Something wrong, please refresh page';
+					break;
+				}
+			}
 	//return to row array
-	public function returnToRow($query){
-		if($query->num_rows()>0){
-			return $query->row_array();
-		}else{
-			return array();
-		}
-	}
+				public function returnToRow($query){
+					if($query->num_rows()>0){
+						return $query->row_array();
+					}else{
+						return array();
+					}
+				}
 	//return to result array
-	public function returnToResult($query){
-		if($query->num_rows()>0){
-			return $query->result_array();
-		}else{
-			return array();
-		}
-	}
+				public function returnToResult($query){
+					if($query->num_rows()>0){
+						return $query->result_array();
+					}else{
+						return array();
+					}
+				}
 
-}
+			}
 
-/* End of file base.php */
+			/* End of file base.php */
 /* Location: ./application/controllers/base/base.php */

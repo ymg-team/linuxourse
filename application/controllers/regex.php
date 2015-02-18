@@ -42,7 +42,7 @@ class regex extends base { //class for public
 			$myhistory = $myhistory.$this->session->userdata['command'][$n];
 		}
 		//end of history setup
-		$commandArray = explode(' ', $command);
+		$commandArray = explode(' ', $commandclear);
 		//if using special command
 		if(in_array('cd', $commandArray)){//cd
 			redirect(site_url('regex/cd?command='.$command));
@@ -58,38 +58,43 @@ class regex extends base { //class for public
 			redirect(site_url('regex/nano?command='.$command));
 		} else if(in_array('mkdir',$commandArray)){//mkdir : create new directory
 			redirect(site_url('regex/mkdir?command='.$command));
-		}
-		$specialcommand = array(
-			'history'=>$myhistory,
-			'cat'=>'no file input',
-			'cd'=>'no directory input',
-			'cls'=>'clear screen',
-			'ls-l'=>'drwxrwxrwx  4 user user  4096 Nov  3 21:50 mydirectory',
-			'ls-a'=>'.hiddendirectory <br/>mydirectory',
-			'pwd'=>$this->session->userdata('dir'),
-			'y'=>'confirmed',
-			);
-		$docommand = array(
-			);
-		$forbiddencommand = array(
-			'reboot','init0');
-		//command is special command or not
-		$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
-		if(array_key_exists($trimcommand,$specialcommand)){//output
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$specialcommand[$trimcommand].'</pre>';
-		} else if(array_key_exists($trimcommand,$docommand)){//create input
+		} else if(in_array('rm',$commandArray)){//rm :: remove file or directory
+			redirect(site_url('regex/rm?command='.$command));
+		} else {
+			//if not using custom controller command
+			$specialcommand = array(
+				'history'=>$myhistory,
+				'cat'=>'no file input',
+				'cd'=>'no directory input',
+				'cls'=>'clear screen',
+				'ls-l'=>'drwxrwxrwx  4 user user  4096 Nov  3 21:50 mydirectory',
+				'ls-a'=>'.hiddendirectory <br/>mydirectory',
+				'pwd'=>$this->session->userdata('dir'),
+				'y'=>'confirmed',
+				);
+			$docommand = array(
+				);
+			$forbiddencommand = array(
+				'reboot','init0');
+			//command is special command or not
+			$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
+			if(array_key_exists($trimcommand,$specialcommand)){//output
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$specialcommand[$trimcommand].'</pre>';
+			} else if(array_key_exists($trimcommand,$docommand)){//create input
 
-		} else if(in_array($trimcommand,$forbiddencommand)){//forbidden command | preg_match
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'FORBIDDEN command</pre>';
-		}else {//not found
-			$result = shell_exec($command);
-		// echo '<pre>student@linux-ecourse:~$ '.$command.
-		// 	$result.'</pre>';
-			if(!empty($result)){
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$result.'</pre>';			
-			} else {
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'No command "'.$commandclear.'" found </pre>';
+			} else if(in_array($trimcommand,$forbiddencommand)){//forbidden command | preg_match
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'FORBIDDEN command</pre>';
+			}else {//not found
+				$result = shell_exec($command);
+			// echo '<pre>student@linux-ecourse:~$ '.$command.
+			// 	$result.'</pre>';
+				if(!empty($result)){
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$result.'</pre>';			
+				} else {
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'No command "'.$commandclear.'" found </pre>';
+				}
 			}
+				//end if not using custom controller
 		}
 	}
 	//change directory
@@ -259,7 +264,7 @@ class regex extends base { //class for public
 			//get all directory on session
 			foreach ($this->session->userdata('mydir') as $md) {
 				if($md['name']==$directoryname){
-					redirect(site_url('regex/errorMessage/?error=can\'t create, directory is available&command='.$command));
+					redirect(site_url('regex/errorMessage/?error=mkdir: cannot create directory "'.$directoryname.'" : File exists&command='.$command));
 				}else{
 					array_push($getdir, $md);
 				}
@@ -269,12 +274,6 @@ class regex extends base { //class for public
 			$this->session->set_userdata('mydir',$getdir);
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
 		}
-	}
-	//error  message for all
-	public function errorMessage(){
-		$command = $_GET['command'];//get error command from terminal
-		$error = $_GET['error'];//get error message
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:"'.$error.'"</pre>';
 	}
 	//error touch
 	public function errorTouch(){
@@ -290,9 +289,59 @@ class regex extends base { //class for public
 	public function commandNotFound(){
 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ No command found </pre>';
 	}
+	//remove file / directory
+	public function rm(){ //rm : to remove file and directory
+		$command = $_GET['command'];
+		//check apakah menggunakan option atau tidak
+		$commandArray = explode(' ', $command);
+		//cek total value on array
+		$totalValues = count($commandArray);
+		//if only use rm
+		if($totalValues == 1){
+			redirect(site_url('regex/errorMessage?command='.$command.'&error=no input file/directory'));	
+		}else if($totalValues == 2){ //rm for file
+			$attribute = $commandArray[1];
+			//check is file or directory :: search array values
+			if($this->searchAttributes('file',$attribute)){
+				$this->rmAttributes('file',$attribute);//delete form session
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: remove success </pre>';
+			}else if($this->searchAttributes('dir',$attribute)){
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": Is a directory</pre>';
+			}else{
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": No such file or directory</pre>';				
+			}
+		}else if($totalValues == 3){ //rm using options
+			$attribute = $commandArray[2];
+			$option = $commandArray[1];
+			//check is file or directory :: search array values
+			if($this->searchAttributes('file',$attribute)){
+				switch ($option) {
+					case '-r':
+						$this->rmAttributes('file',$attribute);//delete form session
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>remove success </pre>';
+						break;					
+						default:
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>invalid option '.$option.'</pre>';
+						break;
+					}				
+				}else if($this->searchAttributes('dir',$attribute)){
+					switch ($option) {
+						case '-r':
+						$this->rmAttributes('dir',$attribute);//delete form session
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>remove success </pre>';
+						break;					
+						default:
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>invalid option '.$option.'</pre>';
+						break;
+					}
+				}else{
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": No such file or directory</pre>';				
+				}
+			}
+		}
 	//ALL ABOUT COURSE CHECK
 	//check result
-	public function check(){
+		public function check(){
 		$terminal = strip_tags($_POST['terminal']);//remove all html tag
 		//replace space
 		$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;
@@ -398,4 +447,10 @@ class regex extends base { //class for public
 				$this->session->set_userdata($sessiondata);
 				echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
 			}
-		}
+			//error  message for all
+			public function errorMessage(){
+		$command = $_GET['command'];//get error command from terminal
+		$error = $_GET['error'];//get error message
+		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$error.'</pre>';
+	}
+}
