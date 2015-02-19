@@ -103,14 +103,14 @@ class base extends CI_Controller {
 		switch ($type){
 			case 'dir':
 				foreach($this->session->userdata('mydir') as $list):
-					if($list['name']==$name){
+					if(trim($list['name'])==trim($name)){
 						$found = true;
 					}
 				endforeach;
 				break;
 			case 'file':
 				foreach($this->session->userdata('myfile') as $list):
-					if($list['name']==$name){
+					if(trim($list['name'])==trim($name)){
 						$found = true;
 					}
 				endforeach;
@@ -119,11 +119,7 @@ class base extends CI_Controller {
 				$found = false;
 				break;
 		}
-		if($found == true){
-			return true;
-		}else{
-			return false;
-		}
+		return $found;
 	}
 	//rm file or directory
 	public function rmAttributes($type,$name){
@@ -166,6 +162,18 @@ class base extends CI_Controller {
 			}
 			endforeach;
 		return $status;//found or not
+	}
+	//check redirection
+	public function useIOStandart($command){
+		$commandArray = explode(' ', $command);
+		//standart input output
+		$standartio = array('>','<','>>','1>','0<','2>');
+		foreach($standartio as $io):
+			if(in_array($io,$commandArray)){
+				$redirection = $io;
+			}
+			endforeach;
+		return $redirection;//found or not	
 	}
 	//return to row array
 	public function returnToRow($query){
