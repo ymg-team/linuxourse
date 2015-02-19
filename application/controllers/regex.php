@@ -73,9 +73,9 @@ class regex extends base { //class for public
 				'ls-a'=>'.hiddendirectory <br/>mydirectory',
 				'pwd'=>$this->session->userdata('dir'),
 				'y'=>'confirmed',
-			);
+				);
 			$docommand = array(
-			);
+				);
 			$forbiddencommand = array(
 				'reboot','init0');
 			//command is special command or not
@@ -202,21 +202,21 @@ class regex extends base { //class for public
 			foreach($this->session->userdata('myfile') as $mf):
 				if($filename == $mf['name']):
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/></pre>';
-					echo '<textarea style="font-family:monospace" id="nano" autofocus>'.$mf['content'].'</textarea>';
-					echo '<span style="font-family:monospace;color:#000;background-color:#fff">save = ^x</span>';
+				echo '<textarea style="font-family:monospace" id="nano" autofocus>'.$mf['content'].'</textarea>';
+				echo '<span style="font-family:monospace;color:#000;background-color:#fff">save = ^x</span>';
 					$found = TRUE;//found file to be 'nano'
-				endif;
-			endforeach;
+					endif;
+					endforeach;
 			//found or not
-			if($found==FALSE){
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+					if($found==FALSE){
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+					}
+				}
 			}
-		}
-	}
 	//touch : create new empty file [WORK]
-	public function touch(){
-		$command = $_GET['command'];
-		$commandarray = explode(' ', $command);
+			public function touch(){
+				$command = $_GET['command'];
+				$commandarray = explode(' ', $command);
 		$filename = $commandarray[1];//get filename
 		//only ca use nano on /home/user
 		//cek pwd
@@ -232,7 +232,7 @@ class regex extends base { //class for public
 				'create'=>date('dMY H:i'),
 				'owner'=>$this->session->userdata['student_login']['username'],
 				'content'=>'',
-			);
+				);
 			foreach ($this->session->userdata('myfile') as $mf) {
 				if(trim($mf['name'])==trim($filename)){
 					redirect(site_url('regex/errortouch/'.$filename));
@@ -254,7 +254,7 @@ class regex extends base { //class for public
 		if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
 		//cek location
 		if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
+		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
 		}else{//can create new file
 			$getdir = array();
 			$newdir = array(
@@ -262,7 +262,7 @@ class regex extends base { //class for public
 				'permissions'=>'rwx------',
 				'create'=>date('dMY H:i'),
 				'owner'=>$this->session->userdata['student_login']['username'],
-			);
+				);
 			//get all directory on session
 			foreach ($this->session->userdata('mydir') as $md) {
 				if($md['name']==$directoryname){
@@ -322,28 +322,28 @@ class regex extends base { //class for public
 						$this->rmAttributes('file',$attribute);//delete form session
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>remove success </pre>';
 						break;
-					default:
+						default:
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>invalid option '.$option.'</pre>';
 						break;
-				}
-			}else if($this->searchAttributes('dir',$attribute)){
-				switch ($option) {
-					case '-r':
+					}
+				}else if($this->searchAttributes('dir',$attribute)){
+					switch ($option) {
+						case '-r':
 						$this->rmAttributes('dir',$attribute);//delete form session
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>remove success </pre>';
 						break;
-					default:
+						default:
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>invalid option '.$option.'</pre>';
 						break;
+					}
+				}else{
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": No such file or directory</pre>';
 				}
-			}else{
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>rm: cannot remove "'.$attribute.'": No such file or directory</pre>';
 			}
 		}
-	}
 	//input output standart
-	public function iostandart(){
-		$command = $_GET['command'];
+		public function iostandart(){
+			$command = $_GET['command'];
 		//get standar :: structure x stamdart y
 		$standart = $this->useIOStandart($command);//redirection type
 		//check apakah menggunakan option atau tidak
@@ -351,9 +351,9 @@ class regex extends base { //class for public
 		$param1 = $commandArray[0];
 		$param2 = str_replace("\n", "", $commandArray[1]);//remove line break
 		//echo $param2;
-		//print_r($commandArray);
+		//print_r($commandArray)
 		switch ($standart) {
-			case '>' || '1>'://output standart :: replace
+		case '>'://output standart :: replace
 				//is file found
 				if($this->searchAttributes('file',$param2)){//[WORKED]
 					//shell exec first param
@@ -378,7 +378,7 @@ class regex extends base { //class for public
 								'create'=>date('dMY H:i'),
 								'owner'=>$this->session->userdata['student_login']['username'],
 								'content'=>$result,
-							);
+								);
 							array_push($files, $update);
 						}else{
 							array_push($files, $mf);
@@ -392,18 +392,54 @@ class regex extends base { //class for public
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
 				}
 				break;
-			case '>>' || '1>>'://output standart :: merging
+			case '>>'://output standart :: merging
+			//is file found
+                if($this->searchAttributes('file',$param2)){//[WORKED]
+                    //shell exec first param
+                	$commandArray = explode(' ', $param1);
+                    //end of shell exec
+                	if(in_array('cat', $commandArray)){
+                        //get filename
+                		$catFile = $commandArray[1];
+                		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
 
-				break;
+                    }else{//shell exec
+                    	$result = shell_exec($param1);
+                        // echo $result;
+                    }
+                    //update session
+                    $files = array();
+                    foreach ($this->session->userdata('myfile') as $mf) {
+                    	if(trim($mf['name']) == trim($param2)){
+                    		$update = array(
+                    			'name'=>$mf['name'],
+                    			'permissions'=>'rwx------',
+                    			'create'=>date('dMY H:i'),
+                    			'owner'=>$this->session->userdata['student_login']['username'],
+                    			'content'=> $mf['content'].$result,
+                    			);
+                    		array_push($files, $update);
+                    	}else{
+                    		array_push($files, $mf);
+                    	}
+                    }
+                    //setup new session
+                    $this->session->set_userdata('myfile',$files);
+                    //return
+                    echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:redirection success';
+                }else{
+                	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
+                }
+                break;
 			case '<' || '0<'://input standart ::
 
-				break;
+			break;
 			case '2>'://standar error :: langsung menampilkan hasil
 
-				break;
+			break;
 			default://redirection not found
-				echo 'Something Wrong, Please Refresh a Page';
-				break;
+			echo 'Something Wrong, Please Refresh a Page';
+			break;
 		}
 	}
 	//ALL ABOUT COURSE CHECK
@@ -445,20 +481,20 @@ class regex extends base { //class for public
 				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
 				redirect(site_url('regex/check_fault'));
 			}
-		endforeach;
+			endforeach;
 		//set session case = true
-		if($course = TRUE){
-			echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
-			$sessiondata['coursestatus'] = $course;
-			$this->session->set_userdata($sessiondata);
-		}
+			if($course = TRUE){
+				echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
+				$sessiondata['coursestatus'] = $course;
+				$this->session->set_userdata($sessiondata);
+			}
 		//matching input command and database command
 		// echo '<hr/>';
 		// echo $updateterminal; 
-	}
+		}
 
 	//rewind check
-	public function checkrewind(){
+		public function checkrewind(){
 		$terminal = strip_tags($_POST['terminal']);//remove all html tag
 		//replace space
 		$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;
@@ -495,27 +531,27 @@ class regex extends base { //class for public
 				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
 				//redirect(site_url('regex/check_fault'));
 			}
-		endforeach;
+			endforeach;
 		//set session case = true
-		if($course = TRUE){
-			echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
-			$sessiondata['coursestatus'] = $course;
-			$this->session->set_userdata($sessiondata);
-		}
+			if($course = TRUE){
+				echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
+				$sessiondata['coursestatus'] = $course;
+				$this->session->set_userdata($sessiondata);
+			}
 		//matching input command and database command
 		// echo '<hr/>';
 		// echo $updateterminal; 
-	}
+		}
 
-	public function check_fault(){
+		public function check_fault(){
 		//set session case = fault
-		$course = FALSE;
-		$sessiondata['coursestatus'] = $course;
-		$this->session->set_userdata($sessiondata);
-		echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
-	}
+			$course = FALSE;
+			$sessiondata['coursestatus'] = $course;
+			$this->session->set_userdata($sessiondata);
+			echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+		}
 	//error  message for all
-	public function errorMessage(){
+		public function errorMessage(){
 		$command = $_GET['command'];//get error command from terminal
 		$error = $_GET['error'];//get error message
 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$error.'</pre>';
