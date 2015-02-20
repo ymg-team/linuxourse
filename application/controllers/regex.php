@@ -186,7 +186,13 @@ class regex extends base { //class for public
 			$dir = $this->session->userdata['dir'].'/'.$commandArray[0];
 		}
 		//database check
-		return $this->m_command->cat($dir);
+		$result = $this->m_command->cat($dir);//return file content
+		if(!empty($result)){//is found
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$dir.'<br/>:'
+			.$result['content'].'</pre>';
+		}else{//not found on database
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$dir.'<br/>:file not found</pre>';
+		}
 	}
 	//nano
 	public function nano(){
@@ -431,12 +437,50 @@ class regex extends base { //class for public
                 	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
                 }
                 break;
-			case '<' || '0<'://input standart ::
-
-			break;
+			case '<'://input standart ::
+				//is param2 = file
+				$commandArray = explode(' ',$param1);//get all command array
+				
+				break;
 			case '2>'://standar error :: langsung menampilkan hasil
+				//is file found
+				if($this->searchAttributes('file',$param2)){//[WORKED]
+					//shell exec first param
+					$commandArray = explode(' ', $param1);
+					//end of shell exec
+					if(in_array('cat', $commandArray)){
+						//get filename
+						$catFile = $commandArray[1];
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
 
-			break;
+					}else{//shell exec
+						$result = shell_exec($param1);
+						// echo $result;
+					}
+					//update session
+					$files = array();
+					foreach ($this->session->userdata('myfile') as $mf) {
+						if(trim($mf['name']) == trim($param2)){
+							$update = array(
+								'name'=>$mf['name'],
+								'permissions'=>'rwx------',
+								'create'=>date('dMY H:i'),
+								'owner'=>$this->session->userdata['student_login']['username'],
+								'content'=>$result,
+								);
+							array_push($files, $update);
+						}else{
+							array_push($files, $mf);
+						}
+					}
+					//setup new session
+					$this->session->set_userdata('myfile',$files);
+					//return
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:redirection success<br/>'.$result;
+				}else{
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
+				}
+				break;
 			default://redirection not found
 			echo 'Something Wrong, Please Refresh a Page';
 			break;

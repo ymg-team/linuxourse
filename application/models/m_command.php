@@ -232,35 +232,41 @@ class m_command extends CI_Model{
 			}
 			//using cat
 			public function cat($directory){
-				//get file name
+//get file name
 				$dirArray = explode('/', $directory);
-				//file name is last index
+//file name is last index
 				$filename = end($dirArray);
-				//get real directory name
+//get real directory name
 				$directory = str_replace('/'.$filename,'',$directory);
-				//cek on database
+//cek on database
 				$params = array($filename,$directory);
 				$sql = "SELECT content FROM ls_dir
 				INNER JOIN available_dir ON ls_dir.id_available_dir = available_dir.id
 				WHERE ls_dir.name = ? AND available_dir.directory = ? ";
 				$query = $this->db->query($sql,$params);
-				$found = FALSE;
 		if($query->num_rows()>0){//print content k
-			$query = $query->row_array();
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
-			.$query['content'].'</pre>';
-		}else{
+			return $query->row_array();//get file content
+		}else{//get file form home / session
+			$found = FALSE;//default file not found on home session
 			foreach($this->session->userdata('myfile') as $mv):
 				if($mv['name']==$filename){
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
-					.$mv['content'].'</pre>';
 					$found = TRUE;
+					$filecontent = $mv['content'];
 				}
 				endforeach;
 			}
 			//found or not
-			if($found == FALSE){
-				echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:file not found</pre>';				
+			if($found){
+				$result = array(
+					'content'=>$filecontent,
+					);
+				// echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:'
+				// .$filecontent.'</pre>';
+				return $result;
+
+			}else{
+				// echo '<pre>student@linux-ecourse:'.$this->session->userdata('dir').'$ cat '.$directory.'/'.$filename.'<br/>:file not found</pre>';			
+				return array();
 			}
 		}
 		
