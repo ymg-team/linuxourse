@@ -50,7 +50,7 @@ class regex extends base { //class for public
 			redirect(site_url('regex/ls?command='.$command));
 		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
-		} else if(in_array('cat',$commandArray)){//cat file
+		} else if(in_array('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
 			redirect(site_url('regex/cat?command='.$command));
 		} else if(in_array('touch',$commandArray)){//touch new file
 			redirect(site_url('regex/touch?command='.$command));
@@ -440,7 +440,28 @@ class regex extends base { //class for public
 			case '<'://input standart ::
 				//is param2 = file
 				$commandArray = explode(' ',$param1);//get all command array
-				
+				if(in_array('cat', $commandArray)){//if cat a file
+					//get file location
+					$find = '/';
+		// check from root or not
+					$pos = strpos($param2,$find);
+		//if from root '/'
+					if($pos === 0){
+						$dir = ltrim($param2,' ');
+					}else{
+						$dir = $this->session->userdata['dir'].'/'.ltrim($param2,' ');
+					}
+					//database check
+					$result = $this->m_command->cat($dir);//return file content
+					if(!empty($result)){//is found
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:'.$result['content'];
+					}else{//not found on database
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:file or directory not found';
+					}					
+				}else{//do shell exec
+					$result = shell_exec($param1);
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:redirection success<br/>'.$result;
+				}				
 				break;
 			case '2>'://standar error :: langsung menampilkan hasil
 				//is file found
