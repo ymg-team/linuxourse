@@ -85,6 +85,7 @@ class course extends base { //class for public
 				'content'=>'this is content inside public file',
 				)
 			);
+		
 		$this->session->set_userdata('myfile',$publicfile);
 		//end of set public file
 		//start create public file
@@ -108,6 +109,7 @@ class course extends base { //class for public
 		$id = base64_decode(base64_decode($id));
 		$data['detCourse'] = $this->m_course->detUserCourse($id);//get all user course data
 		$data['title'] = $data['detCourse']['leveltitle'];
+		$data['script'] = '<script>$(document).ready($("body").css("background-color","#282828"));</script>';
 		//recent idlevel
 		$data['recentIdlevel'] = $this->m_course->courseListMenu($data['detCourse']['step'],$data['detCourse']['id_level'],$data['detCourse']['id_materi']);
 		$data['courseList']=$this->m_course->courseByLevel($data['recentIdlevel']['id_level']);//show course b y id level

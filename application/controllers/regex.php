@@ -62,6 +62,8 @@ class regex extends base { //class for public
 			redirect(site_url('regex/rm?command='.$command));
 		} else if($this->isIOStandart($commandArray)){//redirection :: standar input output
 			redirect(site_url('regex/iostandart?command='.$command));
+		} else if(in_array('chmod', $commandArray)){//chmod a file or directory
+			redirect(site_url('regex/chmod?command='.$command));//do chmod
 		} else {
 			//if not using custom controller command
 			$specialcommand = array(
@@ -77,7 +79,7 @@ class regex extends base { //class for public
 			$docommand = array(
 				);
 			$forbiddencommand = array(
-				'reboot','init0');
+				'reboot','init0','halt');
 			//command is special command or not
 			$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
 			if(array_key_exists($trimcommand,$specialcommand)){//output
@@ -121,6 +123,26 @@ class regex extends base { //class for public
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:directory changed</pre>';
 		}else{//directory not found
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no such file or directory</pre>';
+		}
+	}
+	//chmod
+	public function chmod(){
+		$command = $_GET['command'];
+		//explode by space
+		$explodeCommand = explode(' ', $command);
+		$parameter = $explodeCommand[1];//get parameter
+		$filedir = $explodeCommand[2]; //get file and directori
+		//get chmod meaning
+		$permissions = $this->chmodModification($parameter);
+		echo $permissions;
+		//cek file or directory
+		if($this->searchAttributes('file',$filedir)){//check file
+			
+		}else if($this->searchAttributes('dir',$filedir)){//file not found -> check directory
+			
+		}else{//file and directory not found
+			//get error message
+			redirect(site_url('regex/errorMessage?command='.$command.'&error=cannot access "'.$filedir.'" no such file or directory not inside /home/user'));
 		}
 	}
 	//list 'ls'
@@ -359,7 +381,7 @@ class regex extends base { //class for public
 		//echo $param2;
 		//print_r($commandArray)
 		switch ($standart) {
-		case '>'://output standart :: replace
+		case '>' ://output standart :: replace
 				//is file found
 				if($this->searchAttributes('file',$param2)){//[WORKED]
 					//shell exec first param
@@ -510,6 +532,8 @@ class regex extends base { //class for public
 	//ALL ABOUT COURSE CHECK
 	//check result
 	public function check(){
+		$redirection = array('&gt;','&lt;','&gt&gt;','2&gt;','1&gt;','\'','0&gt;','&ndash;','-',);//special character on html
+		$redirection2 = array('>','<','>>','2>','1>','\'','0<','-');//special character on html
 		$terminal = strip_tags($_POST['terminal']);//remove all html tag
 		//replace space
 		$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;
@@ -530,36 +554,35 @@ class regex extends base { //class for public
 		//destroy command_db
 		//create new array
 		foreach($reg_result as $rs):
-			array_push($command_list, trim($rs[1]));
+			array_push($command_list, trim(str_replace($redirection,'', $rs[1])));
 		endforeach;
 		// print_r($command_db);
 		// echo '<br/>';
 		// print_r($command_list);
 		//cek command list and command db
 		foreach($command_db as $cbase):
-			if(in_array(trim($cbase),$command_list)){
+			$command_base = trim(str_replace($redirection2, '', $cbase));
+		if(in_array($command_base,$command_list)){
 				// echo $cbase.' in array </br>';
-				$course = TRUE;
-			}else{
-				$course = FALSE;
-				// echo $cbase.' not in array </br>';
-				// echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
-				redirect(site_url('regex/check_fault'));
-			}
-			endforeach;
-		//set session case = true
-			if($course = TRUE){
-				echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
-				$sessiondata['coursestatus'] = $course;
-				$this->session->set_userdata($sessiondata);
-			}
-		//matching input command and database command
-		// echo '<hr/>';
-		// echo $updateterminal; 
+			$course = TRUE;
+		}else{
+			$course = FALSE;
+			echo '<span style="color:red"> '.$command_base.' is missing </span></br>';			
+			// redirect(site_url('regex/check_fault'));
 		}
+		endforeach;
+		//set session case = true
+		if($course == TRUE){
+			echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
+			$sessiondata['coursestatus'] = $course;
+			$this->session->set_userdata($sessiondata);
+		} else {
+			echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+		}
+	}
 
 	//rewind check
-		public function checkrewind(){
+	public function checkrewind(){
 		$terminal = strip_tags($_POST['terminal']);//remove all html tag
 		//replace space
 		$updateterminal = preg_replace("/[\n\r\t]/", "", $terminal);;

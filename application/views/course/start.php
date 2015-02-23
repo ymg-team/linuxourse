@@ -1,4 +1,5 @@
 <?php
+if(!empty($script)){echo $script;}
 //course detail
 $step = $detCourse['step'] + 1;
 $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail course by id materi and step
@@ -141,29 +142,29 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 										echo $hint;
 										?>
 									</p>									
-									</div>
 								</div>
 							</div>
-							<!-- content -->
-							<div class="full-height terminal_view large-9 columns">
-								<div style="padding:10px" class="row collapse">
-									<!-- command -->
-									<div style="background-color:#000" class="command large-12 columns">
-										<div id="terminal" class="item" style="">
-											<div id="result"></div>
-											<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata('dir')?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>
-											<!-- <span class="small-8 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>-->
-										</div>
+						</div>
+						<!-- content -->
+						<div class="full-height terminal_view large-9 columns">
+							<div style="padding:10px" class="row collapse">
+								<!-- command -->
+								<div style="background-color:#000" class="command large-12 columns">
+									<div id="terminal" class="item" style="">
+										<div id="result"></div>
+										<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata('dir')?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>
+										<!-- <span class="small-8 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>-->
 									</div>
-									<!-- button excute -->
-									<div class="row">
-										<!-- command -->
-										<div id="btnGroupAction" style="padding-top:10px" class="large-6 columns">
-											<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>execute..</span>
-										</div>
+								</div>
+								<!-- button excute -->
+								<div class="row">
+									<!-- command -->
+									<div id="btnGroupAction" style="padding-top:10px" class="large-6 columns">
+										<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>execute..</span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</section>
-					<div id="test"></div>
+					</div>
+				</section>
+				<div id="test"></div>
