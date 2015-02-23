@@ -194,11 +194,32 @@ class base extends CI_Controller {
 	//chmod modification
 	public function chmodModification($attr){
 		if(is_numeric($attr)){//using number
-			echo 'using number';
+			for($x=0;$x<3;$x++){
+				switch ($attr[$x]) {
+					case 7://
+					$per[$x] = 'rwx';
+					break;
+					case 6://
+					$per[$x] = 'rw-';
+					break;
+					case 5://
+					$per[$x] = 'r-x';
+					break;
+					case 4://
+					$per[$x] = 'r--';
+					break;					
+					default:
+					$per[$x] = 'rwx';
+					break;
+				}
+			}
+			$permissions = $per[0].$per[1].$per[2];
 		}else{//using abajad
-			echo 'using abjad';
+			$permissions = 'rwxrwxrwx';
 		}
+		return $permissions;
 	}
+	
 
 }
 

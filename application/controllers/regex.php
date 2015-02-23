@@ -134,10 +134,26 @@ class regex extends base { //class for public
 		$filedir = $explodeCommand[2]; //get file and directori
 		//get chmod meaning
 		$permissions = $this->chmodModification($parameter);
-		echo $permissions;
 		//cek file or directory
 		if($this->searchAttributes('file',$filedir)){//check file
-			
+			$files = array();
+			foreach ($this->session->userdata('myfile') as $mf) {
+				if(trim($mf['name']) == trim($filedir)){
+					$update = array(
+						'name'=>$mf['name'],
+						'permissions'=>$permissions,
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						'content'=>$mf['content'],
+						);
+					array_push($files, $update);
+				}else{
+					array_push($files, $mf);
+				}
+			}
+			//setup new session
+			$this->session->set_userdata('myfile',$files);
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:permissions changed</pre>';
 		}else if($this->searchAttributes('dir',$filedir)){//file not found -> check directory
 			
 		}else{//file and directory not found
