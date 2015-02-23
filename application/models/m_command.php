@@ -106,7 +106,7 @@ class m_command extends CI_Model{
 						}
 						$insidedir = explode('/', $dir);
 						if(!in_array($insidedir[0], $showdir)){
-							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
+							echo 'drwx------:0 admin linuxourse 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
@@ -114,7 +114,7 @@ class m_command extends CI_Model{
 						if($directory == '/home/user'):
 							$sessiondir = $this->session->userdata('mydir');
 						foreach($sessiondir as $sd):
-							echo $sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
+							echo 'd'.$sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
 						endforeach;
 						endif;
 						//print file
@@ -201,7 +201,7 @@ class m_command extends CI_Model{
 						}
 						$insidedir = explode('/', $dir);
 						if(!in_array($insidedir[0], $showdir)){
-							echo 'drwx------:0 user user 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
+							echo 'drwx------:0 admin linuxourse 7000 1Jan2015 24:00 <span class="terminal-showdir">'.$insidedir[0].'/</span><br/>';
 						}
 						array_push($showdir, $insidedir[0]);
 						endforeach;
@@ -209,7 +209,7 @@ class m_command extends CI_Model{
 						if($directory == '/home/user'):
 							$sessiondir = $this->session->userdata('mydir');
 						foreach($sessiondir as $sd):
-							echo $sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
+							echo 'd'.$sd['permissions'].':0 '.$sd['owner'].'  '.$sd['owner'].' 7000 '.$sd['create'].' <span class="terminal-showdir">'.$sd['name'].'/</span><br/>';
 						endforeach;
 						endif;
 						//print file

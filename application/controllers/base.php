@@ -192,10 +192,11 @@ class base extends CI_Controller {
 		}
 	}
 	//chmod modification
-	public function chmodModification($attr){
+	public function chmodModification($attr,$command){		
 		if(is_numeric($attr)){//using number
-			for($x=0;$x<3;$x++){
-				switch ($attr[$x]) {
+			if(strlen($attr) == 3){//total array index must 3
+				for($x=0;$x<3;$x++){//looping for user group and else
+					switch ($attr[$x]) {
 					case 7://
 					$per[$x] = 'rwx';
 					break;
@@ -214,12 +215,18 @@ class base extends CI_Controller {
 				}
 			}
 			$permissions = $per[0].$per[1].$per[2];
+		}else{
+			redirect(site_url('regex/errorMessage?command='.$command.'&error=wrong chmod attributes'));
+		}
 		}else{//using abajad
-			$permissions = 'rwxrwxrwx';
+			$attr = explode(',', $attr);
+			print_r($attr);
+			$permissions = 'rwxrwxwx';
+			//using addition or subtraction or else
+			
 		}
 		return $permissions;
-	}
-	
+	}	
 
 }
 

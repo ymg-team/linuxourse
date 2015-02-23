@@ -133,9 +133,10 @@ class regex extends base { //class for public
 		$parameter = $explodeCommand[1];//get parameter
 		$filedir = $explodeCommand[2]; //get file and directori
 		//get chmod meaning
-		$permissions = $this->chmodModification($parameter);
+		$permissions = $this->chmodModification($parameter,$command);
 		//cek file or directory
 		if($this->searchAttributes('file',$filedir)){//check file
+			// file modification
 			$files = array();
 			foreach ($this->session->userdata('myfile') as $mf) {
 				if(trim($mf['name']) == trim($filedir)){
@@ -153,9 +154,29 @@ class regex extends base { //class for public
 			}
 			//setup new session
 			$this->session->set_userdata('myfile',$files);
+			// end of file modification
 			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:permissions changed</pre>';
 		}else if($this->searchAttributes('dir',$filedir)){//file not found -> check directory
-			
+			//directory modification
+			$directory = array();
+			foreach ($this->session->userdata('mydir') as $md) {
+				if(trim($md['name']) == trim($filedir)){
+					$update = array(
+						'name'=>$md['name'],
+						'permissions'=>$permissions,
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						);
+					array_push($directory, $update);
+				}else{
+					array_push($directory, $md);
+				}
+			}
+			//setup new session
+			$this->session->set_userdata('mydir',$directory);
+			// end of file modification
+			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:permissions changed</pre>';
+			//end of directory modification
 		}else{//file and directory not found
 			//get error message
 			redirect(site_url('regex/errorMessage?command='.$command.'&error=cannot access "'.$filedir.'" no such file or directory not inside /home/user'));
