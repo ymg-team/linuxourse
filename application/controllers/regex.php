@@ -775,7 +775,21 @@ class regex extends base { //class for public
 				}
 				break;
 				case 'chgrp':
-					# code...
+				if($type == 'file'){//edit user owner for file
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editFile($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else if($type == 'directory'){//edit user owner for directory
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editDirectory($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else{
+					redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+				}
 				break;
 			}
 		}
