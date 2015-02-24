@@ -44,27 +44,29 @@ class regex extends base { //class for public
 		//end of history setup
 		$commandArray = explode(' ', $commandclear);
 		//if using special command
-		if(in_array('cd', $commandArray)){//cd
+		if($this->checkSpecialCommand('cd', $commandArray)){//cd
 			redirect(site_url('regex/cd?command='.$command));
-		} else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
+		}else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
 			redirect(site_url('regex/ls?command='.$command));
-		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
+		}else if($this->checkSpecialCommand('init',$commandArray) && in_array(0, $commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
-		} else if(in_array('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
+		}else if($this->checkSpecialCommand('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
 			redirect(site_url('regex/cat?command='.$command));
-		} else if(in_array('touch',$commandArray)){//touch new file
+		}else if($this->checkSpecialCommand('touch',$commandArray)){//touch new file
 			redirect(site_url('regex/touch?command='.$command));
-		} else if(in_array('nano',$commandArray)){//nano -> edit file
+		}else if($this->checkSpecialCommand('nano',$commandArray)){//nano -> edit file
 			redirect(site_url('regex/nano?command='.$command));
-		} else if(in_array('mkdir',$commandArray)){//mkdir : create new directory
+		}else if($this->checkSpecialCommand('mkdir',$commandArray)){//mkdir : create new directory
 			redirect(site_url('regex/mkdir?command='.$command));
-		} else if(in_array('rm',$commandArray)){//rm :: remove file or directory
+		}else if($this->checkSpecialCommand('rm',$commandArray)){//rm :: remove file or directory
 			redirect(site_url('regex/rm?command='.$command));
-		} else if($this->isIOStandart($commandArray)){//redirection :: standar input output
+		}else if($this->isIOStandart($commandArray)){//redirection :: standar input output
 			redirect(site_url('regex/iostandart?command='.$command));
-		} else if(in_array('chmod', $commandArray)){//chmod a file or directory
+		}else if($this->checkSpecialCommand('chmod', $commandArray)){//chmod a file or directory
 			redirect(site_url('regex/chmod?command='.$command));//do chmod
-		} else {
+		}else if($this->checkSpecialCommand('umask', $commandArray)){
+			redirect(site_url('regex/umask?command='.$command));//do umask
+		}else{
 			//if not using custom controller command
 			$specialcommand = array(
 				'history'=>$myhistory,
@@ -666,6 +668,49 @@ class regex extends base { //class for public
 		//matching input command and database command
 		// echo '<hr/>';
 		// echo $updateterminal; 
+		}
+
+		//umask
+		public function umask(){
+			$command = $_GET['command'];		
+			$commandArray = explode(' ', $command);
+			$pwd = $this->session->userdata['dir'];// active directory
+			$umasks = $this->session->userdata['umask'];//all umask
+			$umask = '';
+			if(count($commandArray) > 2){redirect(site_url('errorMessage?command='.$command.'&error=invalid symbolic mode operator'));//umask format incorect
+			}else if(count($commandArray) == 2){//change umask
+				if($pwd != '/home/user'){redirect(site_url('errorMessage?command='.$command.'&error=access denied'));}//only /home/user
+				if(is_numeric($commandArray[1])){//set up new umask
+					$umask = $commandArray[1];
+					$allUmask = array();
+					foreach($umasks as $u){
+						if($u['dir'] == $pwd){
+							$mine = array(
+								'dir'=>$u['dir'],
+								'umask'=>$umask
+								);
+							array_push($allUmask, $mine);
+						}else{
+							array_push($allUmask, $u);
+						}
+					}
+					$this->session->set_userdata('umask',$allUmask);//save new umask to session
+					$result = '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:umask changed</pre>';
+				}else{//invalid umask format
+					redirect(site_url('errorMessage?command='.$command.'&error=invalid umask format'));//invalid umask format
+				}				
+			}else if(count($commandArray) == 1){//check umask active directory
+				foreach($umasks as $u){
+					if($u['dir'] == $pwd){
+						$umask = $u['umask'];
+					}
+				}
+				if(!empty($umask)){$umask = '0'.$umask;}else{$umask = '0022';}
+				$result = '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$umask.'</pre>';
+			}else{
+				redirect(site_url('errorMessage?command='.$command.'&error=invalid umask format'));//invalid umask format
+			}
+			echo $result;
 		}
 
 		public function check_fault(){

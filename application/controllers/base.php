@@ -44,6 +44,14 @@ class base extends CI_Controller {
 			redirect(site_url('manage'));
 		}
 	}
+	//check special command
+	public function checkSpecialCommand($command,$array){
+		if(in_array($command, $array) && !in_array('man',$array)){//cd
+			return true;//matched
+		} else {
+			return false;//not matched
+		}
+	}
 	//check directory
 	public function checkDir($x){//x = directory
 		$dirList = array('/home/user/mydir','/var','/etc','/home','/home/user','/');
@@ -274,9 +282,45 @@ class base extends CI_Controller {
 			}
 		}
 		return $permissions;
-	}	
-
+	}
+	//default file for user for start course
+	public function defaultPublicFile(){
+		$publicfile = array(
+			array(
+				'name'=>'publicfile',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				'content'=>'this is content inside public file',
+				)
+			);
+		
+		return $this->session->set_userdata('myfile',$publicfile);
+	}
+	//default directory for public for start course
+	public function defaultPublicDirectory(){
+		$publicdir = array(
+			array(
+				'name'=>'publicdirectory',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				)
+			);
+		return $this->session->set_userdata('mydir',$publicdir);
+	}
+	//default umask for start course
+	public function defaultUmask(){
+		//default umask = 002
+		$umask = array(
+			array('dir'=>'/home/user','umask'=>'000'),
+			);
+		return $this->session->set_userdata('umask',$umask);
+	}
+	//counting umask
+	public function umaskResult($umaskvalue){
+		
+	}
 }
-
 /* End of file base.php */
 /* Location: ./application/controllers/base/base.php */

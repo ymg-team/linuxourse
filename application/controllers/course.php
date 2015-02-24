@@ -75,32 +75,10 @@ class course extends base { //class for public
 		// 		);
 		// 	);
 		//end of set public directory
-		//set public file on session
-		$publicfile = array(
-			array(
-				'name'=>'publicfile',
-				'permissions'=>'rwxrwxrwx',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				'content'=>'this is content inside public file',
-				)
-			);
-		
-		$this->session->set_userdata('myfile',$publicfile);
-		//end of set public file
-		//start create public file
-		$publicdir = array(
-			array(
-				'name'=>'publicdirectory',
-				'permissions'=>'rwxrwxrwx',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				)
-			);
-		$this->session->set_userdata('mydir',$publicdir);
-		//end of create public file
-		//set default active directory on session
-		$this->session->set_userdata('dir','/home/user');
+		$this->defaultPublicFile();//set default public file on session
+		$this->defaultPublicDirectory();//set default public directory on session
+		$this-> defaultUmask();//set default umask
+		$this->session->set_userdata('dir','/home/user');//default active directory
 		$this->session->set_userdata('command','');
 		//end of set default directory
 		$this->memberOnly();
