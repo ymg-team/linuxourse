@@ -318,9 +318,26 @@ class base extends CI_Controller {
 		return $this->session->set_userdata('umask',$umask);
 	}
 	//counting umask
-	public function umaskResult($umaskvalue){
-		
+	public function checkUmask($type,$umaskvalue){
+		switch ($type) {
+			case 'file':
+			$u = 6-$umaskvalue[0];
+			$g = 6-$umaskvalue[1];
+			$o = 6-$umaskvalue[2];
+				$chmod = $u.$g.$o;//get chmod value
+				$permissions = $this->chmodModification($chmod,'');//get permissions
+				break;
+
+				case 'dir':
+			#code
+				break;
+				
+				default:
+				$permissions = 'rwxr-x-r-x';
+				break;
+			}
+			return $permissions;
+		}
 	}
-}
-/* End of file base.php */
+	/* End of file base.php */
 /* Location: ./application/controllers/base/base.php */

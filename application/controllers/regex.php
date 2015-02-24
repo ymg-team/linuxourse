@@ -284,80 +284,88 @@ class regex extends base { //class for public
 			public function touch(){
 				$command = $_GET['command'];
 				$commandarray = explode(' ', $command);
-		$filename = $commandarray[1];//get filename
-		//only ca use nano on /home/user
-		//cek pwd
-		//only /home/user can touch new file
-		if($this->session->userdata('dir')!='/home/user'){
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
-		}else{
-			//adding new file to session;
-			$getfile = array();
-			$newfile = array(
-				'name'=>$filename,
-				'permissions'=>'rwx------',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				'content'=>'',
-				);
-			foreach ($this->session->userdata('myfile') as $mf) {
-				if(trim($mf['name'])==trim($filename)){
-					redirect(site_url('regex/errortouch/'.$filename));
+				$filename = $commandarray[1];//get filename
+				//only ca use nano on /home/user
+				//cek pwd
+				//only /home/user can touch new file
+				if($this->session->userdata('dir')!='/home/user'){
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
 				}else{
-					array_push($getfile, $mf);
+					//cek umask on this directory
+					foreach($this->session->userdata('umask') as $u){
+						if($u['dir'] == $this->session->userdata('dir')){
+							$umask = $u['umask'];
+						}
+					}
+					//get umask value
+					$permissions = $this->checkUmask('file',$umask);
+					//adding new file to session;
+					$getfile = array();
+					$newfile = array(
+						'name'=>$filename,
+						'permissions'=>$permissions,
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						'content'=>'',
+						);
+					foreach ($this->session->userdata('myfile') as $mf) {
+						if(trim($mf['name'])==trim($filename)){
+							redirect(site_url('regex/errortouch/'.$filename));
+						}else{
+							array_push($getfile, $mf);
+						}
+					}
+					array_push($getfile, $newfile);
+					// print_r($getfile);
+					$this->session->set_userdata('myfile',$getfile);
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
 				}
 			}
-			array_push($getfile, $newfile);
-			// print_r($getfile);
-			$this->session->set_userdata('myfile',$getfile);
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
-		}
-	}
 	//mkdir : create new empty directory
-	public function mkdir(){
-		$command = $_GET['command'];
-		$commandarray = explode(' ', $command);
-		$directoryname = $commandarray[1];//get directoryname
-		if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
-		//cek location
-		if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
-		}else{//can create new file
-			$getdir = array();
-			$newdir = array(
-				'name'=>$directoryname,
-				'permissions'=>'rwx------',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				);
-			//get all directory on session
-			foreach ($this->session->userdata('mydir') as $md) {
-				if($md['name']==$directoryname){
-					redirect(site_url('regex/errorMessage/?error=mkdir: cannot create directory "'.$directoryname.'" : File exists&command='.$command));
-				}else{
-					array_push($getdir, $md);
+			public function mkdir(){
+				$command = $_GET['command'];
+				$commandarray = explode(' ', $command);
+				$directoryname = $commandarray[1];//get directoryname
+				if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
+				//cek location
+				if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
+				}else{//can create new file
+					$getdir = array();
+					$newdir = array(
+						'name'=>$directoryname,
+						'permissions'=>'rwx------',
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						);
+					//get all directory on session
+					foreach ($this->session->userdata('mydir') as $md) {
+						if($md['name']==$directoryname){
+							redirect(site_url('regex/errorMessage/?error=mkdir: cannot create directory "'.$directoryname.'" : File exists&command='.$command));
+						}else{
+							array_push($getdir, $md);
+						}
+					}
+					array_push($getdir,$newdir);
+					// print_r($getfile);
+					$this->session->set_userdata('mydir',$getdir);
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
 				}
 			}
-			array_push($getdir,$newdir);
-			// print_r($getfile);
-			$this->session->set_userdata('mydir',$getdir);
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
-		}
-	}
 	//error touch
-	public function errorTouch(){
-		$filename = $this->uri->segment(3);
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ touch '.$filename.' <br/>:"'.$filename.'" already available</pre>';
-	}
+			public function errorTouch(){
+				$filename = $this->uri->segment(3);
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ touch '.$filename.' <br/>:"'.$filename.'" already exist</pre>';
+			}
 	//delete history
-	public function deletehistory(){
-		$sessiondata['command'] = '';
-		$this->session->set_userdata($sessiondata);
-	}
+			public function deletehistory(){
+				$sessiondata['command'] = '';
+				$this->session->set_userdata($sessiondata);
+			}
 	//command not found
-	public function commandNotFound(){
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ No command found </pre>';
-	}
+			public function commandNotFound(){
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ No command found </pre>';
+			}
 	//remove file / directory
 	public function rm(){ //rm : to remove file and directory
 		$command = $_GET['command'];
