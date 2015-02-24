@@ -329,9 +329,13 @@ class base extends CI_Controller {
 				break;
 
 				case 'dir':
-			#code
+				$u = 7-$umaskvalue[0];
+				$g = 7-$umaskvalue[1];
+				$o = 7-$umaskvalue[2];
+				$chmod = $u.$g.$o;//get chmod value
+				$permissions = $this->chmodModification($chmod,'');//get permissions
 				break;
-				
+
 				default:
 				$permissions = 'rwxr-x-r-x';
 				break;

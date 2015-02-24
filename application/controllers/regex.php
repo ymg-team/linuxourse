@@ -331,10 +331,17 @@ class regex extends base { //class for public
 				if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
 				}else{//can create new file
+					foreach($this->session->userdata('umask') as $u){
+						if($u['dir'] == $this->session->userdata('dir')){
+							$umask = $u['umask'];
+						}
+					}
+					//get umask value
+					$permissions = $this->checkUmask('file',$umask);
 					$getdir = array();
 					$newdir = array(
 						'name'=>$directoryname,
-						'permissions'=>'rwx------',
+						'permissions'=>$permissions,
 						'create'=>date('dMY H:i'),
 						'owner'=>$this->session->userdata['student_login']['username'],
 						);
