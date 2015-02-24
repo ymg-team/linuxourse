@@ -98,7 +98,7 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 				<!-- sidebar -->
 				<div style="background-color:#F5F5F5" class="full-height large-3 columns">
 					<ul style="/*background-color:#e7e7e7*/" class="button-group">
-						<li style="width:20%"><a href="<?php echo site_url('course/syllabus/'.str_replace('=', '', base64_encode(base64_encode($detCourse['id_materi']))))?>" class="small secondary button"><strong>Back</strong></a></li>
+						<li style="width:20%"><a style="width:100%" href="<?php echo site_url('course/syllabus/'.str_replace('=', '', base64_encode(base64_encode($detCourse['id_materi']))))?>" class="small secondary button"><strong>Back</strong></a></li>
 						<li style="width:80%"><a style="width:100%" href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="small button secondary dropdown">Level <?php echo $recentIdlevel['level']?></a><br>
 							<ul style="max-width:none" id="drop1" data-dropdown-content class="dropdownme f-dropdown" aria-hidden="true" tabindex="-1">
 								<?php foreach($courseList as $cl):?>
