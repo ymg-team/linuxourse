@@ -208,6 +208,15 @@ class base extends CI_Controller {
 					break;
 					case 4://
 					$per[$x] = 'r--';
+					break;	
+					case 3://
+					$per[$x] = '-wx';
+					break;	
+					case 2://
+					$per[$x] = '-w-';
+					break;	
+					case 1://
+					$per[$x] = '--x';
 					break;					
 					default:
 					$per[$x] = 'rwx';
@@ -219,11 +228,50 @@ class base extends CI_Controller {
 			redirect(site_url('regex/errorMessage?command='.$command.'&error=wrong chmod attributes'));
 		}
 		}else{//using abajad
-			$attr = explode(',', $attr);
-			print_r($attr);
-			$permissions = 'rwxrwxwx';
 			//using addition or subtraction or else
-			
+			preg_match('#u(.*),#U', $attr,$pu);//get user permissions
+			preg_match('#g(.*),#U', $attr,$pg);//get group permissions
+			preg_match('#o(.*)#', $attr,$po);//get other permissions
+			$permission[0] = $pu[1];//user
+			$permission[1] = $pg[1];//group
+			$permission[2] = $po[1];//other
+			$permissions = '';//default
+			for($x=0;$x<3;$x++){
+				//use = / - / +
+				if($permission[$x][0]=='='){//only for =
+					$permswitch = trim(str_replace('=', '', $permission[$x]));
+					switch($permswitch){
+						case 'r':
+						$perm = 'r--';
+						break;
+						case 'w':
+						$perm = '-w-';
+						break;
+						case 'x':
+						$perm = '--x';
+						break;
+						case 'rw':
+						$perm = 'rw-';
+						break;
+						case 'rx':
+						$perm = 'r-x';
+						break;
+						case 'wx':
+						$perm = '-wx';
+						break;
+						case 'rwx':
+						$perm = 'rwx';
+						break;
+						default:
+						$perm = 'rwx';
+						break;
+					}	
+				} else {
+					$perm = 'rwx';	
+				}
+				//all permissions
+				$permissions = $permissions.$perm;
+			}
 		}
 		return $permissions;
 	}	
