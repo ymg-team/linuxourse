@@ -66,6 +66,10 @@ class regex extends base { //class for public
 			redirect(site_url('regex/chmod?command='.$command));//do chmod
 		}else if($this->checkSpecialCommand('umask', $commandArray)){
 			redirect(site_url('regex/umask?command='.$command));//do umask
+		}else if($this->checkSpecialCommand('chown', $commandArray)){//do chown
+			redirect(site_url('regex/changeOwner?option=chown&command='.$command));
+		}else if($this->checkSpecialCommand('chgrp', $commandArray)){//do chown
+			redirect(site_url('regex/changeOwner?option=chgrp&command='.$command));
 		}else{
 			//if not using custom controller command
 			$specialcommand = array(
@@ -337,7 +341,7 @@ class regex extends base { //class for public
 						}
 					}
 					//get umask value
-					$permissions = $this->checkUmask('file',$umask);
+					$permissions = $this->checkUmask('dir',$umask);
 					$getdir = array();
 					$newdir = array(
 						'name'=>$directoryname,
@@ -734,6 +738,46 @@ class regex extends base { //class for public
 			$sessiondata['coursestatus'] = $course;
 			$this->session->set_userdata($sessiondata);
 			echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+		}
+
+		//do chown or chgrp
+		public function changeOwner(){
+			$option = $_GET['option'];
+			$command = $_GET['command'];		
+			$commandArray = explode(' ', $command);
+			$attr1 = $commandArray[1];//get username / group name
+			$attr2  = $commandArray[2];//get filename / directory name
+			//is file or directory
+			if($this->searchAttributes('file',$attr2)){//is file
+				$type = 'file';
+			}else if($this->searchAttributes('dir',$attr2)){//is directory
+				$type = 'directory';
+			}else{
+				redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+			}
+			//do chown or chgrp
+			switch ($option) {
+				case 'chown':
+				if($type == 'file'){//edit user owner for file
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editFile($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else if($type == 'directory'){//edit user owner for directory
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editDirectory($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else{
+					redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+				}
+				break;
+				case 'chgrp':
+					# code...
+				break;
+			}
 		}
 	//error  message for all
 		public function errorMessage(){
