@@ -44,6 +44,14 @@ class base extends CI_Controller {
 			redirect(site_url('manage'));
 		}
 	}
+	//check special command
+	public function checkSpecialCommand($command,$array){
+		if(in_array($command, $array) && !in_array('man',$array)){//cd
+			return true;//matched
+		} else {
+			return false;//not matched
+		}
+	}
 	//check directory
 	public function checkDir($x){//x = directory
 		$dirList = array('/home/user/mydir','/var','/etc','/home','/home/user','/');
@@ -208,6 +216,15 @@ class base extends CI_Controller {
 					break;
 					case 4://
 					$per[$x] = 'r--';
+					break;	
+					case 3://
+					$per[$x] = '-wx';
+					break;	
+					case 2://
+					$per[$x] = '-w-';
+					break;	
+					case 1://
+					$per[$x] = '--x';
 					break;					
 					default:
 					$per[$x] = 'rwx';
@@ -219,16 +236,112 @@ class base extends CI_Controller {
 			redirect(site_url('regex/errorMessage?command='.$command.'&error=wrong chmod attributes'));
 		}
 		}else{//using abajad
-			$attr = explode(',', $attr);
-			print_r($attr);
-			$permissions = 'rwxrwxwx';
 			//using addition or subtraction or else
-			
+			preg_match('#u(.*),#U', $attr,$pu);//get user permissions
+			preg_match('#g(.*),#U', $attr,$pg);//get group permissions
+			preg_match('#o(.*)#', $attr,$po);//get other permissions
+			$permission[0] = $pu[1];//user
+			$permission[1] = $pg[1];//group
+			$permission[2] = $po[1];//other
+			$permissions = '';//default
+			for($x=0;$x<3;$x++){
+				//use = / - / +
+				if($permission[$x][0]=='='){//only for =
+					$permswitch = trim(str_replace('=', '', $permission[$x]));
+					switch($permswitch){
+						case 'r':
+						$perm = 'r--';
+						break;
+						case 'w':
+						$perm = '-w-';
+						break;
+						case 'x':
+						$perm = '--x';
+						break;
+						case 'rw':
+						$perm = 'rw-';
+						break;
+						case 'rx':
+						$perm = 'r-x';
+						break;
+						case 'wx':
+						$perm = '-wx';
+						break;
+						case 'rwx':
+						$perm = 'rwx';
+						break;
+						default:
+						$perm = 'rwx';
+						break;
+					}	
+				} else {
+					$perm = 'rwx';	
+				}
+				//all permissions
+				$permissions = $permissions.$perm;
+			}
 		}
 		return $permissions;
-	}	
+	}
+	//default file for user for start course
+	public function defaultPublicFile(){
+		$publicfile = array(
+			array(
+				'name'=>'publicfile',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				'content'=>'this is content inside public file',
+				)
+			);
+		
+		return $this->session->set_userdata('myfile',$publicfile);
+	}
+	//default directory for public for start course
+	public function defaultPublicDirectory(){
+		$publicdir = array(
+			array(
+				'name'=>'publicdirectory',
+				'permissions'=>'rwxrwxrwx',
+				'create'=>date('dMY H:i'),
+				'owner'=>$this->session->userdata['student_login']['username'],
+				)
+			);
+		return $this->session->set_userdata('mydir',$publicdir);
+	}
+	//default umask for start course
+	public function defaultUmask(){
+		//default umask = 002
+		$umask = array(
+			array('dir'=>'/home/user','umask'=>'000'),
+			);
+		return $this->session->set_userdata('umask',$umask);
+	}
+	//counting umask
+	public function checkUmask($type,$umaskvalue){
+		switch ($type) {
+			case 'file':
+			$u = 6-$umaskvalue[0];
+			$g = 6-$umaskvalue[1];
+			$o = 6-$umaskvalue[2];
+				$chmod = $u.$g.$o;//get chmod value
+				$permissions = $this->chmodModification($chmod,'');//get permissions
+				break;
 
-}
+				case 'dir':
+				$u = 7-$umaskvalue[0];
+				$g = 7-$umaskvalue[1];
+				$o = 7-$umaskvalue[2];
+				$chmod = $u.$g.$o;//get chmod value
+				$permissions = $this->chmodModification($chmod,'');//get permissions
+				break;
 
-/* End of file base.php */
+				default:
+				$permissions = 'rwxr-x-r-x';
+				break;
+			}
+			return $permissions;
+		}
+	}
+	/* End of file base.php */
 /* Location: ./application/controllers/base/base.php */

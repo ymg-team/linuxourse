@@ -269,5 +269,83 @@ class m_command extends CI_Model{
 				return array();
 			}
 		}
-		
-	}
+
+		//update file content
+		public function editFile($name,$params){
+			$files = array();
+			foreach($this->session->userdata('myfile') as $file):
+				if($file['name'] == $name){
+					$updatedFile = array();
+					//update nama
+					if(!empty($params['name'])){
+						$updatedFile['name'] = $params['name'];//new name
+					}else{
+						$updatedFile['name'] = $file['name'];//old name
+					}
+					//update permission
+					if(!empty($params['permissions'])){
+						$updatedFile['permissions'] = $params['permissions'];//new permissions
+					}else{
+						$updatedFile['permissions'] = $file['permissions'];//old permissions
+					}
+					//update creation
+					$updatedFile['create'] = date('dMY H:i');//new time
+					//update owner
+					if(!empty($params['owner'])){
+						$updatedFile['owner'] = $params['owner'];//new owner
+					}else{
+						$updatedFile['owner'] = $file['owner'];//old owner
+					}
+					//update content
+					if(!empty($params['content'])){
+						$updatedFile['content'] = $params['content'];//new permissions
+					}else{
+						$updatedFile['content'] = $file['content'];//old permissions
+					}
+					//push data to array
+					array_push($files,$updatedFile);//push data to array collection
+				}else{
+					array_push($files,$file);//push data to array colection
+				}
+				endforeach;
+			//set session
+				return $this->session->set_userdata('myfile',$files);//new session for file
+			}
+
+			//update file content
+			public function editDirectory($name,$params){
+				$dirs = array();
+				foreach($this->session->userdata('mydir') as $dir):
+					if($dir['name'] == $name){
+						$updatedDir = array();
+					//update nama
+						if(!empty($params['name'])){
+						$updateDir['name'] = $params['name'];//new name
+					}else{
+						$updateDir['name'] = $file['name'];//old name
+					}
+					//update permission
+					if(!empty($params['permissions'])){
+						$updateDir['permissions'] = $params['permissions'];//new permissions
+					}else{
+						$updateDir['permissions'] = $file['permissions'];//old permissions
+					}
+					//update creation
+					$updateDir['create'] = date('dMY H:i');//new time
+					//update owner
+					if(!empty($params['owner'])){
+						$updateDir['owner'] = $params['owner'];//new owner
+					}else{
+						$updateDir['owner'] = $file['owner'];//old owner
+					}
+					//push data to array
+					array_push($dirs,$updateDir);//push data to array collection
+				}else{
+					array_push($dirs,$dir);//push data to array colection
+				}
+				endforeach;
+			//set session
+				return $this->session->set_userdata('mydir',$dirs);//new session for file
+			}
+
+		}

@@ -44,27 +44,33 @@ class regex extends base { //class for public
 		//end of history setup
 		$commandArray = explode(' ', $commandclear);
 		//if using special command
-		if(in_array('cd', $commandArray)){//cd
+		if($this->checkSpecialCommand('cd', $commandArray)){//cd
 			redirect(site_url('regex/cd?command='.$command));
-		} else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
+		}else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
 			redirect(site_url('regex/ls?command='.$command));
-		} else if(in_array('init',$commandArray) && in_array(0, $commandArray)){//init 0
+		}else if($this->checkSpecialCommand('init',$commandArray) && in_array(0, $commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
-		} else if(in_array('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
+		}else if($this->checkSpecialCommand('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
 			redirect(site_url('regex/cat?command='.$command));
-		} else if(in_array('touch',$commandArray)){//touch new file
+		}else if($this->checkSpecialCommand('touch',$commandArray)){//touch new file
 			redirect(site_url('regex/touch?command='.$command));
-		} else if(in_array('nano',$commandArray)){//nano -> edit file
+		}else if($this->checkSpecialCommand('nano',$commandArray)){//nano -> edit file
 			redirect(site_url('regex/nano?command='.$command));
-		} else if(in_array('mkdir',$commandArray)){//mkdir : create new directory
+		}else if($this->checkSpecialCommand('mkdir',$commandArray)){//mkdir : create new directory
 			redirect(site_url('regex/mkdir?command='.$command));
-		} else if(in_array('rm',$commandArray)){//rm :: remove file or directory
+		}else if($this->checkSpecialCommand('rm',$commandArray)){//rm :: remove file or directory
 			redirect(site_url('regex/rm?command='.$command));
-		} else if($this->isIOStandart($commandArray)){//redirection :: standar input output
+		}else if($this->isIOStandart($commandArray)){//redirection :: standar input output
 			redirect(site_url('regex/iostandart?command='.$command));
-		} else if(in_array('chmod', $commandArray)){//chmod a file or directory
+		}else if($this->checkSpecialCommand('chmod', $commandArray)){//chmod a file or directory
 			redirect(site_url('regex/chmod?command='.$command));//do chmod
-		} else {
+		}else if($this->checkSpecialCommand('umask', $commandArray)){
+			redirect(site_url('regex/umask?command='.$command));//do umask
+		}else if($this->checkSpecialCommand('chown', $commandArray)){//do chown
+			redirect(site_url('regex/changeOwner?option=chown&command='.$command));
+		}else if($this->checkSpecialCommand('chgrp', $commandArray)){//do chown
+			redirect(site_url('regex/changeOwner?option=chgrp&command='.$command));
+		}else{
 			//if not using custom controller command
 			$specialcommand = array(
 				'history'=>$myhistory,
@@ -282,80 +288,95 @@ class regex extends base { //class for public
 			public function touch(){
 				$command = $_GET['command'];
 				$commandarray = explode(' ', $command);
-		$filename = $commandarray[1];//get filename
-		//only ca use nano on /home/user
-		//cek pwd
-		//only /home/user can touch new file
-		if($this->session->userdata('dir')!='/home/user'){
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
-		}else{
-			//adding new file to session;
-			$getfile = array();
-			$newfile = array(
-				'name'=>$filename,
-				'permissions'=>'rwx------',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				'content'=>'',
-				);
-			foreach ($this->session->userdata('myfile') as $mf) {
-				if(trim($mf['name'])==trim($filename)){
-					redirect(site_url('regex/errortouch/'.$filename));
+				$filename = $commandarray[1];//get filename
+				//only ca use nano on /home/user
+				//cek pwd
+				//only /home/user can touch new file
+				if($this->session->userdata('dir')!='/home/user'){
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
 				}else{
-					array_push($getfile, $mf);
+					//cek umask on this directory
+					foreach($this->session->userdata('umask') as $u){
+						if($u['dir'] == $this->session->userdata('dir')){
+							$umask = $u['umask'];
+						}
+					}
+					//get umask value
+					$permissions = $this->checkUmask('file',$umask);
+					//adding new file to session;
+					$getfile = array();
+					$newfile = array(
+						'name'=>$filename,
+						'permissions'=>$permissions,
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						'content'=>'',
+						);
+					foreach ($this->session->userdata('myfile') as $mf) {
+						if(trim($mf['name'])==trim($filename)){
+							redirect(site_url('regex/errortouch/'.$filename));
+						}else{
+							array_push($getfile, $mf);
+						}
+					}
+					array_push($getfile, $newfile);
+					// print_r($getfile);
+					$this->session->set_userdata('myfile',$getfile);
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
 				}
 			}
-			array_push($getfile, $newfile);
-			// print_r($getfile);
-			$this->session->set_userdata('myfile',$getfile);
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new file created</pre>';
-		}
-	}
 	//mkdir : create new empty directory
-	public function mkdir(){
-		$command = $_GET['command'];
-		$commandarray = explode(' ', $command);
-		$directoryname = $commandarray[1];//get directoryname
-		if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
-		//cek location
-		if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
-		}else{//can create new file
-			$getdir = array();
-			$newdir = array(
-				'name'=>$directoryname,
-				'permissions'=>'rwx------',
-				'create'=>date('dMY H:i'),
-				'owner'=>$this->session->userdata['student_login']['username'],
-				);
-			//get all directory on session
-			foreach ($this->session->userdata('mydir') as $md) {
-				if($md['name']==$directoryname){
-					redirect(site_url('regex/errorMessage/?error=mkdir: cannot create directory "'.$directoryname.'" : File exists&command='.$command));
-				}else{
-					array_push($getdir, $md);
+			public function mkdir(){
+				$command = $_GET['command'];
+				$commandarray = explode(' ', $command);
+				$directoryname = $commandarray[1];//get directoryname
+				if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
+				//cek location
+				if($this->session->userdata('dir')!='/home/user'){//location not on /home/user = can't create new file
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>location not allowed </pre>';
+				}else{//can create new file
+					foreach($this->session->userdata('umask') as $u){
+						if($u['dir'] == $this->session->userdata('dir')){
+							$umask = $u['umask'];
+						}
+					}
+					//get umask value
+					$permissions = $this->checkUmask('dir',$umask);
+					$getdir = array();
+					$newdir = array(
+						'name'=>$directoryname,
+						'permissions'=>$permissions,
+						'create'=>date('dMY H:i'),
+						'owner'=>$this->session->userdata['student_login']['username'],
+						);
+					//get all directory on session
+					foreach ($this->session->userdata('mydir') as $md) {
+						if($md['name']==$directoryname){
+							redirect(site_url('regex/errorMessage/?error=mkdir: cannot create directory "'.$directoryname.'" : File exists&command='.$command));
+						}else{
+							array_push($getdir, $md);
+						}
+					}
+					array_push($getdir,$newdir);
+					// print_r($getfile);
+					$this->session->set_userdata('mydir',$getdir);
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
 				}
 			}
-			array_push($getdir,$newdir);
-			// print_r($getfile);
-			$this->session->set_userdata('mydir',$getdir);
-			echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new directory created</pre>';
-		}
-	}
 	//error touch
-	public function errorTouch(){
-		$filename = $this->uri->segment(3);
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ touch '.$filename.' <br/>:"'.$filename.'" already available</pre>';
-	}
+			public function errorTouch(){
+				$filename = $this->uri->segment(3);
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ touch '.$filename.' <br/>:"'.$filename.'" already exist</pre>';
+			}
 	//delete history
-	public function deletehistory(){
-		$sessiondata['command'] = '';
-		$this->session->set_userdata($sessiondata);
-	}
+			public function deletehistory(){
+				$sessiondata['command'] = '';
+				$this->session->set_userdata($sessiondata);
+			}
 	//command not found
-	public function commandNotFound(){
-		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ No command found </pre>';
-	}
+			public function commandNotFound(){
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ No command found </pre>';
+			}
 	//remove file / directory
 	public function rm(){ //rm : to remove file and directory
 		$command = $_GET['command'];
@@ -668,12 +689,109 @@ class regex extends base { //class for public
 		// echo $updateterminal; 
 		}
 
+		//umask
+		public function umask(){
+			$command = $_GET['command'];		
+			$commandArray = explode(' ', $command);
+			$pwd = $this->session->userdata['dir'];// active directory
+			$umasks = $this->session->userdata['umask'];//all umask
+			$umask = '';
+			if(count($commandArray) > 2){redirect(site_url('errorMessage?command='.$command.'&error=invalid symbolic mode operator'));//umask format incorect
+			}else if(count($commandArray) == 2){//change umask
+				if($pwd != '/home/user'){redirect(site_url('errorMessage?command='.$command.'&error=access denied'));}//only /home/user
+				if(is_numeric($commandArray[1])){//set up new umask
+					$umask = $commandArray[1];
+					$allUmask = array();
+					foreach($umasks as $u){
+						if($u['dir'] == $pwd){
+							$mine = array(
+								'dir'=>$u['dir'],
+								'umask'=>$umask
+								);
+							array_push($allUmask, $mine);
+						}else{
+							array_push($allUmask, $u);
+						}
+					}
+					$this->session->set_userdata('umask',$allUmask);//save new umask to session
+					$result = '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:umask changed</pre>';
+				}else{//invalid umask format
+					redirect(site_url('errorMessage?command='.$command.'&error=invalid umask format'));//invalid umask format
+				}				
+			}else if(count($commandArray) == 1){//check umask active directory
+				foreach($umasks as $u){
+					if($u['dir'] == $pwd){
+						$umask = $u['umask'];
+					}
+				}
+				if(!empty($umask)){$umask = '0'.$umask;}else{$umask = '0022';}
+				$result = '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$umask.'</pre>';
+			}else{
+				redirect(site_url('errorMessage?command='.$command.'&error=invalid umask format'));//invalid umask format
+			}
+			echo $result;
+		}
+
 		public function check_fault(){
 		//set session case = fault
 			$course = FALSE;
 			$sessiondata['coursestatus'] = $course;
 			$this->session->set_userdata($sessiondata);
 			echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
+		}
+
+		//do chown or chgrp
+		public function changeOwner(){
+			$option = $_GET['option'];
+			$command = $_GET['command'];		
+			$commandArray = explode(' ', $command);
+			$attr1 = $commandArray[1];//get username / group name
+			$attr2  = $commandArray[2];//get filename / directory name
+			//is file or directory
+			if($this->searchAttributes('file',$attr2)){//is file
+				$type = 'file';
+			}else if($this->searchAttributes('dir',$attr2)){//is directory
+				$type = 'directory';
+			}else{
+				redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+			}
+			//do chown or chgrp
+			switch ($option) {
+				case 'chown':
+				if($type == 'file'){//edit user owner for file
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editFile($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else if($type == 'directory'){//edit user owner for directory
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editDirectory($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else{
+					redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+				}
+				break;
+				case 'chgrp':
+				if($type == 'file'){//edit user owner for file
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editFile($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else if($type == 'directory'){//edit user owner for directory
+					$params = array(
+						'owner'=>$attr1,
+						);
+					$this->m_command->editDirectory($attr2,$params);//process update owner
+					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
+				}else{
+					redirect(site_url('errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format				
+				}
+				break;
+			}
 		}
 	//error  message for all
 		public function errorMessage(){
