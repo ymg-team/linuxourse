@@ -59,61 +59,61 @@
             <span class="row">
               <span class="small-6 column"><label>Step  <br/><span id="stepstatus"></span><?php //echo $this->m_course->getTheBiggestStep($this->uri->segment(3))?>
               <input onkeyup="checkStep()" type="number" id="input_step" name="input_step" value="<?php echo $editcase['step'];?>" required></label></span>
-             </span>
+            </span>
             <label>Description <small>max 300 character</small>
-            <textarea style="height:100px" name="input_description" required><?php echo $editcase['description']?></textarea></label>
-            <br/>
-            <label>Level <small>or <a target="blank" href="#">Generate New Level</a></small>
-              <select id="selectcat" name="input_level" required>
-                <option value="">choose level</option>
-                <?php foreach($level as $l):
-                echo "<option value=".$l['id_level'].">level : ".$l['level'].", ".$l['title']."</option>";
-                endforeach;?>
-              </select>
-            </label>
-            <br/>
-            <label>Estimate <small>in minutes</small><input type="number" name="input_estimate" value="<?php echo $editcase['estimate'];?>" required></label>
-            <label>Case EN<small>max 200 character</small>
-            <textarea style="height:100px" name="input_caseen" required><?php echo $editcase['course_case_en']?></textarea></label>
-            <br/>
-            <label>Hint EN<small>max 200 character</small>
-            <textarea style="height:100px" name="input_hinten" required><?php echo $editcase['hint_en']?></textarea></label>
-            <br/>
-            <label>Case ID<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
-            <textarea style="height:100px" name="input_caseid" required><?php echo $editcase['course_case_id']?></textarea></label>
-            <br/>
-            <label>Hint ID<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
-            <textarea style="height:100px" name="input_hintid" required><?php echo $editcase['hint_id']?></textarea></label>
-            <br/>
-            <label>Command<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
-            <textarea style="height:100px" name="input_command" required><?php echo $editcase['command']?></textarea></label>
-            <br/>
-            <label>Custom Controller <small>max 50 character</small><input type="text" name="input_controller" value="<?php echo $editcase['custom_controller']?>"></label>
-            <button name="btnpost" class="button small">Save</button> <button name="btndraft" class="button secondary small">draft</button>
-             <button onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></button>
-          </form>
-        </div>
+              <textarea style="height:100px" name="input_description" required><?php echo $editcase['description']?></textarea></label>
+              <br/>
+              <label>Level <small>or <a target="blank" href="#">Generate New Level</a></small>
+                <select id="selectcat" name="input_level" required>
+                  <option value="">choose level</option>
+                  <?php foreach($level as $l):
+                  echo "<option value=".$l['id_level'].">level : ".$l['level'].", ".$l['title']."</option>";
+                  endforeach;?>
+                </select>
+              </label>
+              <br/>
+              <label>Estimate <small>in minutes</small><input type="number" name="input_estimate" value="<?php echo $editcase['estimate'];?>" required></label>
+              <label>Case EN<small>max 200 character</small>
+                <textarea style="height:100px" name="input_caseen" required><?php echo $editcase['course_case_en']?></textarea></label>
+                <br/>
+                <label>Hint EN<small>max 200 character</small>
+                  <textarea style="height:100px" name="input_hinten" required><?php echo $editcase['hint_en']?></textarea></label>
+                  <br/>
+                  <label>Case ID<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
+                    <textarea style="height:100px" name="input_caseid" required><?php echo $editcase['course_case_id']?></textarea></label>
+                    <br/>
+                    <label>Hint ID<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
+                      <textarea style="height:100px" name="input_hintid" required><?php echo $editcase['hint_id']?></textarea></label>
+                      <br/>
+                      <label>Command<small>max 200 character<br/>separate with ":", ex : ls -l:ps -aux:ls / > grep user:</small>
+                        <textarea style="height:100px" name="input_command" required><?php echo $editcase['command']?></textarea></label>
+                        <br/>
+                        <label>Custom Controller <small>max 50 character</small><input type="text" name="input_controller" value="<?php echo $editcase['custom_controller']?>"></label>
+                        <button name="btnpost" class="button small">Save</button> <button name="btndraft" class="button secondary small">draft</button>
+                        <a href="<?php echo site_url('manage/deletecourse/'.$this->uri->segment(3))?>" onclick="return confirm('are you sure')" name="btnadd" class="button alert small"><span class="fi-trash"></span></a>
+                      </form>
+                    </div>
 
-        <div class="large-6 columns">
-          <h4>Case List</h4>
-          <table>
-            <thead><td width="50px">step</td><td width="50px">level</td><td>title</td><td width="50px"></td></thead>
-            <tbody>
-              <?php foreach($case as $c):?>
-                <tr> 
-                <td><strong><?php echo $c['step']?></strong></td>
-                <td><?php echo $c['level']?></td>
-                <td><?php echo $c['title']?></td>
-                <td><a href="<?php echo site_url('manage/editcourse/'.$c['id_course'])?>">edit</td>
-                </tr>
-              <?php endforeach;?>
-            </tbody>
-          </table>
-        </div>
+                    <div class="large-6 columns">
+                      <h4>Case List</h4>
+                      <table>
+                        <thead><td width="50px">step</td><td width="50px">level</td><td>title</td><td width="50px"></td></thead>
+                        <tbody>
+                          <?php foreach($case as $c):?>
+                            <tr> 
+                              <td><strong><?php echo $c['step']?></strong></td>
+                              <td><?php echo $c['level']?></td>
+                              <td><?php echo $c['title']?></td>
+                              <td><a href="<?php echo site_url('manage/editcourse/'.$c['id_course'])?>">edit</td>
+                            </tr>
+                          <?php endforeach;?>
+                        </tbody>
+                      </table>
+                    </div>
 
-      </div>
-    </div>
-  </div>
-  <!--end login form -->
-</section>
+                  </div>
+                </div>
+              </div>
+              <!--end login form -->
+            </section>
 <!--endof body-->

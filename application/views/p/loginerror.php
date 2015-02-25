@@ -1,6 +1,7 @@
 <div class="row">
 	<div class="base-content" class="large-12 columns">
-		<div class="large-5 columns">
+		<div style="height:450px" class="large-5 columns">
+			<br/><br/>
 			<h4>Login</h4>
 			<p><a href="<?php echo site_url()?>">i don't have account</a></p>
 			<hr/>

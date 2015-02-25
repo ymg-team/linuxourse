@@ -126,7 +126,7 @@ class m_command extends CI_Model{
 						if($directory == '/home/user'):
 							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
-							echo '<br/>-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].' ';
+							echo '<br/>'.$sf['type'].$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].' ';
 						endforeach;
 						endif;
 						//end if
@@ -221,7 +221,7 @@ class m_command extends CI_Model{
 						if($directory == '/home/user'):
 							$sessionfile = $this->session->userdata('myfile');
 						foreach($sessionfile as $sf):
-							echo '-'.$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].'<br/>';
+							echo $sf['type'].$sf['permissions'].':0 '.$sf['owner'].' '.$sf['owner'].' 7000 '.$sf['create'].' '.$sf['name'].'<br/>';
 						endforeach;
 						endif;
 						//end if
@@ -322,13 +322,13 @@ class m_command extends CI_Model{
 						if(!empty($params['name'])){
 						$updateDir['name'] = $params['name'];//new name
 					}else{
-						$updateDir['name'] = $file['name'];//old name
+						$updateDir['name'] = $dir['name'];//old name
 					}
 					//update permission
 					if(!empty($params['permissions'])){
 						$updateDir['permissions'] = $params['permissions'];//new permissions
 					}else{
-						$updateDir['permissions'] = $file['permissions'];//old permissions
+						$updateDir['permissions'] = $dir['permissions'];//old permissions
 					}
 					//update creation
 					$updateDir['create'] = date('dMY H:i');//new time
@@ -336,7 +336,7 @@ class m_command extends CI_Model{
 					if(!empty($params['owner'])){
 						$updateDir['owner'] = $params['owner'];//new owner
 					}else{
-						$updateDir['owner'] = $file['owner'];//old owner
+						$updateDir['owner'] = $dir['owner'];//old owner
 					}
 					//push data to array
 					array_push($dirs,$updateDir);//push data to array collection

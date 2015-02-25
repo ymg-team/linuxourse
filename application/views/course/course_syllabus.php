@@ -1,4 +1,23 @@
 <script>
+	$(document).ready(function(){
+		$("#btndown").click(function() {
+			$('html, body').animate({
+				scrollTop: $("#btndown").offset().top
+			}, 800);
+		});
+		$(window).scroll(function(){
+			if ($(this).scrollTop() > 100) {
+				$("#btntop").fadeIn();
+			} else {
+				$("#btntop").fadeOut();
+			}
+		});
+
+		$("#btntop").click(function(){
+			$('html, body').animate({scrollTop : 0},800);
+			return false;
+		});
+	});
 	function lattestCompletedStudents(idmateri){
 		content = $('#completedstudent').html();
 		// alert(content);
@@ -12,6 +31,8 @@
 		}		
 	}
 </script>
+<a class="button" style="display:none;padding:10px;position: fixed;right: 0;bottom: 0;" id="btntop"><span style="font-size:2rem"; class="fi-arrow-up"></span></a>
+
 <section id="title">
 	<center>
 		<?php

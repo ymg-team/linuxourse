@@ -70,15 +70,15 @@ class regex extends base { //class for public
 			redirect(site_url('regex/changeOwner?option=chown&command='.$command));
 		}else if($this->checkSpecialCommand('chgrp', $commandArray)){//do chown
 			redirect(site_url('regex/changeOwner?option=chgrp&command='.$command));
+		}else if($this->checkSpecialCommand('ln', $commandArray)){//do chown
+			redirect(site_url('regex/ln?command='.$command));//do ln, create hardlink / softlink
+		}else if($this->checkSpecialCommand('ps', $commandArray)){//do chown
+			redirect(site_url('regex/ps?command='.$command));//do ln, create hardlink / softlink
 		}else{
 			//if not using custom controller command
 			$specialcommand = array(
 				'history'=>$myhistory,
-				'cat'=>'no file input',
-				'cd'=>'no directory input',
 				'cls'=>'clear screen',
-				'ls-l'=>'drwxrwxrwx  4 user user  4096 Nov  3 21:50 mydirectory',
-				'ls-a'=>'.hiddendirectory <br/>mydirectory',
 				'pwd'=>$this->session->userdata('dir'),
 				'y'=>'confirmed',
 				);
@@ -149,6 +149,7 @@ class regex extends base { //class for public
 					$update = array(
 						'name'=>$mf['name'],
 						'permissions'=>$permissions,
+						'type'=>'-',
 						'create'=>date('dMY H:i'),
 						'owner'=>$this->session->userdata['student_login']['username'],
 						'content'=>$mf['content'],
@@ -307,6 +308,7 @@ class regex extends base { //class for public
 					$getfile = array();
 					$newfile = array(
 						'name'=>$filename,
+						'type'=>'-',
 						'permissions'=>$permissions,
 						'create'=>date('dMY H:i'),
 						'owner'=>$this->session->userdata['student_login']['username'],
@@ -554,34 +556,34 @@ class regex extends base { //class for public
 						$catFile = $commandArray[1];
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
 
-					}else{//shell exec
-						$result = shell_exec($param1);
+                    }else{//shell exec
+                    	$result = shell_exec($param1);
 						// echo $result;
-					}
+                    }
 					//update session
-					$files = array();
-					foreach ($this->session->userdata('myfile') as $mf) {
-						if(trim($mf['name']) == trim($param2)){
-							$update = array(
-								'name'=>$mf['name'],
-								'permissions'=>'rwx------',
-								'create'=>date('dMY H:i'),
-								'owner'=>$this->session->userdata['student_login']['username'],
-								'content'=>$result,
-								);
-							array_push($files, $update);
-						}else{
-							array_push($files, $mf);
-						}
-					}
+                    $files = array();
+                    foreach ($this->session->userdata('myfile') as $mf) {
+                    	if(trim($mf['name']) == trim($param2)){
+                    		$update = array(
+                    			'name'=>$mf['name'],
+                    			'permissions'=>'rwx------',
+                    			'create'=>date('dMY H:i'),
+                    			'owner'=>$this->session->userdata['student_login']['username'],
+                    			'content'=>$result,
+                    			);
+                    		array_push($files, $update);
+                    	}else{
+                    		array_push($files, $mf);
+                    	}
+                    }
 					//setup new session
-					$this->session->set_userdata('myfile',$files);
+                    $this->session->set_userdata('myfile',$files);
 					//return
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:redirection success<br/>'.$result;
-				}else{
-					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
-				}
-				break;
+                    echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:redirection success<br/>'.$result;
+                }else{
+                	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:No such file or directory</pre>';
+                }
+                break;
 			default://redirection not found
 			echo 'Something Wrong, Please Refresh a Page';
 			break;
@@ -779,7 +781,7 @@ class regex extends base { //class for public
 					$params = array(
 						'owner'=>$attr1,
 						);
-					$this->m_command->editFile($attr2,$params);//process update owner
+					$this->m_command->editDirectory($attr2,$params);//process update owner
 					echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:change owner sucess</pre>';
 				}else if($type == 'directory'){//edit user owner for directory
 					$params = array(
@@ -793,9 +795,73 @@ class regex extends base { //class for public
 				break;
 			}
 		}
+
+		//create hardlink or softlink
+		public function ln(){
+			$command = $_GET['command'];		
+			$commandArray = explode(' ', $command);
+			//cek umask on this directory
+			foreach($this->session->userdata('umask') as $u){
+				if($u['dir'] == $this->session->userdata('dir')){
+					$umask = $u['umask'];
+				}
+			}
+			//get umask value
+			$permissions = $this->checkUmask('file',$umask);
+			//use option or not
+			$countArray = count($commandArray);
+			if($countArray == 3){//create hardlink
+				//get file/directory name
+				$filedir = $commandArray[1];
+				$link = $commandArray[2];				
+			}else if($countArray == 4){//create softarray
+				$options = $commandArray[1];
+				$filedir = $commandArray[2];
+				$link = $commandArray[3];
+			} else {
+					redirect(site_url('regex/errorMessage?command='.$command.'&error=not valid ln format'));//invalid umask format						
+				}
+			//set up new myfile seassion
+				//is file found
+				if($this->searchAttributes('file',$filedir)){
+					//get file content
+					$files = array();
+					foreach($this->session->userdata('myfile') as $mf){
+						if($mf['name'] == $filedir ){
+							$content = $mf['content'];
+							$newlink = array(
+								'name'=>$link,
+								'type'=>'s',
+								'permissions'=>$permissions,
+								'create'=>date('dMY H:i'),
+								'owner'=>$this->session->userdata['student_login']['username'],
+								'content'=>$content,
+								);
+							array_push($files, $mf);
+							array_push($files, $newlink);
+						}else{
+							array_push($files, $mf);
+						}
+						$this->session->set_userdata('myfile',$files);
+						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new link created</pre>';
+					}
+				}else{//file not exist
+					redirect(site_url('regex/errorMessage?command='.$command.'&error=file directory not exist or location not allowed'));//invalid umask format						
+				}	
+			}
+			//ps
+			public function ps(){
+				$command = $_GET['command'];
+				if($command == 'ps -u bob'){//static result
+					$result = 'PID TTY TIME CMD<br/>2792 ? 00:00:00 linuxourse';
+				}else{
+					$result = shell_exec($command);
+				}
+				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$result.'</pre>';
+			}
 	//error  message for all
-		public function errorMessage(){
-		$command = $_GET['command'];//get error command from terminal
+			public function errorMessage(){
+        $command = $_GET['command'];//get error command from terminal
 		$error = $_GET['error'];//get error message
 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$error.'</pre>';
 	}

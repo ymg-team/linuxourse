@@ -3,6 +3,7 @@ by yussan @xyussanx
 28 Oct 2014*/
 body{font-size: 12px}
 ul.menu{list-style: none;line-height: 1.2}
+pre{display: inline}
 /*home only*/
 
 #progressanimate{display:none;}

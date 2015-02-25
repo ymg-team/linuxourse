@@ -288,6 +288,7 @@ class base extends CI_Controller {
 		$publicfile = array(
 			array(
 				'name'=>'publicfile',
+				'type'=>'-',
 				'permissions'=>'rwxrwxrwx',
 				'create'=>date('dMY H:i'),
 				'owner'=>$this->session->userdata['student_login']['username'],

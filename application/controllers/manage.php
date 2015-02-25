@@ -96,6 +96,13 @@ class manage extends base { //class for public
 ////////////////////
 // COURSE MANAGEMENT
 ////////////////////
+//delete course
+	public function deletecourse(){
+		$id = $this->uri->segment(3);
+		$this->db->where('id_course',$id);
+		$this->db->delete('course');
+		redirect('manage/course');
+	}
 //add new course
 	public function addcourse(){
 		if(!empty($_POST)){
@@ -388,8 +395,8 @@ public function level(){
 	if(!empty($this->uri->segment(3))){
 		switch ($this->uri->segment(3)) {
 			case 'search':
-				$keyword = $this->uri->segment(4);
-				$data = array(
+			$keyword = $this->uri->segment(4);
+			$data = array(
 				'title'=>'Search Level',
 				'total'=>'',
 				'link'=>'',
@@ -397,7 +404,7 @@ public function level(){
 				'script'=>'<script>$(document).ready(function(){$("#level").addClass("active")});</script>',
 				'view'=>$this->m_admin->searchLevel($keyword),
 				);
-				$this->baseManageView('manage/level',$data);
+			$this->baseManageView('manage/level',$data);
 			break;
 			case 'bymateri':
 			$idmateri = $this->uri->segment(4);
@@ -1157,14 +1164,14 @@ public function crudStorage(){
 		';
 		break;
 		case 'proceditfile'://update database for ls_dir
-			$this->db->where('id_ls_dir',$_GET['id']);
-			$data = array(
-				'name'=>$_GET['name'],
-				'type'=>$_GET['type'],
-				'attributes'=>$_GET['attributes'],
-				'content'=>$_GET['content'],
-				);
-			return $this->db->update('ls_dir',$data);
+		$this->db->where('id_ls_dir',$_GET['id']);
+		$data = array(
+			'name'=>$_GET['name'],
+			'type'=>$_GET['type'],
+			'attributes'=>$_GET['attributes'],
+			'content'=>$_GET['content'],
+			);
+		return $this->db->update('ls_dir',$data);
 		break;
 		case 'editdir':
 		$olddir = $_GET['olddir'];

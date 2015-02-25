@@ -12,13 +12,16 @@
 					$id = base64_encode(base64_encode($v['id_news']));
 					$id = str_replace('=', '', $id);
 					$title = str_replace(' ', '-', $v['title']);
+					$find = array('[',']');
+					$replace = array('<','>');
+					$content = substr(str_replace($find, $replace, $v['content']),0,100);
+					$content = strip_tags($content);
 					?>
 					<h1 style="margin:0"><a href="<?php echo site_url('news/read/'.$id.'/'.$title)?>"><?php echo $v['title']?></a></h1>
 					<small style="color:gray">yussan | <?php echo $v['updatedate']?></small>
 					<hr/>				
 					<p>
-						<?php $content = substr($v['content'], 0,20);
-						echo $content;?>...
+						<?php echo $content;?>...
 					</p>
 				</div>
 			</div>
