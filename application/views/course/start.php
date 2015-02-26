@@ -1,5 +1,5 @@
 <style type="text/css">
-	pre{display: block;}
+	#terminal pre{display: block;}
 </style>
 <?php
 if(!empty($script)){echo $script;}

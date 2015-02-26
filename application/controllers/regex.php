@@ -19,7 +19,7 @@ class regex extends base { //class for public
 	public function execcommand(){
 		$command = $_GET['command'];
 		//remove new line with regex
-		$commandclear = preg_replace('/[\n]/', '', $command);
+		$commandclear = preg_replace('/[\n]/', '',$command);
 		//history setup
 		//get all command have exec from session
 		$history = array();
@@ -30,7 +30,7 @@ class regex extends base { //class for public
 				array_push($history,$rc);
 			endforeach;
 		}
-		array_push($history, $command);
+		array_push($history,$command);
 		$sessiondata['command'] = $history;
 		//add history to season
 		$this->session->set_userdata($sessiondata);
@@ -42,13 +42,13 @@ class regex extends base { //class for public
 			$myhistory = $myhistory.$this->session->userdata['command'][$n];
 		}
 		//end of history setup
-		$commandArray = explode(' ', $commandclear);
+		$commandArray = explode(' ',$commandclear);
 		//if using special command
-		if($this->checkSpecialCommand('cd', $commandArray)){//cd
+		if($this->checkSpecialCommand('cd',$commandArray)){//cd
 			redirect(site_url('regex/cd?command='.$command));
-		}else if(trim($command) == 'ls' || in_array('ls', $commandArray)){//ls
+		}else if(trim($command) == 'ls' || in_array('ls',$commandArray)){//ls
 			redirect(site_url('regex/ls?command='.$command));
-		}else if($this->checkSpecialCommand('init',$commandArray) && in_array(0, $commandArray)){//init 0
+		}else if($this->checkSpecialCommand('init',$commandArray) && in_array(0,$commandArray)){//init 0
 			redirect(site_url('m/dashboard'));
 		}else if($this->checkSpecialCommand('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
 			redirect(site_url('regex/cat?command='.$command));
@@ -62,18 +62,20 @@ class regex extends base { //class for public
 			redirect(site_url('regex/rm?command='.$command));
 		}else if($this->isIOStandart($commandArray)){//redirection :: standar input output
 			redirect(site_url('regex/iostandart?command='.$command));
-		}else if($this->checkSpecialCommand('chmod', $commandArray)){//chmod a file or directory
+		}else if($this->checkSpecialCommand('chmod',$commandArray)){//chmod a file or directory
 			redirect(site_url('regex/chmod?command='.$command));//do chmod
-		}else if($this->checkSpecialCommand('umask', $commandArray)){
+		}else if($this->checkSpecialCommand('umask',$commandArray)){
 			redirect(site_url('regex/umask?command='.$command));//do umask
-		}else if($this->checkSpecialCommand('chown', $commandArray)){//do chown
+		}else if($this->checkSpecialCommand('chown',$commandArray)){//do chown
 			redirect(site_url('regex/changeOwner?option=chown&command='.$command));
-		}else if($this->checkSpecialCommand('chgrp', $commandArray)){//do chown
+		}else if($this->checkSpecialCommand('chgrp',$commandArray)){//do chown
 			redirect(site_url('regex/changeOwner?option=chgrp&command='.$command));
-		}else if($this->checkSpecialCommand('ln', $commandArray)){//do chown
+		}else if($this->checkSpecialCommand('ln',$commandArray)){//do chown
 			redirect(site_url('regex/ln?command='.$command));//do ln, create hardlink / softlink
-		}else if($this->checkSpecialCommand('ps', $commandArray)){//do chown
+		}else if($this->checkSpecialCommand('ps',$commandArray)){//do chown
 			redirect(site_url('regex/ps?command='.$command));//do ln, create hardlink / softlink
+		}else if($this->checkSpecialCommand('useradd',$commandArray)||$this->checkSpecialCommand('userdel',$commandArray)||$this->checkSpecialCommand('passwd',$commandArray)){//useradd || userdel || passwd
+			redirect(site_url('regex/administration?command='.$command));//do ln, create hardlink / softlink
 		}else{
 			//if not using custom controller command
 			$specialcommand = array(
@@ -87,7 +89,7 @@ class regex extends base { //class for public
 			$forbiddencommand = array(
 				'reboot','init0','halt');
 			//command is special command or not
-			$trimcommand = preg_replace('#[ \r\n\t]+#','', $command);
+			$trimcommand = preg_replace('#[ \r\n\t]+#','',$command);
 			if(array_key_exists($trimcommand,$specialcommand)){//output
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$specialcommand[$trimcommand].'</pre>';
 			} else if(array_key_exists($trimcommand,$docommand)){//create input
@@ -112,7 +114,7 @@ class regex extends base { //class for public
 		$command = $_GET['command'];
 		//echo $command;
 		//get directory
-		$commandArray = explode(' ', $command);
+		$commandArray = explode(' ',$command);
 		$cdCommand = array_shift($commandArray);
 		$find = '/';
 		// check from root or not
@@ -135,7 +137,7 @@ class regex extends base { //class for public
 	public function chmod(){
 		$command = $_GET['command'];
 		//explode by space
-		$explodeCommand = explode(' ', $command);
+		$explodeCommand = explode(' ',$command);
 		$parameter = $explodeCommand[1];//get parameter
 		$filedir = $explodeCommand[2]; //get file and directori
 		//get chmod meaning
@@ -192,7 +194,7 @@ class regex extends base { //class for public
 	//list 'ls'
 	public function ls(){
 		$command = $_GET['command'];
-		$commandArray = explode(' ', $command);
+		$commandArray = explode(' ',$command);
 		// print_r($commandArray);
 		$lsOptions = array('-l','-a','-la','-al');
 		if(!empty($commandArray[0]) && empty($commandArray[1]) && empty($commandArray[2])){//only ls active directory
@@ -240,7 +242,7 @@ class regex extends base { //class for public
 	public function cat(){
 		$command = $_GET['command'];
 		//cek is this folder or not
-		$commandArray = explode(' ', $command);
+		$commandArray = explode(' ',$command);
 		$cdCommand = array_shift($commandArray);
 		$find = '/';
 		// check from root or not
@@ -263,7 +265,7 @@ class regex extends base { //class for public
 	//nano
 	public function nano(){
 		$command = $_GET['command'];
-		$commandarray = explode(' ', $command);
+		$commandarray = explode(' ',$command);
 		$filename = $commandarray[1];//get filename
 		//only ca use nano on /home/user
 		if($this->session->userdata('dir')!='/home/user'){
@@ -288,7 +290,7 @@ class regex extends base { //class for public
 	//touch : create new empty file [WORK]
 			public function touch(){
 				$command = $_GET['command'];
-				$commandarray = explode(' ', $command);
+				$commandarray = explode(' ',$command);
 				$filename = $commandarray[1];//get filename
 				//only ca use nano on /home/user
 				//cek pwd
@@ -330,7 +332,7 @@ class regex extends base { //class for public
 	//mkdir : create new empty directory
 			public function mkdir(){
 				$command = $_GET['command'];
-				$commandarray = explode(' ', $command);
+				$commandarray = explode(' ',$command);
 				$directoryname = $commandarray[1];//get directoryname
 				if(empty($directoryname)){redirect(site_url('regex/errorMessage/?error= can\'t create new directory &command='.$command));}
 				//cek location
@@ -383,7 +385,7 @@ class regex extends base { //class for public
 	public function rm(){ //rm : to remove file and directory
 		$command = $_GET['command'];
 		//check apakah menggunakan option atau tidak
-		$commandArray = explode(' ', $command);
+		$commandArray = explode(' ',$command);
 		//cek total value on array
 		$totalValues = count($commandArray);
 		//if only use rm
@@ -435,9 +437,9 @@ class regex extends base { //class for public
 		//get standar :: structure x stamdart y
 		$standart = $this->useIOStandart($command);//redirection type
 		//check apakah menggunakan option atau tidak
-		$commandArray = explode($standart, $command);
+		$commandArray = explode($standart,$command);
 		$param1 = $commandArray[0];
-		$param2 = str_replace("\n", "", $commandArray[1]);//remove line break
+		$param2 = str_replace("\n", "",$commandArray[1]);//remove line break
 		//echo $param2;
 		//print_r($commandArray)
 		switch ($standart) {
@@ -447,7 +449,7 @@ class regex extends base { //class for public
 					//shell exec first param
 					$commandArray = explode(' ', $param1);
 					//end of shell exec
-					if(in_array('cat', $commandArray)){
+					if(in_array('cat',$commandArray)){
 						//get filename
 						$catFile = $commandArray[1];
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
@@ -486,7 +488,7 @@ class regex extends base { //class for public
                     //shell exec first param
                 	$commandArray = explode(' ', $param1);
                     //end of shell exec
-                	if(in_array('cat', $commandArray)){
+                	if(in_array('cat',$commandArray)){
                         //get filename
                 		$catFile = $commandArray[1];
                 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
@@ -522,7 +524,7 @@ class regex extends base { //class for public
 			case '<'://input standart ::
 				//is param2 = file
 				$commandArray = explode(' ',$param1);//get all command array
-				if(in_array('cat', $commandArray)){//if cat a file
+				if(in_array('cat',$commandArray)){//if cat a file
 					//get file location
 					$find = '/';
 		// check from root or not
@@ -551,7 +553,7 @@ class regex extends base { //class for public
 					//shell exec first param
 					$commandArray = explode(' ', $param1);
 					//end of shell exec
-					if(in_array('cat', $commandArray)){
+					if(in_array('cat',$commandArray)){
 						//get filename
 						$catFile = $commandArray[1];
 						echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:system on construct';
@@ -610,7 +612,7 @@ class regex extends base { //class for public
 		// print_r($reg_terminal);//show preg match result
 		$reg_result = $reg_terminal;
 		$command_list = array();
-		$command_db = explode(':', $course_data['command']);
+		$command_db = explode(':',$course_data['command']);
 		//destroy command_db
 		//create new array
 		foreach($reg_result as $rs):
@@ -621,7 +623,7 @@ class regex extends base { //class for public
 		// print_r($command_list);
 		//cek command list and command db
 		foreach($command_db as $cbase):
-			$command_base = trim(str_replace($redirection2, '', $cbase));
+			$command_base = trim(str_replace($redirection2, '',$cbase));
 		if(in_array($command_base,$command_list)){
 				// echo $cbase.' in array </br>';
 			$course = TRUE;
@@ -659,7 +661,7 @@ class regex extends base { //class for public
 		// print_r($reg_terminal);//show preg match result
 		$reg_result = $reg_terminal;
 		$command_list = array();
-		$command_db = explode(':', $course_data['command']);
+		$command_db = explode(':',$course_data['command']);
 		//destroy command_db
 		//create new array
 		foreach($reg_result as $rs):
@@ -694,7 +696,7 @@ class regex extends base { //class for public
 		//umask
 		public function umask(){
 			$command = $_GET['command'];		
-			$commandArray = explode(' ', $command);
+			$commandArray = explode(' ',$command);
 			$pwd = $this->session->userdata['dir'];// active directory
 			$umasks = $this->session->userdata['umask'];//all umask
 			$umask = '';
@@ -746,7 +748,7 @@ class regex extends base { //class for public
 		public function changeOwner(){
 			$option = $_GET['option'];
 			$command = $_GET['command'];		
-			$commandArray = explode(' ', $command);
+			$commandArray = explode(' ',$command);
 			$attr1 = $commandArray[1];//get username / group name
 			$attr2  = $commandArray[2];//get filename / directory name
 			//is file or directory
@@ -799,7 +801,7 @@ class regex extends base { //class for public
 		//create hardlink or softlink
 		public function ln(){
 			$command = $_GET['command'];		
-			$commandArray = explode(' ', $command);
+			$commandArray = explode(' ',$command);
 			//cek umask on this directory
 			foreach($this->session->userdata('umask') as $u){
 				if($u['dir'] == $this->session->userdata('dir')){
@@ -859,8 +861,48 @@ class regex extends base { //class for public
 				}
 				echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$result.'</pre>';
 			}
+			//administration management : user and group
+			public function administration(){
+				$command = $_GET['command'];
+				$commandArray = explode(' ',$command);
+				//get primary command
+				$primaryCommand = $commandArray[0];//
+				switch ($primaryCommand) {
+					case 'useradd'://[WORKED]
+						//get new username
+						if(count($commandArray)==3){//using option
+							$username = $commandArray[2];
+						}else if(count($commandArray)==2){//not using option
+							$username = $commandArray[1];
+						}
+						$newuser = array('name'=>$username);//new user on array
+						$users = array();
+						//cek apakah session user sudah tersedia
+						if(!empty($this->session->userdata('user'))){//jika sudah ada user terdaftar
+							foreach($this->session->userdata('user') as $u){
+								if($u['name']==$username){//if user exist
+									redirect(site_url('regex/errorMessage?command='.$command.'&error=user is exist'));//redirect to error page
+								}else{//if user not exist
+									array_push($users, $u);//push latest user to session('user')
+								}
+							}
+							//add new user to array
+							array_push($users, $newuser);
+							$this->session->set_userdata('user',$users);//edit session untuk user
+							//final result
+							echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new user added</pre>';
+						}else{
+							//add new user to array
+							array_push($users, $newuser);
+							$this->session->set_userdata('user',$users);//edit session untuk user
+							//final result
+							echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new user added</pre>';
+						}
+						break;//end of useradd
+					}
+				}
 	//error  message for all
-			public function errorMessage(){
+				public function errorMessage(){
         $command = $_GET['command'];//get error command from terminal
 		$error = $_GET['error'];//get error message
 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$error.'</pre>';
