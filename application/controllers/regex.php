@@ -868,6 +868,7 @@ class regex extends base { //class for public
 				//get primary command
 				$primaryCommand = $commandArray[0];//
 				switch ($primaryCommand) {
+					//start useradd
 					case 'useradd'://[WORKED]
 						//get new username
 						if(count($commandArray)==3){//using option
@@ -899,10 +900,30 @@ class regex extends base { //class for public
 							echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:new user added</pre>';
 						}
 						break;//end of useradd
+
+						//startuserdel
+						case 'userdel':
+							if(count($commandArray) != 3){//command format is wrong
+								redirect(site_url('regex/errorMessage?command='.$command.'&error=command format not valid'));//redirect to error page
+							}else{//do delete
+								//is user found
+								$username = $commandArray[2];//get username
+								$users = array();
+								foreach($this->session->userdata('user') as $u){
+									if($u['name']!=$username){//if user not username
+										array_push($users, $u);//push other user
+									}
+								}
+							}
+							//save user sto array
+							$this->session->set_userdata('user',$users);//edit session untuk user
+							//final result
+							echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:user deleted</pre>';
+							break;
+						}
 					}
-				}
 	//error  message for all
-				public function errorMessage(){
+					public function errorMessage(){
         $command = $_GET['command'];//get error command from terminal
 		$error = $_GET['error'];//get error message
 		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:'.$error.'</pre>';

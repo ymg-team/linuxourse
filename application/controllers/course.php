@@ -80,6 +80,7 @@ class course extends base { //class for public
 		$this-> defaultUmask();//set default umask
 		$this->session->set_userdata('dir','/home/user');//default active directory
 		$this->session->set_userdata('command','');
+		$this->session->set_userdata('user','');//manajemen user on session
 		//end of set default directory
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
