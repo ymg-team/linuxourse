@@ -348,4 +348,22 @@ class m_command extends CI_Model{
 				return $this->session->set_userdata('mydir',$dirs);//new session for file
 			}
 
+			//is user found on session
+			public function administratorCheck($type,$param){
+				$found = FALSE;
+				switch ($type) {
+					case 'user':
+						foreach($this->session->userdata('user') as $u):
+							if($u['name']==$param){$found=TRUE;}
+						endforeach;
+						break;
+					case 'group':
+						foreach($this->session->userdata('group') as $g):
+							if($g['name']==$param){$found=TRUE;}
+						endforeach;
+						break;
+				}
+				return $found;
+			}
+
 		}
