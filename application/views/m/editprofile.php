@@ -1,6 +1,7 @@
 <div class="row">
 	<div class="base-content" class="large-12 columns">
 		<div class="large-5 columns">
+		<br/><br/>
 			<h4>Edit Profile</h4>
 			<p>complete your profile, and share your skill to the world</p>
 			<?php
@@ -24,8 +25,8 @@
 			<div class="row">
 				<div class="large-12 columns">
 					<?php
-					if(!empty($this->session->userdata['student_login']['pp'])){
-						$src = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
+					if(!empty($profile['pp'])){
+						$src = base_url('assets/img/avatar/'.$profile['pp']);
 					} else {
 						$src = base_url('assets/img/avatar.png');
 					}
@@ -36,6 +37,7 @@
 					<div class="small-8 columns">
 						<br/>
 						<input name="input_pp" style="height:40px" type="file">
+						<span>max 200kb :: only support 200px*200px image</span>
 					</div>
 				</div>								
 			</div>

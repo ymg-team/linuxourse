@@ -1,3 +1,6 @@
+<style type="text/css">
+	#terminal pre{display: block;}
+</style>
 <?php
 //course detail
 $step = $detCourse['step'] + 1;

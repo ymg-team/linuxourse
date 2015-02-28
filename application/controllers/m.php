@@ -84,11 +84,12 @@ class m extends base { //class for public
 		if ($this->form_validation->run()){//if validation is true
 			//manage profile picture
 			if(!empty($_FILES['input_pp']['name'])){
-				$config['upload_path'] = './assets/img/';
+				// print_r($_FILES);
+				$config['upload_path'] = './assets/img/avatar';
 				$config['allowed_types'] = 'gif|jpg|png';
-				$config['max_size']	= '100';
-				$config['max_width']  = '500';
-				$config['max_height']  = '500';
+				$config['max_size']	= '200';
+				// $config['max_width']  = '500';
+				// $config['max_height']  = '500';
 				$this->load->library('upload', $config);
 				if (!$this->upload->do_upload('input_pp')){//gagal upload
 					echo $this->upload->display_errors();
