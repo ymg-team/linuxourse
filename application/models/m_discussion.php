@@ -169,6 +169,20 @@ class m_discussion extends CI_Model{
 	* ALL ABOUT COMMENT
 	*/
 
+	//total like or dislike for command
+	public function countCommentAction($type,$idcomment){
+		$this->db->where('give',$type);
+		$this->db->where('id_comment',$idcomment);
+		return $this->db->count_all_results('discussion_comment_action');
+	}
+	//is user do action in comment
+	public function isUserAction($iduser,$idcomment){
+		$this->db->where('id_comment',$idcomment);
+		$this->db->where('id_user',$iduser);
+		$result =  $this->db->count_all_results('discussion_comment_action');
+		if($result>0){return true;}else{return false;}
+	}
+
 	//count comment
 	public function count_comment($id_discussion){
 		$this->db->where('id_discussion',$id_discussion);

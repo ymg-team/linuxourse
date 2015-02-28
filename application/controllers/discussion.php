@@ -527,4 +527,39 @@ class discussion extends base { //class for public
 		$data['script']='<script>$(document).ready(function(){$("#discusion,#orderAnswers").addClass("activemenu")});</script>';
 		$this->baseView('discussion/myanswers',$data);
 	}
+
+	/////////////////////////
+	/// AJAX ONLY ////
+	/////////////////////////
+	//add like or dislike on comment
+	public function commentAction(){
+		$iduser = $_POST['iduser'];
+		$idcomment = $_POST['idcomment'];
+		$give = $_POST['give'];
+		//if user has do action on same comment
+		if($this->m_discussion->isUserAction($iduser,$idcomment)){
+			//update
+			$this->db->where('id_comment',$idcomment);
+			$this->db->where('id_user',$iduser);
+			$this->db->update('discussion_comment_action',array('give'=>$give));
+		}else{
+			//insert
+			$data=array(
+				'id_comment'=>$idcomment,
+				'id_user'=>$iduser,
+				'give'=>$give
+				);
+			$this->db->insert('discussion_comment_action',$data);
+		}
+		//ajax view response
+		$sql = "SELECT * FROM discussion_comment_action WHERE give = '".$give."'";
+		$query = $this->db->query($sql);
+		echo $query->num_rows();
+	}
+	//update count
+	public function updateCount(){
+		$give = $_POST['give'];
+		$idcomment = $_POST['idcomment'];
+		echo $this->m_discussion->countCommentAction($give,$idcomment);
+	}
 }

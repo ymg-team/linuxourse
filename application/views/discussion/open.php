@@ -2,6 +2,58 @@
 	function showmarkdown(){
 		$('#markdown').toggle('fast');
 	}
+	function addLike(idcomment){
+		iduser = <?php echo $this->session->userdata['student_login']['id_user'];?>;//get id user
+		url = '<?php echo site_url("discussion/commentAction")?>';
+		give='up';
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{idcomment:idcomment,iduser:iduser,give:give},
+			success:function(response){
+				updateCount('up',idcomment);
+				updateCount('down',idcomment);
+			},
+			error:function(){
+				alert('something wrong, please refresh page');
+			}
+		});
+	}
+	function addDislike(idcomment){
+		iduser = <?php echo $this->session->userdata['student_login']['id_user'];?>;//get id user
+		url = '<?php echo site_url("discussion/commentAction")?>';
+		give='down';
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{idcomment:idcomment,iduser:iduser,give:give},
+			success:function(response){
+				updateCount('up',idcomment);
+				updateCount('down',idcomment);
+			},
+			error:function(){
+				alert('something wrong, please refresh page');
+			}
+		});
+	}
+	function updateCount(give,idcomment){		
+		url = '<?php echo site_url("discussion/updateCount")?>';
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{idcomment:idcomment,give:give},
+			success:function(response){
+				if(give=='up'){
+					$("#like-"+idcomment).html(response);
+				}else{
+					$("#dislike-"+idcomment).html(response);
+				}
+			},
+			error:function(){
+				return alert('something wrong, refresh page');
+			}
+		});
+	}
 </script>
 <section id="title">
 	<center>		
@@ -80,63 +132,64 @@
 									</p>
 								</div>
 								<div style="float:left" class="small-2 columns">
-									<p><a href="#"><span class="fi-arrow-up"></span></a> 4500
+									<p><a onclick="addLike(<?php echo $c['id_comment']?>)"><span class="fi-arrow-up"></span></a> <span id="like-<?php echo $c['id_comment']?>"><?php echo $this->m_discussion->countCommentAction('up',$c['id_comment']);?></span>
 										<br/>
-										<a href="#"><span class="fi-arrow-down"></span></a> 345</p>
-									</div>
+										<a onclick="addDislike(<?php echo $c['id_comment']?>)"><span class="fi-arrow-down"></span></a> <span id="dislike-<?php echo $c['id_comment']?>"><?php echo $this->m_discussion->countCommentAction('down',$c['id_comment']);?></span>
+									</p>
 								</div>
-								<br/>
-							<?php endforeach;?>
-							<!-- post comment -->
-							<div class="comment-item row">
-								<h4>Post Your Answer</h4>
-								<hr/>
-								<div class="small-12 columns">
-									<?php
-									if(!empty($this->session->userdata['student_login']['pp'])){
-										$avatar = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
-									}else{
-										$avatar = base_url('assets/img/avatar.png');
-									}
-									?>
-									<div class="avatar"><img class="discuss-avatar" src="<?php echo $avatar;?>" /></div>
-									<br/><br/>
-									<p>
-										<form method="POST" action="">
-											<a onclick="showmarkdown()">how to create content</a>
-											<div style=" font-size:13px;display:none;background-color:#f4f4f4;padding:5px" id="markdown">
-												add command / code : <code>[code]...[/code]</code><br/>
-												add link : <code>[url]link[/url]</code><br/>
-												add image : <code>[image]image link[/image]</code><br/>
-												heading style : <code>[h1]...[/h1] until [h6]...[/h6]</code>
-											</div>
-											<textarea name="input_comment" style="width:100%;height:150px" placeholder="post here"></textarea>
-											<br/>
-											<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
-											<?php
-											if(!empty($this->session->userdata['student_login'])){
-												echo '<button type="submit" class="button">post</button>';
-											}else{
-												echo '<a class="button" href="'.site_url('/p/login').'">Login First</a>';
-											}
-											?>
+							</div>
+							<br/>
+						<?php endforeach;?>
+						<!-- post comment -->
+						<div class="comment-item row">
+							<h4>Post Your Answer</h4>
+							<hr/>
+							<div class="small-12 columns">
+								<?php
+								if(!empty($this->session->userdata['student_login']['pp'])){
+									$avatar = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
+								}else{
+									$avatar = base_url('assets/img/avatar.png');
+								}
+								?>
+								<div class="avatar"><img class="discuss-avatar" src="<?php echo $avatar;?>" /></div>
+								<br/><br/>
+								<p>
+									<form method="POST" action="">
+										<a onclick="showmarkdown()">how to create content</a>
+										<div style=" font-size:13px;display:none;background-color:#f4f4f4;padding:5px" id="markdown">
+											add command / code : <code>[code]...[/code]</code><br/>
+											add link : <code>[url]link[/url]</code><br/>
+											add image : <code>[image]image link[/image]</code><br/>
+											heading style : <code>[h1]...[/h1] until [h6]...[/h6]</code>
+										</div>
+										<textarea name="input_comment" style="width:100%;height:150px" placeholder="post here"></textarea>
+										<br/>
+										<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
+										<?php
+										if(!empty($this->session->userdata['student_login'])){
+											echo '<button type="submit" class="button">post</button>';
+										}else{
+											echo '<a class="button" href="'.site_url('/p/login').'">Login First</a>';
+										}
+										?>
 
-										</p>
-									</div>
+									</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="large-4 columns">
-						<?php $this->load->view('discussion/top_discussion')?>
-					</div>
 				</div>
-
+				<div class="large-4 columns">
+					<?php $this->load->view('discussion/top_discussion')?>
+				</div>
 			</div>
 
-		</div>			
+		</div>
 
-	</div>
+	</div>			
+
+</div>
 </div>
 <!-- modal -->
 <div id="newtopic" class="reveal-modal small" data-reveal>
