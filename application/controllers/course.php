@@ -10,7 +10,6 @@ class course extends base { //class for public
 		$this->load->library('user_agent');		
 		
 	}
-
 	/*
 	AJAX ONLY
 	*/
@@ -259,5 +258,21 @@ class course extends base { //class for public
 			$title = 'Linuxourse Certificate '.$data['detUserCourse']['materi'];
 			$this->dompdf->stream($title.".pdf");//pdf file name
 		}		
+	}
+	//get student completed materi
+	public function studentCompletingMateri(){
+		$limit = $_POST['limit'];
+		$offset = $_POST['offset'];
+		$idmateri = $_POST['idmateri'];
+		$users = $this->m_course->showAllCompletedUser($idmateri,$limit,$offset);//show all user
+		foreach($users as $u):
+			if(empty($u['pp'])){
+				$pp = base_url('assets/img/avatar.png');
+			}else{
+				$pp = base_url('assets/img/avatar/'.$u['pp']);
+			}
+			$url = site_url('student/v/'.$u['username']);
+			echo '<a style="height:100px;width:100px" href="'.$url.'"><img style="margin:10px;height:50px;width:50px;border-radius:200px" src="'.$pp.'"/><span>'.$u['username'].'</span></a>';
+		endforeach;
 	}
 }

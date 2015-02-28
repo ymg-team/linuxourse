@@ -568,4 +568,21 @@ class m_course extends CI_Model{
 		$query = $this->db->query($sql);
 		return $query = $query->row_array();
 	}
+
+	//////////////////////////////////
+	// ALL ABOUT STUDENT
+	//////////////////////////////////
+	//show competed student on materi
+	public function showAllCompletedUser($idmateri,$limit,$offset){
+		$sql = "SELECT user.pp AS 'pp', user.username AS 'username' FROM  user
+		INNER JOIN user_course ON user_course.id_user = user.id_user
+		WHERE user_course.id_materi = ? AND user_course.status = 'completed'";
+		$query = $this->db->query($sql,$idmateri);
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}else{
+			return array();
+		}
+	}
+
 }

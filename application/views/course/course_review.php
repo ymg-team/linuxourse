@@ -18,6 +18,30 @@
 			return false;
 		});
 	});
+	//get completed students
+	function completedStudent(idmateri,limit,offset){
+		$('#finishedcourse').html('loading...');
+		url = '<?php echo site_url("course/studentCompletingMateri");?>';
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{limit:limit,offset:offset,idmateri:idmateri},
+			success:function(response){
+				//alert(response.length);
+				if(response.length<10){
+					$('#finishedcourse').html('<h4>student not found</h4>');
+				}else{
+					$('#finishedcourse').html(response);
+					$('#studentloader').hide();
+				}
+				
+			},
+			error:function(){
+				alert('something wrong, please refresh page');
+				$('#finishedcourse').html('cannot show data');
+			}
+		});
+	}
 </script>
 <a class="button" style="display:none;padding:10px;position: fixed;right: 0;bottom: 0;" id="btntop"><span style="font-size:2rem"; class="fi-arrow-up"></span></a>
 
@@ -61,7 +85,7 @@ $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 					<dl style="border-top:1px solid #E8E8E8" class="tabs" data-tab>
 						<dd style="width:33.333333333%" class="active"><a href="#mycourse">Review</a></dd>
 						<dd style="width:33.333333333%"><a href="">Badges</a></dd>
-						<dd style="width:33.333333333%"><a href="#finishedcourse">Finished Student</a></dd>
+						<dd style="width:33.333333333%"><a href="#finishedcourse" onclick="completedStudent(<?php echo $materi['id_materi'];?>,20,0)">Finished Student</a></dd>
 					</dl>
 					<br/>
 					<div class="tabs-content">
@@ -126,11 +150,7 @@ $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 							<?php endforeach ?>
 							<!-- end of review list-->
 						</div>
-						<div class="content" id="finishedcourse">
-							<!-- start of completed user -->
-							<a data-tooltip aria-haspopup="true" title="Username"  href=""><img src=""></a>
-							<!-- end of completed user -->
-						</div>					  
+						<div class="content" id="finishedcourse"></div>					  
 					</div>
 
 				</div>				
