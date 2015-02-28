@@ -108,11 +108,22 @@ class m_course extends CI_Model{
 			redirect(site_url());
 		}
 	}
+	//is last course on this level
+	public function lastCourse($step,$idlevel){
+		$this->db->where('step >',$step);
+		$this->db->where('id_level',$idlevel);
+		$query = $this->db->get('course');
+		if($query->num_rows()>0){
+			return false;
+		}else{
+			return true;
+		}
+	}
 	//check, is next step available
 	public function isNextCourseAvailable($idcourse,$idlevel){
 		$params = array($idlevel,$idcourse);
-		$sql = 'SELECT id_course FROM course
-		WHERE id_level = ? AND step > (SELECT step FROM course WHERE id_course = ?)';
+		$sql = 'SELECT id_course,level.level,course.id_level AS id_level,course.step FROM course INNER JOIN level ON course.id_level = level.id_level
+		WHERE level.id_level = ? AND step > (SELECT step FROM course WHERE id_course = ?)';
 		$query = $this->db->query($sql,$params);
 		if($query->num_rows()>0){
 			return $query->row_array();
@@ -123,7 +134,7 @@ class m_course extends CI_Model{
 	//check, is next level available
 	public function isNextLevelAvailable($idlevel,$idmateri){
 		$params = array($idlevel,$idmateri);
-		$sql = "SELECT id_level FROM level 
+		$sql = "SELECT id_level,level FROM level 
 		WHERE level > (SELECT level FROM level WHERE id_level = ?) AND id_materi = ?";
 		$query = $this->db->query($sql, $params);
 		if($query->num_rows()>0){

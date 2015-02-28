@@ -2,7 +2,7 @@
 	#terminal pre{display: block;}
 </style>
 <?php
-if(!empty($script)){echo $script;}
+if(!empty($script)):echo $script;endif;
 //course detail
 $step = $detCourse['step'] + 1;
 $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail course by id materi and step
@@ -11,8 +11,11 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 	//when document ready
 	$(document).ready(function(){
 		$('#footer').hide();
+		<?php if(!empty($_GET['modal'])):?>
+		$('#nextlevel').foundation('reveal', 'open');
+		<?php endif;?>
 		$('#terminal').click(function(){//when click terminal
-			$('#linuxCommand').focus();//set autofocus textarea command
+			$('#linuxCommand').focus();//set autofocus textarea command			
 		});
 	});
 	//get command textarea
@@ -171,3 +174,13 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 					</div>
 				</section>
 				<div id="test"></div>
+
+				<!-- modal setup -->
+				<div style="text-align:center" id="nextlevel" class="reveal-modal tiny" data-reveal>
+					<h2 style="color:rgb(93, 176, 93);line-height:1;font-weight: bold;">
+					<i style="font-size:60px" class="fi-like"></i><br/>
+					Good Job
+					</h2>
+					<p style="color:#494949" class="lead"><?php if(!empty($_GET['modal'])):echo $_GET['modal'];endif;?></p>					
+					<a class="close-reveal-modal">&#215;</a>
+				</div>

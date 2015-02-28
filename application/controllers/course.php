@@ -68,19 +68,13 @@ class course extends base { //class for public
 	//start new course
 	public function start(){
 		//error_reporting(0);
-		//set public directory on session
-		// $publicdirectory = array(
-		// 	array(
-
-		// 		);
-		// 	);
-		//end of set public directory
 		$this->defaultPublicFile();//set default public file on session
 		$this->defaultPublicDirectory();//set default public directory on session
-		$this-> defaultUmask();//set default umask
+		$this->defaultUmask();//set default umask
 		$this->session->set_userdata('dir','/home/user');//default active directory
 		$this->session->set_userdata('command','');
 		$this->session->set_userdata('user','');//manajemen user on session
+		$this->session->set_userdata('group','');//manajemen group on session
 		//end of set default directory
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
@@ -153,7 +147,14 @@ class course extends base { //class for public
 				$this->db->where('id_user_course',$id_user_course);
 				$data = array('id_course'=>$nextcourse['id_course']);
 				$this->db->update('user_course',$data);
-				redirect($this->agent->referrer());//back to start course
+				//is last course on this level
+				if($this->m_course->lastCourse($nextcourse['step'],$nextcourse['id_level'])){
+					redirect($this->agent->referrer().'?modal=Level '.$nextcourse['level'].' Completed');//modal : succes level completed
+				}else{
+					//remove get parameter on url
+					$link = explode('?', $this->agent->referrer());
+					redirect($link[0]);
+				}				
 			}else{//change to next level
 				// next step not available -> change level
 				$nextlevel = $this->m_course->isNextLevelAvailable($idlevel,$idmateri);
@@ -170,7 +171,9 @@ class course extends base { //class for public
 					$this->db->where('id_user_course',$id_user_course);
 					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idlevel);
 					$this->db->update('user_course',$data);
-					redirect($this->agent->referrer());//back to start course
+					//remove get parameter on url
+					$link = explode('?', $this->agent->referrer());
+					redirect($link[0]);
 				}else{
 					echo 'this materi is completed';
 				}
