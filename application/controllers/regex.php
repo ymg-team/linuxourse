@@ -93,19 +93,19 @@ class regex extends base { //class for public
             //command is special command or not
         	$trimcommand = preg_replace('#[ \r\n\t]+#','',$command);
             if(array_key_exists($trimcommand,$specialcommand)){//output
-            	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$specialcommand[$trimcommand].'</pre>';
+            	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:'.$specialcommand[$trimcommand].'</pre>';
             } else if(array_key_exists($trimcommand,$docommand)){//create input
 
             } else if(in_array($trimcommand,$forbiddencommand)){//forbidden command | preg_match
-            	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'FORBIDDEN command</pre>';
+            	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:'.'FORBIDDEN command</pre>';
             }else {//not found
             	$result = shell_exec($command);
                 // echo '<pre>student@linux-ecourse:~$ '.$command.
                 // 	$result.'</pre>';
             	if(!empty($result)){
-            		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.$result.'</pre>';
+            		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:'.$result.'</pre>';
             	} else {
-            		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.':'.'No command "'.$commandclear.'" found </pre>';
+            		echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:'.'No command "'.$commandclear.'" found </pre>';
             	}
             }
             //end if not using custom controller
@@ -117,6 +117,8 @@ class regex extends base { //class for public
         //echo $command;
         //get directory
     	$commandArray = explode(' ',$command);
+        //if command wrong
+        if(count($commandArray) !=2 ){redirect(site_url('regex/errorMessage?command='.$command.'&error=format not valid'));}//format not valid
     	$cdCommand = array_shift($commandArray);
     	$find = '/';
         // check from root or not
@@ -285,7 +287,7 @@ class regex extends base { //class for public
                     endforeach;
             //found or not
                     if($found==FALSE){
-                    	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:no file found</pre>';
+                    	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.' <br/>:<>no file found</pre>';
                     }
                 }
             }
@@ -614,7 +616,7 @@ class regex extends base { //class for public
         // print_r($reg_terminal);//show preg match result
         $reg_result = $reg_terminal;
         $command_list = array();
-        $command_db = explode(':',$course_data['command']);
+        $command_db = explode('<br/>:',$course_data['command']);
         //destroy command_db
         //create new array
         foreach($reg_result as $rs):
@@ -659,14 +661,13 @@ class regex extends base { //class for public
         $idcourse = str_replace('','=',$idcourse);
         $idcourse = base64_decode(base64_decode($idcourse));
         //get course data by id user course
-        // echo $idusercourse;
         $course_data = $this->m_course->detCourseByIdCourse($idcourse);
         //start regex, get command only from terminal
         preg_match_all('#\$(.*):#Us', $terminal,$reg_terminal,PREG_SET_ORDER);
         // print_r($reg_terminal);//show preg match result
         $reg_result = $reg_terminal;
         $command_list = array();
-        $command_db = explode(':',$course_data['command']);
+        $command_db = explode('<br/>:',$course_data['command']);
         //destroy command_db
         //create new array
         foreach($reg_result as $rs):

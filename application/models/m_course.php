@@ -170,7 +170,8 @@ class m_course extends CI_Model{
 		$sql = "SELECT course.step AS 'step',course.command AS 'command' FROM course 
 		INNER JOIN level ON level.id_level = course.id_level
 		INNER JOIN materi ON materi.id_materi = level.id_materi 
-		WHERE course.step > ? AND materi.id_materi = ?";
+		WHERE course.step > ? AND materi.id_materi = ?
+		LIMIT 0,1";
 		$query = $this->db->query($sql,$params);
 		return $query->row_array();//get lattest course data
 	}

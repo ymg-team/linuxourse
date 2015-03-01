@@ -14,7 +14,7 @@ class course extends base { //class for public
 	AJAX ONLY
 	*/
 	public function commandArea(){
-		echo '<span style="float:left">student@linux-ecourse:'.$this->session->userdata('dir').'$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>';
+		echo '<span style="float:left">student@linux-ecourse:'.$this->session->userdata('dir').'$</span> <span style="padding-left:10px;width:50%;float:left"><input type="text" style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus/></span>';
 	}
 
 	// index page

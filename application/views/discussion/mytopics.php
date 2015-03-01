@@ -35,7 +35,13 @@
 						$id_discuss = base64_encode(base64_encode($v['id_discuss']));
 						$id_discuss = str_replace('=', '', $id_discuss);
 						?>
-						<a href="<?php echo site_url('discussion/edittopic/'.$id_discuss)?>"><span class="fi-pencil"></span> </a><a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
+						<?php
+						if($v['status'] == 'locked'){
+							echo '<a target="_blank" title="what happen" href="'.site_url('news/read/TkE9PQ/Locked-Content').'"><i style="color:rgb(231, 40, 40)" class="fi-lock"></i></a>';
+						}
+						?>
+						<a title="edit data" href="<?php echo site_url('discussion/edittopic/'.$id_discuss)?>">
+						<span class="fi-pencil"></span> </a><a class="linktitle" href="<?php echo site_url('discussion/open/'.$id_discuss)?>"><?php echo $v['title']?></a><br/>
 					</div>
 					<hr/>
 					<?php

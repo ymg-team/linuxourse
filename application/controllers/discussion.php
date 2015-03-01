@@ -119,6 +119,7 @@ class discussion extends base { //class for public
 				echo 'captcha not matched';
 			}
 		}
+		//else action form
 		$this->load->helper('captcha');
 		$id_discuss = $this->uri->segment(3);
 		$id_discuss = base64_decode(base64_decode($id_discuss));

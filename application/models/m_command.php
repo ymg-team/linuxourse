@@ -353,15 +353,15 @@ class m_command extends CI_Model{
 				$found = FALSE;
 				switch ($type) {
 					case 'user':
-						foreach($this->session->userdata('user') as $u):
-							if($u['name']==$param){$found=TRUE;}
-						endforeach;
-						break;
+					foreach($this->session->userdata('user') as $u):
+						if($u['name']==$param){$found=TRUE;}
+					endforeach;
+					break;
 					case 'group':
-						foreach($this->session->userdata('group') as $g):
-							if($g['name']==$param){$found=TRUE;}
-						endforeach;
-						break;
+					foreach($this->session->userdata('group') as $g):
+						if($g['name']==$param){$found=TRUE;}
+					endforeach;
+					break;
 				}
 				return $found;
 			}

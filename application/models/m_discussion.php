@@ -82,7 +82,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%'
+		WHERE (discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%') AND discussion.status = 'posted'
 		ORDER BY discussion.id_discuss DESC
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);
@@ -99,7 +99,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%' AND discussion.status = 'posted'
+		WHERE (discussion.title LIKE '%".$keyword."%' OR discussion.content LIKE '%".$keyword."%' AND discussion.status = 'posted') AND discussion.status = 'posted'
 		ORDER BY discussion.id_discuss DESC";
 		$query = $this->db->query($sql);
 		return $query->num_rows();
@@ -128,7 +128,7 @@ class m_discussion extends CI_Model{
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
-		WHERE discussion.type = '".$type."' AND discussion.status='posted' 
+		WHERE discussion.type = '".$type."' AND discussion.status='posted'
 		LIMIT ".$offset." , ".$limit;
 		$query = $this->db->query($sql);
 		if($query->num_rows()>0){
@@ -210,7 +210,7 @@ class m_discussion extends CI_Model{
 		$myid = $this->session->userdata['student_login']['id_user'];
 		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
 		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
-		discussion.type AS 'type',discussion.views AS 'views'
+		discussion.type AS 'type',discussion.views AS 'views', discussion.status AS 'status'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user
 		WHERE discussion.id_user = ?

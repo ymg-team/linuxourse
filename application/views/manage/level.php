@@ -22,7 +22,7 @@
     //review level
     function reviewLevel(){
       $('#reviewLevel').html('<i>loading...</i>');
-      idmateri= $('#input_materi').val();
+      // idmateri= $('#input_materi').val();
       url = '<?php echo site_url("manage/reviewlevel")?>/'+idmateri;
       $.ajax({
         url:url,
