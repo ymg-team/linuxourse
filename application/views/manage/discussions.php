@@ -71,10 +71,10 @@
           <dd id="locked"><a href="<?php echo site_url('manage/discussions/sort/locked')?>">Locked</a></dd>
         </dl>
         <div class="admin-content-white">
-          <form style="float:tiny" method="get" name="q">
+          <form  style="float:tiny" method="get">
             <span class="row collapse" style="min-width:100%">
               <span class="large-11 columns">
-                <input type="text" placeholder="searching level"></span>
+                <input name="q" type="text" placeholder="search discussion"></span>
                 <span class="large-1 columns"><button type="submit" class="tiny">search</button>
                 </span>
               </span>

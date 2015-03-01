@@ -78,7 +78,7 @@ class m_discussion extends CI_Model{
 	//search discussion
 	public function search_discussion($limit,$offset,$keyword){
 		$sql = "SELECT user.username AS 'username',user.pp AS 'pp',discussion.id_discuss AS 'id_discuss',
-		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',
+		discussion.title AS 'title',discussion.content AS 'content',discussion.updatedate AS 'updatedate',discussion.postdate AS 'postdate',discussion.status AS 'status',
 		discussion.type AS 'type',discussion.views AS 'views'
 		FROM discussion
 		INNER JOIN user ON user.id_user = discussion.id_user

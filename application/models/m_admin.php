@@ -199,9 +199,9 @@ public function countStudentByCourse($idcourse,$filter){
 	// MANAGE DISCUSSIONS
 	/////////////
 	//count all discussion
-public function countAllDiscussion(){$this->db->where('status','posted');return $this->db->count_all_results('discussion');}
+	public function countAllDiscussion(){$this->db->where('status','posted');return $this->db->count_all_results('discussion');}
 	//count all lock discussion
-public function countAllLockDiscussion(){$this->db->where('status','locked');return $this->db->count_all_results('discussion');}
+	public function countAllLockDiscussion(){$this->db->where('status','locked');return $this->db->count_all_results('discussion');}
 
 	/////////////
 	// MANAGE COMMENTS
@@ -218,6 +218,28 @@ public function countAllLockDiscussion(){$this->db->where('status','locked');ret
 		$query = $this->db->query($sql);
 		if($query->num_rows()>0){return $query->result_array();}else{return array();}
 	}
+	//search discussion comment
+	public function searchDiscussionComment($keyword,$limit,$offset){
+		$sql = "SELECT discussion_comment.id_comment,discussion.title,discussion_comment.id_discussion AS 'id_discuss',user.username AS 'username',discussion_comment.updatedate AS 'updatedate',
+		discussion_comment.comment,discussion_comment.status AS 'status' FROM discussion_comment
+		INNER JOIN user ON user.id_user = discussion_comment.id_user
+		INNER JOIN discussion ON discussion.id_discuss = discussion_comment.id_discussion
+		WHERE discussion_comment.comment like '".$keyword."'
+		LIMIT $offset,$limit";
+		$query = $this->db->query($sql);
+		if($query->num_rows()>0){return $query->result_array();}else{return array();}
+	}
+	//count result of search discussion comment
+	public function countSearchDiscussionComment($keyword){
+		$sql = "SELECT discussion_comment.id_comment,discussion.title,discussion_comment.id_discussion AS 'id_discuss',user.username AS 'username',discussion_comment.updatedate AS 'updatedate',
+		discussion_comment.comment,discussion_comment.status AS 'status' FROM discussion_comment
+		INNER JOIN user ON user.id_user = discussion_comment.id_user
+		INNER JOIN discussion ON discussion.id_discuss = discussion_comment.id_discussion
+		WHERE discussion_comment.comment like '".$keyword."'";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
+	}
+	
 	/////////////
 	//MANAGE NEWS
 	/////////////

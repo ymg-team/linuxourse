@@ -23,10 +23,11 @@
 			<?php endforeach;?>
 		</div>
 		<div class="large-2 medium-2 columns">
-			<h3 class="menu-title">Course Materi</h3>
+			<h3 class="menu-title">Navigation</h3>
 			<p><a href="<?php echo site_url()?>">home</a></p>
 			<p><a href="<?php echo site_url('news/read/TWc9PQ/Help')?>">help</a></li><p/>
 			<p><a href="<?php echo site_url('news/read/TVE9PQ/About')?>">about</a></li><p/>
+			<p><a href="<?php echo site_url('news/read/TlE9PQ/FAQ')?>">faq</a></li><p/>
 			<p><a href="<?php echo site_url()?>">register</a></li><p/>
 			<p><a href="<?php echo site_url('p/login')?>">login</a></li><p/>
 			<p><a href="<?php echo site_url('p/errorreport')?>">error report</a></li><p/>

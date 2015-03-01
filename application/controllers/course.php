@@ -101,10 +101,16 @@ class course extends base { //class for public
 	}
 	//rewind course
 	public function rewind(){
-		$this->session->set_userdata('dir','/home/user');
+		//error_reporting(0);
+		$this->defaultPublicFile();//set default public file on session
+		$this->defaultPublicDirectory();//set default public directory on session
+		$this->defaultUmask();//set default umask
+		$this->session->set_userdata('dir','/home/user');//default active directory
 		$this->session->set_userdata('command','');
+		$this->session->set_userdata('user','');//manajemen user on session
+		$this->session->set_userdata('group','');//manajemen group on session
+		//end of set default directory
 		$this->memberOnly();
-		//get id course on segment 3
 
 		$id = $this->uri->segment(3);//id_course
 		$id = str_replace('', '=', $id);

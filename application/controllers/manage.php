@@ -715,12 +715,17 @@ public function discussions(){
 		'num_link'=>7,
 		);
 	//suspend pagination
+	if(!empty($_GET['q'])){
+		//redirect 
+		$q = $_GET['q'];//get keyword
+		redirect(site_url('manage/discussions/action/search/'.$q));
+	}
 	if(!empty($this->uri->segment(4))){//manage/discussion/sort/locked
 		switch ($this->uri->segment(4)) {
 			case 'locked':
 			//resume pagination
 			$config['total_rows'] = $this->m_admin->countAllDiscussion();//count all lock discussion
-			$config['base_url'] = site_url('manage/discussion/sort/locked');
+			$config['base_url'] = site_url('manage/discussions/sort/locked');
 			$this->pagination->initialize($config);
 			$uri = $this->uri->segment(5);
 			if(empty($uri)){$uri=0;}
@@ -733,8 +738,22 @@ public function discussions(){
 				'view'=>$this->m_discussion->showLockDiscussion($config['per_page'],$uri),
 				);
 			break;
-			case 'search':
-				# code...
+			case 'search'://searching berita
+			//resume pagination
+			$keyword = $this->uri->segment(5);//get keyword
+			$uri = $this->uri->segment(6);
+			if(empty($uri)){$uri=0;}
+			$config['total_rows'] = $this->m_discussion->count_search_discussion($config['per_page'],$uri,$keyword);//count all lock discussion
+			$config['base_url'] = site_url('manage/discussions/sort/search');
+			$this->pagination->initialize($config);
+			//end of pagination
+			$data = array(
+				'title'=>'Search '.$keyword,
+				// 'script'=>'<script>$(document).ready(function(){$("#discussions").addClass("active");$("#locked").addClass("active")});</script>',
+				'link'=>$this->pagination->create_links(),
+				'total'=>'',
+				'view'=>$this->m_discussion->search_discussion($config['per_page'],$uri,$keyword),
+				);
 			break;
 			default:
 			echo 'something wrong';
@@ -773,6 +792,10 @@ public function setdiscussion(){
 //////////
 public function comments(){
 	$this->load->model('m_discussion');
+	if(!empty($_GET['q'])){
+		$q = $_GET['q'];//get keyword
+		redirect(site_url('manage/comments/sort/search/'.$q));
+	}
 	//start pagination
 	$config = array(
 		'per_page'=>13,
@@ -780,10 +803,9 @@ public function comments(){
 		'num_link'=>7,
 		);
 	if(!empty($this->uri->segment(4))){
-		switch ($this->uri->segment(4)) {
-			//show locked comments
-			case 'locked':
-				//resume pagination
+		switch ($this->uri->segment(4)){		
+			case 'locked'://show locked comments
+			//resume pagination
 			$config['total_rows'] = $this->m_admin->countAllComment('locked');//count all posted comment
 			$config['base_url'] = site_url('manage/comments');
 			$this->pagination->initialize($config);
@@ -798,14 +820,31 @@ public function comments(){
 				'view'=>$this->m_admin->allComments($config['per_page'],$uri,'locked'),
 				);
 			break;
-			//lock/unloack comment
-			case 'lock' || 'unlock':
+
+			case 'lock' || 'unlock'://lock/unlock comment
 			$status = $this->uri->segment(4);
 			$id = $this->uri->segment(5);
 			$this->db->where('id_comment',$id);
 			$data = array('status'=>$status);
 			$this->db->update('discussion_comment',$data);
 			redirect($this->agent->referrer());
+			break;
+
+			case 'search'://do search
+			$keyword = $this->uri->segment(5);//get kwyoi
+			echo $keyword;
+			// $config['total_rows'] = $this->m_admin->countSearchDiscussionComment($keyword);//count all posted comment
+			// $config['base_url'] = site_url('manage/comments/sort/search/'.$keyword);
+			// $this->pagination->initialize($config);
+			// $uri = $this->uri->segment(6);
+			// if(empty($uri)){$uri=0;}
+			// //end of pagination
+			// $data = array(
+			// 	'title'=>'Search '.$keyword,
+			// 	'link'=>$this->pagination->create_links(),
+			// 	'total'=>'',
+			// 	'view'=>$this->m_admin->searchDiscussionComment($keyword,$config['per_page'],$uri),
+			// 	);
 			break;
 
 			default:
