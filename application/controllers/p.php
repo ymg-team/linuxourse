@@ -109,7 +109,7 @@ class p extends base { //class for public
 				//verified or not
 				if($userdata['verified']==0){//email not verified
 					$data['title'] = 'Verified email first';
-					$data['error'] = 'check your email to verification';
+					$data['error'] = 'check your email to verification or resend verification code <a data-reveal-id="verificationModal" href="#">here</a>';
 					$this->baseView('p/loginerror',$data);
 				}else{//create session
 					$loginuser['id_user'] = $userdata['id_user'];
@@ -221,8 +221,23 @@ class p extends base { //class for public
 	}
 
 	//get verification code
-	public function getVerificationCode(){
-
+	public function sendVerification(){
+		$email = $this->input->post('inputemail');
+		$this->db->where('email',$email);
+		$query = $this->db->get('user');
+		if($query->num_rows()<0){
+			//user email not found
+			redirect(site_url().'?error=<span style="color:rgb(229, 56, 56)">email not found</span>, please register again');
+		}else{
+			$result = $query->row_array();
+			$username = $result['username'];
+			//send verification code
+			$verificationCode = base64_encode(base64_encode($email)).'linux'.base64_encode(base64_encode($username));
+			$verificationCode = str_replace('=', '', $verificationCode);
+			$this->m_user->sendVerificationEmail($verificationCode,$email);
+			redirect(site_url().'?success=<span style="color:rgba(13, 145, 85, 0.95)">new verification code is sent</span> check your email');
+			//end of send verification code
+		}
 	}
 }
 

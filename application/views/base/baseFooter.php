@@ -23,14 +23,11 @@
 			<?php endforeach;?>
 		</div>
 		<div class="large-3 medium-3 columns">
-			<h3 class="menu-title">Navigation</h3>
-			<p><a href="<?php echo site_url()?>">home</a></p>
-			<p><a href="<?php echo site_url('news/read/TWc9PQ/Help')?>">help</a></li><p/>
-			<p><a href="<?php echo site_url('news/read/TVE9PQ/About')?>">about</a></li><p/>
-			<p><a href="<?php echo site_url('news/read/TlE9PQ/FAQ')?>">faq</a></li><p/>
-			<p><a href="<?php echo site_url()?>">register</a></li><p/>
-			<p><a href="<?php echo site_url('p/login')?>">login</a></li><p/>
-			<p><a href="<?php echo site_url('p/errorreport')?>">error report</a></li><p/>
+			<h3 class="menu-title">Importand</h3>
+			<p><a href="#" data-reveal-id="verificationModal">email verification</a></p>
+			<p><a href="<?php echo site_url('news/read/TkE9PQ/Locked-Content')?>">faq</a></p>
+			<p><a href="<?php echo site_url('news/read/TXc9PQ/Terms-And-Conditions')?>">terms and conditions</a></p>
+			<p><a href="<?php echo site_url('news/read/TkE9PQ/Locked-Content')?>">locked content</a></p>			
 		</div>
 		<div class="large-3 medium-3 columns">
 			<img style="height:100%px" src="<?php echo base_url('assets/img/linuxourse-logo-black.png')?>"/><br/>
@@ -40,6 +37,17 @@
 		</div>
 	</div>
 </section>
+<!-- verification modal -->
+<div id="verificationModal" class="reveal-modal tiny" data-reveal>
+  <h2>Resend Email Verification Code</h2>
+  <p class="lead">input your email used for registration below.</p>
+  <form method="POST" action="<?php echo site_url('p/sendVerification');?> ">
+  	<input type="text" name="inputemail" placeholder="input email">
+  	<button class="tiny" style="color:#fff" type="submit">submit</button>
+  </form>
+ <a class="close-reveal-modal">&#215;</a>
+</div>
+<!-- end of verification modal -->
 <script type="text/javascript">
 	//by yussan
 	
