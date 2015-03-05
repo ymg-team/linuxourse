@@ -1,0 +1,2 @@
+// javascript console
+// for Linuxourse

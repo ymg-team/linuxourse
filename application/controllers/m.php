@@ -88,14 +88,19 @@ class m extends base { //class for public
 				$config['upload_path'] = './assets/img/avatar';
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size']	= '200';
+				$config['encrypt_name'] = TRUE;
 				// $config['max_width']  = '500';
 				// $config['max_height']  = '500';
 				$this->load->library('upload', $config);
 				if (!$this->upload->do_upload('input_pp')){//gagal upload
 					echo $this->upload->display_errors();
 				} else { //berhasil upload
-					$pp = $_FILES['input_pp']['name'];
-					$pp = str_replace(' ','_',$pp);
+					// $pp = $_FILES['input_pp']['name'];
+					// $pp = str_replace(' ','_',$pp);
+					$pp =$this->upload->data('file_name');
+					$pp = $pp['file_name'];
+					//delete image
+					unlink('./assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
 				}
 			}else{//not upload new profile picure
 				if(!empty($this->session->userdata['student_login']['pp'])){
@@ -121,7 +126,7 @@ class m extends base { //class for public
 				'about'=>$_POST['input_about'],
 				);
 			$this->db->update('user',$data);
-			redirect(site_url('m/edit?note=Update Success'));
+			redirect(site_url('m/edit?note=Update Success, plese relogin'));
 		}else{
 			$data = array('title'=>'Update Profile Failed');
 			$data['profile'] = $this->session->userdata['student_login'];

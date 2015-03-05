@@ -8,8 +8,9 @@
 		}
 		html{font-family: AftaSans;}
 		h3,h1{line-height:0}
-		h3{font-size: 45px;color:#848484;}
-		h1{font-size: 70px;color:#666666;}
+		p{line-height: 1.5}
+		h3{font-size: 25px;color:#848484;}
+		h1{font-size: 50px;color:#666666;}
 		.title{float:right;}
 		.baseCertificate,.logo,.title{display:block;width:100%;}
 		.baseCertificate{
@@ -55,7 +56,7 @@
 		</div>
 		<div class="title">
 			<span style="padding:10px;float:right;text-align:right">
-				<h3>Certificate of</h3>
+				<h3>Certificate of</h3><br/><br/>
 				<h1>Achievement</h1>
 			</span>
 		</div>
@@ -67,17 +68,21 @@
 				<span class="importand"><?php echo $detUserCourse['materititle']?></span><br/>
 			</p>
 		</div>
-		<div class="footer">
-			<div class="fotterleft">
-				<p>Linuxourse Program<br/>Organized by</p>
-				<img style="padding:5px;border:solid 1px gray" src="./assets/img/fossil-logo-landscape.png"/>
-			</div>
-			<div class="fotterright">
-				<p><?php echo date('d M Y',strtotime($detUserCourse['lastdate']))?></p>
+		<br/>
+		<br/>
+		<table style="width:100%">
+			<tr>
+				<td style="width:50%;text-align:left;float:left">
+					<p>Linuxourse Program<br/>Organized by</p><br/>
+					<img style="padding:5px;border:solid 1px gray" src="./assets/img/fossil-logo-landscape.png"/>
+				</div>
+			</td>
+			<td style="width:500%;text-align:right;float:right">
+				<p><?php echo date('d M Y',strtotime($detUserCourse['lastdate']))?></p><br/>
 				<img style="height:85px;" src="./assets/img/signature/<?php echo $signature['signature']?>"/>
-				<p style="width:90%;border-top:1px solid gray"><?php echo $signature['name']?><br/>FOSSIL <?php echo date('Y')?></p>
-			</div>
-		</div>
-	</div>
+				<p style=""><?php echo $signature['name']?><br/>FOSSIL <?php echo date('Y')?></p>
+			</td>
+		</tr>
+	</table>	
 </body>
 </html>

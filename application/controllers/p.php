@@ -53,15 +53,20 @@ class p extends base { //class for public
 				'password'=>md5(md5($_POST['input_password'])),//double md5
 				'status'=>'active',
 				'register_date'=>$now,
+				'verified'=>0,
 				);
-			if($this->db->insert('user',$datauser)){
-				redirect(site_url('p/redirect/registersuccess'));
-			}else{//failed insert to db
-				$data = array(
-					'title'=>'Register Failed',
-					);
-				$this->baseView('p/registererror',$data);
-			}			
+			//verification code
+			$verificationcode = '';
+			// if($this->db->insert('user',$datauser)){
+			// 	//sent verification code to email
+
+			// 	redirect(site_url('p/redirect/registersuccess'));
+			// }else{//failed insert to db
+			// 	$data = array(
+			// 		'title'=>'Register Failed',
+			// 		);
+			// 	$this->baseView('p/registererror',$data);
+			// }			
 		} else { //if validation is false
 			$data = array(
 				'title'=>'Register Failed',
@@ -81,7 +86,7 @@ class p extends base { //class for public
 		// $this->email->bcc('them@their-example.com');
 		$this->email->subject('Linuxourse Verfication');
 		$this->email->message('ready to learn Linux, one more step to do it : click this url to verification your account
-			 <a href="'.site_url('p/doverification/'.$verficationcode).'">http://linuxourse.com/p/doverification/'.$verficationcode.'</a>');
+			<a href="'.site_url('p/doverification/'.$verficationcode).'">http://linuxourse.com/p/doverification/'.$verficationcode.'</a>');
 		$this->email->send();
 
 		echo $this->email->print_debugger();
@@ -105,18 +110,24 @@ class p extends base { //class for public
 			$userdata = $this->m_user->can_login($username,$password);
 			//cek data ditemukan
 			if(!empty($userdata)){
-				$loginuser['id_user'] = $userdata['id_user'];
-				$loginuser['username'] = $userdata['username'];
-				$loginuser['email'] = $userdata['email'];
-				$loginuser['fullname'] = $userdata['fullname'];
-				$loginuser['id_country'] = $userdata['id_country'];
-				$loginuser['register_date'] = $userdata['register_date'];
-				$loginuser['password'] = $userdata['password'];
-				$loginuser['level'] = $userdata['level'];
-				$loginuser['status'] = $userdata['status'];
-				$loginuser['pp'] = $userdata['pp'];
-				$loginuser['is_login'] = 1;
-				$sessiondata['student_login'] = $loginuser;
+				//verified or not
+				if($userdata['verified']==0){//email not verified
+					$data['title'] = 'Verified email first';
+					$data['error'] = 'check your email to verification';
+					$this->baseView('p/loginerror',$data);
+				}else{//create session
+					$loginuser['id_user'] = $userdata['id_user'];
+					$loginuser['username'] = $userdata['username'];
+					$loginuser['email'] = $userdata['email'];
+					$loginuser['fullname'] = $userdata['fullname'];
+					$loginuser['id_country'] = $userdata['id_country'];
+					$loginuser['register_date'] = $userdata['register_date'];
+					$loginuser['password'] = $userdata['password'];
+					$loginuser['level'] = $userdata['level'];
+					$loginuser['status'] = $userdata['status'];
+					$loginuser['pp'] = $userdata['pp'];
+					$loginuser['is_login'] = 1;
+					$sessiondata['student_login'] = $loginuser;
 				$sessiondata['command'] = array();//for course
 				//set session
 				$this->session->set_userdata($sessiondata);
@@ -127,7 +138,8 @@ class p extends base { //class for public
 					redirect(site_url());					
 				} else { //jika statusnya banned
 					echo 'gagal memasukan session';
-				}
+				}			
+			}				
 			}else{ //username n password not matched
 				$data['title'] = 'login failed';
 				$this->baseView('p/loginerror',$data);
@@ -187,6 +199,15 @@ class p extends base { //class for public
 		$data = array(
 			'title'=>'Error Report');
 		$this->baseView('p/errorreport',$data);
+	}
+
+	/////////////////////////
+	//REGISTER STEP
+	/////////////////////////
+
+	//get verification code
+	public function getVerificationCode(){
+
 	}
 }
 

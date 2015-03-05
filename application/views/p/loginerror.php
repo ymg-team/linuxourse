@@ -19,9 +19,11 @@
 				</div>
 				<div class="row">
 					<div class="large-12 columns">
-						<?php if(!empty(validation_errors())):?>
+						<?php if(!empty(validation_errors())){?>
 							<small class="error"><?php echo validation_errors();?></small>
-						<?php endif;?>
+						<?php }else if(!empty($error)){?>
+							<small class="error"><?php echo $error;?></small>
+						<?php }?>
 						<input class="button" type="submit" value="Login">
 					</div>
 				</div>

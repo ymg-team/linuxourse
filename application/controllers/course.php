@@ -66,7 +66,7 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
-		//error_reporting(0);
+		error_reporting(0);
 		$this->defaultPublicFile();//set default public file on session
 		$this->defaultPublicDirectory();//set default public directory on session
 		$this->defaultUmask();//set default umask
@@ -88,6 +88,7 @@ class course extends base { //class for public
 		//is course completed
 		if(empty($data['recentIdlevel']) && empty($data['courseList'])){
 			//change course status
+			$data['title'] = 'Materi Completed';
 			$this->db->where('id_user_course',$id);
 			$this->db->update('user_course',array('status'=>'completed'));
 			$data['materi'] = $this->m_course->detMateri($data['detCourse']['id_materi']);
@@ -233,35 +234,40 @@ class course extends base { //class for public
 			}			
 		}
 	}
+	//get history via up arrow key
+	public function history(){
+		$command = $_GET['command'];
+
+	}
 	//get certificate
-	public function certificate(){
-		if(empty($this->uri->segment(3))){
-			redirect('site_url');
-		}else{
+public function certificate(){
+	if(empty($this->uri->segment(3))){
+		redirect('site_url');
+	}else{
 			//get id course
-			$iduc = $this->uri->segment(3);
+		$iduc = $this->uri->segment(3);
 			//decoding
-			$iduc = str_replace('', '=', $iduc);
-			$iduc = base64_decode(base64_decode($iduc));
+		$iduc = str_replace('', '=', $iduc);
+		$iduc = base64_decode(base64_decode($iduc));
 			//get detail course
-			$data = array(
-				'detUserCourse'=>$this->m_course->detUserCourse($iduc),
-				);	
-		}
+		$data = array(
+			'detUserCourse'=>$this->m_course->detUserCourse($iduc),
+			);	
+	}
 		//if level not completed or user_course not found
-		if($data['detUserCourse']['status'] != 'completed' || empty($data['detUserCourse'])){
-			redirect(site_url());
-		}else{
-			$data['signature'] = $this->m_course->signature($data['detUserCourse']['lastdate']);
-			$this->load->view('course/get_certificate',$data);
-			$html = $this->output->get_output();
+	if($data['detUserCourse']['status'] != 'completed' || empty($data['detUserCourse'])){
+		redirect(site_url());
+	}else{
+		$data['signature'] = $this->m_course->signature($data['detUserCourse']['lastdate']);
+		$this->load->view('course/get_certificate',$data);
+		$html = $this->output->get_output();
 			// Load library
-			$this->load->library('dompdf_gen');
-		// Convert to PDF
-			$this->dompdf->load_html($html);
-			$this->dompdf->set_paper('a4', 'landscape');
-			$this->dompdf->render();
-			$title = 'Linuxourse Certificate '.$data['detUserCourse']['materi'];
+		$this->load->library('dompdf_gen');
+			// Convert to PDF
+		$this->dompdf->load_html($html);
+		$this->dompdf->set_paper('a4', 'landscape');
+		$this->dompdf->render();
+		$title = 'Linuxourse Certificate '.$data['detUserCourse']['materi'];
 			$this->dompdf->stream($title.".pdf");//pdf file name
 		}		
 	}
@@ -279,6 +285,6 @@ class course extends base { //class for public
 			}
 			$url = site_url('student/v/'.$u['username']);
 			echo '<a style="height:100px;width:100px" href="'.$url.'"><img style="margin:10px;height:50px;width:50px;border-radius:200px" src="'.$pp.'"/><span>'.$u['username'].'</span></a>';
-		endforeach;
+			endforeach;
+		}
 	}
-}

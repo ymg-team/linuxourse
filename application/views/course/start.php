@@ -36,7 +36,10 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		e.which = e.which || e.keyCode;
 		if(e.which == 13) {
 			execCommand();
-		} 	    
+		}else if(e.which == 38){
+			x = $('#linuxCommand').val();
+			history(x);
+		}	    
 	}
 	//show hint text
 	function showhint(){
@@ -72,6 +75,10 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		'<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata("dir")?>$</span> <span style="padding-left:10px;width:70%;float:left"><input type="text" style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus/></span></div>';
 		$('#terminal').html(html);
 		$('#linuxCommand').focus();//set autofocus textarea command	
+	}
+	//get history
+	function history(x){ //x= on screen now
+		alert(x);
 	}
 	//check result
 	function check(){

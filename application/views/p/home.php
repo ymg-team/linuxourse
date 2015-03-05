@@ -186,8 +186,9 @@
 	<!-- success register modal -->
 	<div id="registerSuccess" class="reveal-modal small" data-reveal>
 		<h2>Register Success</h2>
-		<p class="lead">You're now students</p>
-		<p>you can login using email/username and password which you have made!</p>
+		<p class="lead">You're become a students</p>
+		<p>check your email to verification!</p>
+		<p></p>
 		<a class="close-reveal-modal">&#215;</a>
 	</div>
 
