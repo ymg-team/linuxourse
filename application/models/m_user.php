@@ -7,6 +7,40 @@ class m_user extends CI_Model{
 		//Do your magic here
 	}
 
+	// verification
+	public function sendVerificationEmail($code,$email){
+		$this->load->library('email');
+		$this->email->initialize(array(
+		  'protocol' => 'smtp',
+		  'smtp_host' => 'ssl://smtp.googlemail.com',
+		  // 'smtp_timeout' => 7,
+		  'smtp_port' => 465,
+		  'smtp_user' => 'fossilandamigos@gmail.com',
+		  'smtp_pass' => 'fossilamikom1993',
+		  'crlf' => "\r\n",
+		  'newline' => "\r\n",
+		  'mailtype' => 'html',
+		  'charset'   => 'iso-8859-1'
+		));
+		$this->email->from('fossilandamigos@gmail.com', 'linuxourse');
+		$this->email->to($email);
+		// $this->email->cc('another@another-example.com');
+		// $this->email->bcc('them@their-example.com');
+		$this->email->subject('Linuxourse Email Verfication');
+		$message = '
+		<h1>Last Step, Email Verification</h1>
+		<p>click this link to verification your account <a target="_blank" href="https://linuxourse/p/verification/'.$code.'">https://linuxourse/m/verification/'.$code.'</a></p>
+		<p>if link not working, request againt your verification via this link <a href="#">request verification</a></p>
+		<p>don\'r reply this message, your message where go no where</p>
+		<hr/>
+		Linuxourse By ID More And Fossil Colaboration
+		';
+		$this->email->message($message);
+		$this->email->set_newline("\r\n");
+		$this->email->send();
+		echo $this->email->print_debugger();
+	}
+
 	//all students
 	public function allStudents($limit,$offset,$verfied){
 		$sql = "SELECT user.id_user,user.username, user.email,user.fullname,user.status,user.register_date,user.last_login,user.status,country.country

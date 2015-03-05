@@ -131,7 +131,7 @@
 						<div class="row">
 							<?php 
 							foreach($allMateri as $am):	
-							$idMateri = base64_encode(base64_encode($am['id_materi']));
+								$idMateri = base64_encode(base64_encode($am['id_materi']));
 							$idMateri = str_replace('=', '', $idMateri);
 							$titleMateri = str_replace(' ', '-', $am['title']);
 							if(!empty($am['logo'])){$logo = base_url('assets/img/logo/'.$am['logo']);}
@@ -192,3 +192,22 @@
 		<a class="close-reveal-modal">&#215;</a>
 	</div>
 
+	<?php //get error message 
+	if(!empty($_GET['error'])): ?>
+	<div id="showError" class="reveal-modal small" data-reveal>
+		<h2>Something wrong</h2>
+		<p class="lead"><?php echo $_GET['error']?></p>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+	<?php endif;?>
+
+	<?php //get success message 
+	if(!empty($_GET['success'])): ?>
+	<div id="showSuccess" class="reveal-modal small" data-reveal>
+		<h2>Success</h2>
+		<p class="lead"><?php echo $_GET['success']?></p>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+<?php endif;?>
+
+?>

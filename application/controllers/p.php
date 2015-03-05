@@ -25,7 +25,13 @@ class p extends base { //class for public
 			'title'=>'',//will print LINUXOURSE
 			'allMateri'=>$this->m_course->showAllMateri(),
 			);
-		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
+		if(!empty($_GET['error'])){
+			$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu");$("#showError").foundation("reveal", "open");});</script>';
+		}else if(!empty($_GET['success'])){
+			$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu");$("#showSuccess").foundation("reveal", "open");});</script>';
+		}else {
+			$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
+		}
 		$this->baseView('p/home',$data);
 	}
 
@@ -56,17 +62,18 @@ class p extends base { //class for public
 				'verified'=>0,
 				);
 			//verification code
-			$verificationcode = '';
-			// if($this->db->insert('user',$datauser)){
-			// 	//sent verification code to email
-
-			// 	redirect(site_url('p/redirect/registersuccess'));
-			// }else{//failed insert to db
-			// 	$data = array(
-			// 		'title'=>'Register Failed',
-			// 		);
-			// 	$this->baseView('p/registererror',$data);
-			// }			
+			$verificationCode = base64_encode(base64_encode($datauser['email'])).'linux'.base64_encode(base64_encode($datauser['username']));
+			$verificationCode = str_replace('=', '', $verificationCode);
+			if($this->db->insert('user',$datauser)){
+				//sent verification code to email
+				$this->m_user-> sendVerificationEmail($verificationCode,$datauser['email']);
+				redirect(site_url('p/redirect/registersuccess'));
+			}else{//failed insert to db
+				$data = array(
+					'title'=>'Register Failed',
+					);
+				$this->baseView('p/registererror',$data);
+			}			
 		} else { //if validation is false
 			$data = array(
 				'title'=>'Register Failed',
@@ -78,18 +85,7 @@ class p extends base { //class for public
 	//sent verfication code to email
 	public function sentemail(){
 		//if not do verfication in 7 days, user data will delete
-		$verficationcode = $this->uri->segment(3);
-		$this->load->library('email');
-		$this->email->from('nonreply-linuxourse@gmail.com', 'Non Reply Linuxourse');
-		$this->email->to('someone@example.com'); 
-		// $this->email->cc('another@another-example.com'); 
-		// $this->email->bcc('them@their-example.com');
-		$this->email->subject('Linuxourse Verfication');
-		$this->email->message('ready to learn Linux, one more step to do it : click this url to verification your account
-			<a href="'.site_url('p/doverification/'.$verficationcode).'">http://linuxourse.com/p/doverification/'.$verficationcode.'</a>');
-		$this->email->send();
-
-		echo $this->email->print_debugger();
+		
 	}
 	//do verification
 	public function doverification(){
@@ -204,6 +200,25 @@ class p extends base { //class for public
 	/////////////////////////
 	//REGISTER STEP
 	/////////////////////////
+
+	//do verification
+	public function verification(){
+		$code = str_replace('', '=', $this->uri->segment(3));
+		$explode = explode('linux', $code);
+		$email = base64_decode(base64_decode($explode[0]));
+		$username = base64_decode(base64_decode($explode[1]));
+		//edit status
+		$this->db->where('email',$email);
+		$this->db->where('username',$username);
+		$query = $this->db->get('user');
+		if(!empty($user)){//change status
+			redirect(site_url().'?error=<span style="color:rgb(229, 56, 56)">your verification code is not working</span>, get new verification code via menu on footer');
+		}else{//username and email not found
+			//update db
+			$this->db->update('user',array('verified'=>1));
+			redirect(site_url().'?success=<span style="color:rgba(13, 145, 85, 0.95)">email is verified</span>, you can login now');
+		}
+	}
 
 	//get verification code
 	public function getVerificationCode(){
