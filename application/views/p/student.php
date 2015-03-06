@@ -23,7 +23,7 @@
 					$totalnow = $this->m_course->countCourseStepByMateri($uc['id_materi'],$uc['id_level'],$uc['id_course']);
 					$totalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
 					$progress = number_format(($totalnow*100)/$totalCourse,1);
-					$id = base64_encode(base64_encode($uc['id_level']));
+					$id = base64_encode(base64_encode($uc['id_materi']));
 					$id = str_replace('=', '', $id);
 					if(!empty($uc['logo'])){$logo = base_url('assets/img/logo/'.$uc['logo']);}
 					else{$logo = base_url('assets/img/logo/other logo.png'); }

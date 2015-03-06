@@ -302,7 +302,7 @@ public function certificate(){
 	if(empty($this->uri->segment(3))){
 		redirect('site_url');
 	}else{
-			//get id course
+		//get id user course
 		$iduc = $this->uri->segment(3);
 			//decoding
 		$iduc = str_replace('', '=', $iduc);
@@ -312,11 +312,37 @@ public function certificate(){
 			'detUserCourse'=>$this->m_course->detUserCourse($iduc),
 			);	
 	}
+	//couting scores**************
+	$green = 0;
+	$red = 0;
+	$times = $data['detUserCourse']['finishtime'];
+	$times = json_decode($times,true);//get all times
+	$courses = $this->m_course->showSyllabusByMateri($data['detUserCourse']['id_materi']);//get all courses by materi
+	foreach($courses as $c){
+		if($c['course_estimate'] >= $times[$c['id_course']] ){
+			$green++;
+		}else{
+			$red++;
+		}
+	}
+	if($green>$red){
+		$score = 'excellent';
+	}else if($green == $red){
+		$score ='good';
+	}else if($green < $red){
+		$score ='usual';
+	}else{
+		$score ='fail';
+	}
+	
+	//end of couting scores***************
+	
 		//if level not completed or user_course not found
 	if($data['detUserCourse']['status'] != 'completed' || empty($data['detUserCourse'])){
 		redirect(site_url());
 	}else{
 		$data['signature'] = $this->m_course->signature($data['detUserCourse']['lastdate']);
+		$data['score'] = $score;
 		$this->load->view('course/get_certificate',$data);
 		$html = $this->output->get_output();
 			// Load library
@@ -326,7 +352,7 @@ public function certificate(){
 		$this->dompdf->set_paper('a4', 'landscape');
 		$this->dompdf->render();
 		$title = 'Linuxourse Certificate '.$data['detUserCourse']['materi'];
-			$this->dompdf->stream($title.".pdf");//pdf file name
+		$this->dompdf->stream($title.".pdf");//pdf file name
 		}		
 	}
 	//get student completed materi

@@ -65,7 +65,7 @@
 				This certification accredits that<br>
 				<span class="importand"><?php echo $detUserCourse['fullname']?></span><br/>
 				has successfully completed the course materials<br>
-				<span class="importand"><?php echo $detUserCourse['materititle']?></span><br/>
+				<span class="importand"><?php echo $detUserCourse['materititle']?></span> with the results "<?php echo $score?>"<br/>
 			</p>
 		</div>
 		<br/>
