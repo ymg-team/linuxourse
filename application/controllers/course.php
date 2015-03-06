@@ -186,7 +186,7 @@ class course extends base { //class for public
 				//count timing**********
 				$mytime = $user_course['finishtime'];//get json time
 				if(empty($mytime)){
-					$mytime = '{"1":1}';
+					$mytime = '{"'.$idcourse.'":1}';
 				}
 				$mytime = json_decode($mytime,true);//json to array
 				$start = date_create(date('H:i:s',strtotime($this->session->userdata('start'))));
@@ -194,7 +194,7 @@ class course extends base { //class for public
 				$diff=date_diff($start,$now);
 				$minutes = $diff->i;//get minutes
 				$idcoursenow = $nextcourse['id_course'];
-				array_push($mytime,$idcoursenow = $minutes);
+				$mytime[$idcoursenow] = $minutes;
 				$json = json_encode($mytime);
 				//end of count timing************
 				$data = array('id_course'=>$nextcourse['id_course'],'finishtime'=>$json);
@@ -221,16 +221,13 @@ class course extends base { //class for public
 					$next_idcourse = $next_idcourse['id_course'];
 					//count timing**********
 					$mytime = $user_course['finishtime'];//get json time
-					if(empty($mytime)){
-						$mytime = '{"1":1}';
-					}
 					$mytime = json_decode($mytime,true);//json to array
 					$start = date_create(date('H:i:s',strtotime($this->session->userdata('start'))));
 					$now = date_create(date('H:i:s'));
 					$diff=date_diff($start,$now);
 					$minutes = $diff->i;//get minutes
 					$idcoursenow = $next_idcourse;
-					array_push($mytime,$idcoursenow = $minutes);
+					$mytime[$idcoursenow] = $minutes;
 					$json = json_encode($mytime);
 					//end of count timing************
 					//update db
