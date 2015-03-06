@@ -94,8 +94,8 @@ class m_course extends CI_Model{
 	public function detUserCourseByMateriNUser($idmateri,$iduser){
 		$params = array($idmateri,$iduser);
 		$sql = "SELECT user_course.lastdate,user_course.startdate,user_course.id_user_course AS 'id_user_course', course.step as 'step',
-		user_course.id_level as 'id_level',user_course.id_materi as 'id_materi',
-		user_course.id_user as 'id_user',user_course.id_course as 'id_course',level.level AS 'level'
+		user_course.id_level as 'id_level',user_course.id_materi as 'id_materi',course.estimate,
+		user_course.id_user as 'id_user',user_course.id_course as 'id_course',level.level AS 'level',user_course.finishtime
 		FROM user_course
 		INNER JOIN materi ON user_course.id_materi = materi.id_materi
 		INNER JOIN course ON user_course.id_course = course.id_course

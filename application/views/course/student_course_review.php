@@ -44,7 +44,20 @@
 	}
 </script>
 <a class="button" style="display:none;padding:10px;position: fixed;right: 0;bottom: 0;" id="btntop"><span style="font-size:2rem"; class="fi-arrow-up"></span></a>
-
+<section id="title">
+	<center>
+		<?php
+		if(!empty($student['pp'])){
+			$src = base_url('assets/img/avatar/'.$student['pp']);
+		} else {
+			$src = base_url('assets/img/avatar.png');
+		}
+		?>	
+		<img style="width:100px;border-radius:200px" src="<?php echo $src;?>">	
+		<h1><a href="<?php echo site_url('student/v/'.$this->uri->segment(4))?>"><?php echo $student['fullname']?></a></h1>
+		<p style="color:gray">Join Date : <?php echo date('d/m/Y', strtotime($student['register_date']));?> | Last Active <?php echo date('d/m/Y', strtotime($student['last_login']));?></p>
+	</center>
+</section>
 <?php
 //sount materi completion
 $totalnow = $this->m_course->countCourseStepByMateri($detCourse['id_materi'],$detCourse['id_level'],$detCourse['id_course']);
@@ -56,14 +69,9 @@ $recentPercentage = number_format(($totalnow*100/$totalCourse),1);
 $encIdUserCourse = base64_encode(base64_encode($detCourse['id_user_course']));
 $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 ?>
-<section id="title">
+<section style="margin-top:0;border-top:1px solid #e4e4e4" id="title">
 	<center>
 		<br/>
-		<?php
-		if(!empty($materi['logo'])){$logo = base_url('assets/img/logo/'.$materi['logo']);}
-		else{$logo = base_url('assets/img/logo/other logo.png'); }
-		echo '<img src="'.$logo.'"/>'
-		?>
 		<h1 style="margin:0"><?php echo $materi['title'];?> / <?php echo $recentPercentage;?>%</h1>
 		<p><?php echo $materi['description'];?></p>
 		<div id="progressanimate" style="height:10px;width:50%" class="radius progress">
@@ -72,8 +80,7 @@ $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 		<hr/>
 		<p style="margin:0">Active Student <strong><?php echo $this->m_course->countStudentByMateri($materi['id_materi'],'incomplete')?></strong></p>
 		<p style="margin:0">Completed Student <strong><?php echo $this->m_course->countStudentByMateri($materi['id_materi'],'completed')?></strong></p>
-		<br/>
-		<a href="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">Resume Course</a>
+		
 	</center>
 </section>
 <?php 
@@ -175,9 +182,7 @@ $mytime = json_decode($mytime,true);//json to array
 						</div>
 						<div class="content" id="finishedcourse"></div>					  
 					</div>
-
-				</div>				
-				<a href="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">Resume Course</a>
+				</div>	
 			</div>
 		</div>
 	</center>

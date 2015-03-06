@@ -3,6 +3,7 @@
       $('#listMateri').toggle('fast');
     }
   </script>
+ 
   <!--body-->
   <section  id="welcome">
     <!--login form-->
@@ -54,7 +55,8 @@
           <table style="width:900px">
             <thead>
               <tr>
-                <th></th>
+                <th style="width:20px"></th>
+                <th style="width:20px">id</th>
                 <th>Name</th>
                 <th>Materi</th>
                 <th>Level</th>
@@ -77,6 +79,7 @@
               <?php foreach($view as $v):?>
                 <tr>
                   <td><?php echo $uri;?></td>
+                  <td><?php echo $v['id_course'] ?></td>
                   <td><?php echo $v['title']?></td>
                   <td><?php echo $v['materi']?></td>
                   <td><?php echo $v['level']?></td>

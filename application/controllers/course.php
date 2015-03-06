@@ -30,6 +30,7 @@ class course extends base { //class for public
 		if(!$this->m_course->isStudentStarted($this->session->userdata['student_login']['id_user'],$id)){
 			redirect(site_url('course/syllabus/'.$this->uri->segment(3)));//redirect to syllabus view
 		}
+		//get detail user_course data
 		$detMateri = $this->m_course->detMateri($id);//detail of materi
 		$data = array(
 			'title'=>$detMateri['title'],//show materi title
@@ -38,9 +39,39 @@ class course extends base { //class for public
 			'recentCourseStep'=>$this->m_course->getMyRecentCourseStep($this->session->userdata['student_login']['id_user'],$id),//get recent id course
 			'recentCourseId'=>$this->m_course->getMyRecentCourseId($this->session->userdata['student_login']['id_user'],$id),
 			);
+		$data['detuserCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$this->session->userdata['student_login']['id_user']);
 		//get detail course by iduser n idlevel
 		$data['detCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$this->session->userdata['student_login']['id_user']);//get all user course data
 		$this->baseView('course/course_review',$data);
+	}
+	//review other student
+	public function studentreview(){
+		$id = $this->uri->segment(3);//get id materi
+		$id = str_replace('', '=', $id);
+		$id = base64_decode(base64_decode($id));//decoding id to get id_materi
+		//get student id user
+		$this->db->where('username',$this->uri->segment(4));
+		$query = $this->db->get('user');
+		$result = $query->row_array();
+		$idstudent = $result['id_user'];		
+		//cek is user have started
+		if(!$this->m_course->isStudentStarted($idstudent,$id)){
+			redirect(site_url('course/syllabus/'.$this->uri->segment(3)));//redirect to syllabus view
+		}
+		//get detail user_course data
+		$detMateri = $this->m_course->detMateri($id);//detail of materi
+		$data = array(
+			'title'=>$this->uri->segment(4).' '.$detMateri['title'].' review',//show materi title
+			'student'=>$this->m_user-> getDataByUsername($this->uri->segment(4)),
+			'materi'=>$this->m_course->detMateri($id),//show materi detail
+			'level'=>$this->m_course->showLevelByMateri($id),//show level by id materi
+			'recentCourseStep'=>$this->m_course->getMyRecentCourseStep($idstudent,$id),//get recent id course
+			'recentCourseId'=>$this->m_course->getMyRecentCourseId($idstudent,$id),
+			);
+		$data['detuserCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$idstudent);
+		//get detail course by iduser n idlevel
+		$data['detCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$idstudent);//get all user course data
+		$this->baseView('course/student_course_review',$data);
 	}
 	//materi -> syllabus detail
 	public function syllabus(){//show all syllabus by id_materi
@@ -239,13 +270,7 @@ class course extends base { //class for public
 		$command = $_GET['command'];
 
 	}
-	//get lattest command
-	public function latestCommand(){
-		$command = $_POST['command'];
-		//get total array in history session
-		$count = count($this->session->userdata('command'));
-		echo $count;
-	}
+	
 	//get certificate
 public function certificate(){
 	if(empty($this->uri->segment(3))){

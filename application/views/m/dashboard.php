@@ -209,8 +209,10 @@
 				</div>
 				<table>						
 					<tr>
-						<th style="width:80%" scope="column">Activity</th>
-						<th style="width:20%" scope="column">Status</th>
+						<th style="width:70%">Course</th>
+						<th style="width:10%">Estimate</th>
+						<th style="width:10%">Goal</th>
+						<th style="width:10%">Status</th>
 					</tr>
 					<?php 
 						//get recent id level  by id_user n id_materi
@@ -218,16 +220,37 @@
 						//get recent id course by id_user n id_materi
 					$recentCourseStep = $this->m_course->getMyRecentCourseStep($this->session->userdata['student_login']['id_user'],$recentCourse['id_materi']);
 						$course = $this->m_course->courseByLevel($rc['id_level']);//show course by level
+						//my completing time
+						$mytime =  $detuserCourse['finishtime'];
+						$mytime = json_decode($mytime,true);//json to array
 						foreach($course as $c):?>
 						<tr>
 							<td><?php echo $c['title'];?><br/><small style="color:gray"><?php echo $c['description']?></small></td>
-							<td><?php 
-								if($c['id_level'] < $recentCourse['id_level'] || ($c['step'] <= $recentCourseStep && $c['level'] <= $recentLevel)){//if level n course step <= now = completed
-									echo '<span style="color:green" class="fi-check"> completed</span>';
-								} else {
-									echo '<span style="color:red" class="fi-x"> waiting</span>';
+							<td><?php echo $c['estimate']?>m</td>
+							<td>
+							<?php 
+							if($c['id_level'] < $recentCourse['id_level'] || ($c['step'] <= $recentCourseStep && $c['level'] <= $recentLevel)){//if level n course step <= now = completed
+								if($mytime[$c['id_course']] <= $c['estimate']){//green
+									$time = $c['estimate']-$mytime[$c['id_course']];
+									echo '<span style="font-weight:bold;color:green"> -'.$time.'m</span>';
+								}else{//red
+									$time = $mytime[$c['id_course']]-$c['estimate'];
+									echo '<span style="font-weight:bold;color:red"> +'.$time.'m</span>';
 								}
-								?></td>
+							} else {
+								echo '';
+							}
+							?>
+							</td>
+							<td>
+							<?php 
+							if($c['id_level'] < $recentCourse['id_level'] || ($c['step'] <= $recentCourseStep && $c['level'] <= $recentLevel)){//if level n course step <= now = completed
+								echo '<span style="color:green" class="fi-check"></span>';
+							} else {
+								echo '<span style="color:red" class="fi-x"></span>';
+							}
+							?>
+							</td>
 							</tr>
 							<?php
 							endforeach;

@@ -54,6 +54,7 @@ class m extends base { //class for public
 		$data['recentMateriPercentage'] = number_format(($totalnow*100/$totalCourse),1);
 		$data['recentCompletion'] = $this->m_course->showLevelCompletion($data['recentCourse']['id_materi'],$data['recentCourse']['id_level']);
 		$data['script'] = '<script>$(document).ready(function(){$("#home").addClass("activemenu")});</script>';
+		$data['detuserCourse'] = $this->m_course->detUserCourseByMateriNUser($data['recentCourse']['id_materi'],$this->session->userdata['student_login']['id_user']);
 		$this->baseView('m/dashboard',$data);
 	}
 	//edit profile
