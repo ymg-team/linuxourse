@@ -30,7 +30,7 @@ class m_course extends CI_Model{
 		level.title AS 'leveltitle',user_course.id_materi as 'id_materi',
 		materi.title AS 'materititle',
 		user_course.id_user AS 'id_user',user_course.id_course AS 'id_course',
-		user_course.startdate,user_course.lastdate,user_course.status
+		user_course.startdate,user_course.lastdate,user_course.status,user_course.finishtime
 		FROM user_course
 		INNER JOIN user ON user_course.id_user = user.id_user
 		INNER JOIN course ON user_course.id_course = course.id_course

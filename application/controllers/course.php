@@ -105,6 +105,7 @@ class course extends base { //class for public
 		$this->session->set_userdata('command','');
 		$this->session->set_userdata('user','');//manajemen user on session
 		$this->session->set_userdata('group','');//manajemen group on session
+		$this->session->set_userdata('start',date('H:i:s'));//start time
 		//end of set default directory
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
@@ -182,7 +183,21 @@ class course extends base { //class for public
 			if(!empty($nextcourse)){//next course on same level available
 				//get next step + get id + update db
 				$this->db->where('id_user_course',$id_user_course);
-				$data = array('id_course'=>$nextcourse['id_course']);
+				//count timing**********
+				$mytime = $user_course['finishtime'];//get json time
+				if(empty($mytime)){
+					$mytime = '{"1":1}';
+				}
+				$mytime = json_decode($mytime,true);//json to array
+				$start = date_create(date('H:i:s',strtotime($this->session->userdata('start'))));
+				$now = date_create(date('H:i:s'));
+				$diff=date_diff($start,$now);
+				$minutes = $diff->i;//get minutes
+				$idcoursenow = $nextcourse['id_course'];
+				array_push($mytime,$idcoursenow = $minutes);
+				$json = json_encode($mytime);
+				//end of count timing************
+				$data = array('id_course'=>$nextcourse['id_course'],'finishtime'=>$json);
 				$this->db->update('user_course',$data);
 				//is last course on this level
 				if($this->m_course->lastCourse($nextcourse['step'],$nextcourse['id_level'])){
@@ -204,9 +219,23 @@ class course extends base { //class for public
 					//get next_idcourse 
 					$next_idcourse = $this->m_course->getIdCourseByLevel($nextlevel['id_level']);
 					$next_idcourse = $next_idcourse['id_course'];
+					//count timing**********
+					$mytime = $user_course['finishtime'];//get json time
+					if(empty($mytime)){
+						$mytime = '{"1":1}';
+					}
+					$mytime = json_decode($mytime,true);//json to array
+					$start = date_create(date('H:i:s',strtotime($this->session->userdata('start'))));
+					$now = date_create(date('H:i:s'));
+					$diff=date_diff($start,$now);
+					$minutes = $diff->i;//get minutes
+					$idcoursenow = $next_idcourse;
+					array_push($mytime,$idcoursenow = $minutes);
+					$json = json_encode($mytime);
+					//end of count timing************
 					//update db
 					$this->db->where('id_user_course',$id_user_course);
-					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idlevel);
+					$data = array('id_course'=>$next_idcourse,'id_level'=>$next_idlevel,'finishtime'=>$json);
 					$this->db->update('user_course',$data);
 					//remove get parameter on url
 					$link = explode('?', $this->agent->referrer());

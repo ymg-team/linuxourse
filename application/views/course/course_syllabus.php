@@ -56,10 +56,10 @@
 			<div class="large-8 collapse" columns>				
 				<!-- skill completion -->
 				<div class="row">
-					<dl style="border-top:1px solid #E8E8E8" class="tabs" data-tab>
+					<!-- <dl style="border-top:1px solid #E8E8E8" class="tabs" data-tab>
 						<dd style="width:50%" class="active"><a href="#mycourse">Course Syllabus</a></dd>
 						<dd style="width:50%"><a onclick="lattestCompletedStudents(<?php echo $materi['id_materi']?>)" href="#completedstudent">Student Has Completed</a></dd>
-					</dl>
+					</dl> -->
 					<br/>
 					<div class="tabs-content">
 						<div class="content active" id="mycourse">
