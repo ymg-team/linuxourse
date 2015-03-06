@@ -34,12 +34,15 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 	//if press enter
 	function inputKeyUp(e) {
 		e.which = e.which || e.keyCode;
-		if(e.which == 13) {
+		if(e.which == 13) {//press enter
 			execCommand();
-		}else if(e.which == 38){
+		}else if(e.which == 38){//press up arrow
 			x = $('#linuxCommand').val();
-			history(x);
-		}	    
+			history(x,'up');
+		}else if(e.which == 40){//press down arrow
+			x = $('#linuxCommand').val();
+			history(x,'down');
+		}    
 	}
 	//show hint text
 	function showhint(){
@@ -77,11 +80,11 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		$('#linuxCommand').focus();//set autofocus textarea command	
 	}
 	//get history
-	function history(x){ //x= on screen now
+	function history(x,y){ //x= on screen now
 		$('#linuxCommand').val('loading..');
 		$.ajax({
 			url:'<?php echo site_url("regex/latestCommand");?>',
-			data:{command:x},
+			data:{command:x,type:y},
 			success:function(response){
 				$('#linuxCommand').val(response);
 			},

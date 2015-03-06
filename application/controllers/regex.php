@@ -1037,27 +1037,52 @@ class regex extends base { //class for public
     //get lattest command
     public function latestCommand(){
         error_reporting(0);
-        $command = $_GET['command'];
         //get total array in history session
         $count = count($this->session->userdata('command'));
-        if($count == 0){
+        $command = $_GET['command'];
+        $type = $_GET['type'];
+        if($type == 'up'){//press up button
+            if($count == 0){
             echo '';//return empty form
+            }else{
+                if(empty($command)){//tidak ada command
+                    echo $this->session->userdata['command'][$count-1];//last command
+                }else{//ada command
+                    $found = FALSE;
+                   for($x=$count;$x>0;$x--){
+                    if($this->session->userdata['command'][$x-1] == $command){
+                        $found = TRUE;
+                        echo $this->session->userdata['command'][$x-2];//last command
+                    }
+                   }
+                   if($found == FALSE){
+                    echo $this->session->userdata['command'][$count-1];//last command
+                   }
+                }               
+            }
+        }else if($type == 'down'){//press down button
+            if($count == 0){
+            echo '';//return empty form
+            }else{
+                if(empty($command)){//tidak ada command
+                    echo $this->session->userdata['command'][0];//last command
+                }else{//ada command
+                    $found = FALSE;
+                   for($x=0;$x<$count;$x++){
+                    if($this->session->userdata['command'][$x] == $command){
+                        $found = TRUE;
+                        echo $this->session->userdata['command'][$x+1];//last command
+                    }
+                   }
+                   if($found == FALSE){
+                    echo $this->session->userdata['command'][$count];//last command
+                   }
+                }               
+            }
         }else{
-            if(empty($command)){//tidak ada command
-                echo $this->session->userdata['command'][$count-1];//last command
-            }else{//ada command
-                $found = FALSE;
-               for($x=$count;$x>0;$x--){
-                if($this->session->userdata['command'][$x-1] == $command){
-                    $found = TRUE;
-                    echo $this->session->userdata['command'][$x-2];//last command
-                }
-               }
-               if($found == FALSE){
-                echo $this->session->userdata['command'][$count-1];//last command
-               }
-            }               
+            echo '';
         }
+       
     }
     //error  message for all
     public function errorMessage(){
