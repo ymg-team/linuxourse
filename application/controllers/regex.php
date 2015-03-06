@@ -39,7 +39,7 @@ class regex extends base { //class for public
 		$myhistory = '';
         //get total history on session
 		for($n=0;$n<count($this->session->userdata['command']);$n++){
-			$myhistory = $myhistory.$this->session->userdata['command'][$n];
+			$myhistory = $myhistory.$this->session->userdata['command'][$n].' ';
 		}
         //end of history setup
 		$commandArray = explode(' ',$commandclear);
@@ -616,24 +616,23 @@ class regex extends base { //class for public
         // print_r($reg_terminal);//show preg match result
         $reg_result = $reg_terminal;
         $command_list = array();
-        $command_db = explode('<br/>:',$course_data['command']);
+        $command_db = explode(':',$course_data['command']);
         //destroy command_db
         //create new array
         foreach($reg_result as $rs):
         	array_push($command_list, trim(str_replace($redirection,'', $rs[1])));
         endforeach;
-        // print_r($command_db);
-        // echo '<br/>';
-        // print_r($command_list);
+        // print_r($command_list);//get input command list
+        
         //cek command list and command db
         foreach($command_db as $cbase):
-        	$command_base = trim(str_replace($redirection2, '',$cbase));
+        $command_base = trim(str_replace($redirection2, '',$cbase));
         if(in_array($command_base,$command_list)){
                 // echo $cbase.' in array </br>';
         	$course = TRUE;
         }else{
         	$course = FALSE;
-        	echo '<span style="color:red"> '.$command_base.' is missing </span></br>';
+        	echo '<span style="color:red"> '.$cbase.' is missing </span></br>';
                 // redirect(site_url('regex/check_fault'));
         }
         endforeach;
@@ -667,7 +666,7 @@ class regex extends base { //class for public
         // print_r($reg_terminal);//show preg match result
         $reg_result = $reg_terminal;
         $command_list = array();
-        $command_db = explode('<br/>:',$course_data['command']);
+        $command_db = explode(':',$course_data['command']);
         //destroy command_db
         //create new array
         foreach($reg_result as $rs):
@@ -1033,6 +1032,31 @@ class regex extends base { //class for public
                 }
         }else{//format not valid
             redirect(site_url('regex/errorMessage?command='.$command.'&error=command format not valid'));//redirect to error page
+        }
+    }
+    //get lattest command
+    public function latestCommand(){
+        error_reporting(0);
+        $command = $_GET['command'];
+        //get total array in history session
+        $count = count($this->session->userdata('command'));
+        if($count == 0){
+            echo '';//return empty form
+        }else{
+            if(empty($command)){//tidak ada command
+                echo $this->session->userdata['command'][$count-1];//last command
+            }else{//ada command
+                $found = FALSE;
+               for($x=$count;$x>0;$x--){
+                if($this->session->userdata['command'][$x-1] == $command){
+                    $found = TRUE;
+                    echo $this->session->userdata['command'][$x-2];//last command
+                }
+               }
+               if($found == FALSE){
+                echo $this->session->userdata['command'][$count-1];//last command
+               }
+            }               
         }
     }
     //error  message for all

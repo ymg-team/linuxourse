@@ -239,6 +239,13 @@ class course extends base { //class for public
 		$command = $_GET['command'];
 
 	}
+	//get lattest command
+	public function latestCommand(){
+		$command = $_POST['command'];
+		//get total array in history session
+		$count = count($this->session->userdata('command'));
+		echo $count;
+	}
 	//get certificate
 public function certificate(){
 	if(empty($this->uri->segment(3))){

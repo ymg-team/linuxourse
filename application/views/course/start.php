@@ -78,7 +78,18 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 	}
 	//get history
 	function history(x){ //x= on screen now
-		alert(x);
+		$('#linuxCommand').val('loading..');
+		$.ajax({
+			url:'<?php echo site_url("regex/latestCommand");?>',
+			data:{command:x},
+			success:function(response){
+				$('#linuxCommand').val(response);
+			},
+			error:function(){
+				$('#linuxCommand').val(x);
+				alert('something wrong');
+			}
+		});
 	}
 	//check result
 	function check(){
@@ -93,7 +104,7 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 				<?php }	?>
 				$.ajax({
 					url:url,
-					type:'post',
+					type:'POST',
 					data:{terminal:terminal,usercourseid:usercourseid},
 					success:function(data){
 					$('#loadercheck').hide();//show loader
