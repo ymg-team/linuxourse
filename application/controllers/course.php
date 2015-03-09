@@ -325,11 +325,14 @@ public function certificate(){
 			$red++;
 		}
 	}
-	if($green>$red){
+	//red == 0 :: green = 100%
+	$totalstep = $this->m_course->countCourseByMateri($data['detUserCourse']['id_materi']);
+	$percgreen = ($green*100)/$totalstep; //5*100 /5 = 100%
+	if($percgreen>80){
 		$score = 'excellent';
-	}else if($green == $red){
+	}else if($percgreen <= 79 && $percgreen >49){
 		$score ='good';
-	}else if($green < $red){
+	}else if($percgreen <= 49 && $percgreen !=0){
 		$score ='usual';
 	}else{
 		$score ='fail';

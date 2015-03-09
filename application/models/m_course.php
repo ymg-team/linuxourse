@@ -384,7 +384,7 @@ class m_course extends CI_Model{
 		return $count_f + $count_s;
 	}
 	//count course by id materi
-	public function countCourseByMateri($x){//x = id level
+	public function countCourseByMateri($x){//x = id materi
 		$sql = "SELECT course.id_course AS 'id_course' FROM course 
 		INNER JOIN level ON course.id_level = level.id_level
 		INNER JOIN materi ON level.id_materi = materi.id_materi

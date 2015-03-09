@@ -170,6 +170,7 @@ class p extends base { //class for public
 			case 'registersuccess'://register success
 			$data = array(
 				'title'=>'Register Success',
+				'allMateri'=>$this->m_course->showAllMateri(),
 				'script'=>'<script>$(document).ready(function(){
 					$("#registerSuccess").foundation("reveal", "open");
 				});</script>',
