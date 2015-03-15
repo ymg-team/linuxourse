@@ -139,7 +139,7 @@
 							?>
 							<a id="btn_course_item" href="#btn_resume">
 								<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-									<div style="background-color:#fff" class="materi-item">
+									<div style="background-color:#008CBA" class="materi-item">
 										<center>
 											<img src="<?php echo $logo?>"/>
 										</center>
