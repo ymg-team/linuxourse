@@ -29,7 +29,7 @@ class m_user extends CI_Model{
 		$this->email->subject('Linuxourse Email Verfication');
 		$message = '
 		<h1>Last Step, Email Verification</h1>
-		<p>click this link to verification your account <a target="_blank" href="https://linuxourse/p/verification/'.$code.'">https://linuxourse/m/verification/'.$code.'</a></p>
+		<p>click this link to verification your account <a target="_blank" href="'.site_url().'p/verification/'.$code.'">'.site_url().'m/verification/'.$code.'</a></p>
 		<p>if link not working, request againt your verification via this link <a href="#">request verification</a></p>
 		<p>don\'r reply this message, your message where go no where</p>
 		<hr/>
