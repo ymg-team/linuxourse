@@ -78,7 +78,7 @@
 				</div>
 			</td>
 			<td style="width:500%;text-align:right;float:right">
-				<p><?php echo date('d M Y',strtotime($detUserCourse['lastdate']))?></p><br/>
+				<p><?php echo date('d M Y',strtotime($detUserCourse['lastdate']))?> expired 1 year</p><br/>
 				<img style="height:85px;" src="./assets/img/signature/<?php echo $signature['signature']?>"/>
 				<p style=""><?php echo $signature['name']?><br/>FOSSIL <?php echo date('Y')?></p>
 			</td>

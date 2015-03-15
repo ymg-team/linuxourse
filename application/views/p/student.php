@@ -9,7 +9,7 @@
 		?>	
 		<img style="width:100px;border-radius:200px" src="<?php echo $src;?>">	
 		<h1><a href="<?php echo site_url('student/v/'.$this->uri->segment(3))?>"><?php echo $student['fullname']?></a></h1>
-		<p style="color:gray">Join Date : <?php echo date('d/m/Y', strtotime($student['register_date']));?> | Last Active <?php echo date('d/m/Y', strtotime($student['last_login']));?></p>
+		<p>Join Date : <?php echo date('d/m/Y', strtotime($student['register_date']));?> | Last Active <?php echo date('d/m/Y', strtotime($student['last_login']));?></p>
 	</center>
 </section>
 <div class="row">
