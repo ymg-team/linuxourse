@@ -1,5 +1,5 @@
 <style type="text/css">
-	#terminal pre{display: block;}
+#terminal pre{display: block;}
 </style>
 <?php
 if(!empty($script)):echo $script;endif;
@@ -121,6 +121,7 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 			});
 			}
 		</script>
+
 		<section id="livecommand">
 			<div style="min-width:100%" class="row collapse">
 				<!-- sidebar -->
