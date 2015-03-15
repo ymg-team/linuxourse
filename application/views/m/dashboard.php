@@ -299,12 +299,12 @@
 								$idMateri = base64_encode(base64_encode($am['id_materi']));
 								$idMateri = str_replace('=', '', $idMateri);
 								$titleMateri = str_replace(' ', '-', $am['title']);
-								if(!empty($am['logo'])){$logo = base_url('assets/img/logo/'.$am['logo']);}
-								else{$logo = base_url('assets/img/logo/other logo.png'); }
+								if(!empty($am['logo'])){$logo = base_url('assets/img/logo/gray '.$am['logo']);}
+								else{$logo = base_url('assets/img/logo/gray other logo.png'); }
 								?>
 								<a id="btn_course_item" href="#btn_resume">
 									<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						
-										<div style="background-color:#008CBA" class="materi-item">
+										<div style="background-color:#FFF" class="materi-item">
 											<center>
 												<img src="<?php echo $logo?>"/>
 											</center>
@@ -318,7 +318,7 @@
 												<div class="small-12 columns">
 													<div class="small-10 columns collapse">
 														<div style="height:10px;margin-top:5px" class="radius progress">
-															<span style="float:left;color:#fff;width:<?php echo $progress;?>%;" class="meter"></span>
+															<span style="float:left;color:gray;width:<?php echo $progress;?>%;" class="meter"></span>
 														</div>
 													</div>
 													<div class="small-2 columns">

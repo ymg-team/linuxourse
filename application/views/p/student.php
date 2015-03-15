@@ -25,8 +25,8 @@
 					$progress = number_format(($totalnow*100)/$totalCourse,1);
 					$id = base64_encode(base64_encode($uc['id_materi']));
 					$id = str_replace('=', '', $id);
-					if(!empty($uc['logo'])){$logo = base_url('assets/img/logo/'.$uc['logo']);}
-					else{$logo = base_url('assets/img/logo/other logo.png'); }
+					if(!empty($uc['logo'])){$logo = base_url('assets/img/logo/gray '.$uc['logo']);}
+					else{$logo = base_url('assets/img/logo/gray other logo.png'); }
 					?>
 					<a id="btn_course_item" href="#btn_resume">
 						<div style="float:left;padding: 0.9375rem;" class="large-4 columns">						

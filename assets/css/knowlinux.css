@@ -41,7 +41,7 @@ pre{display: inline}
 .materi-item{float:left;border:1.5px solid rgb(0, 96, 128);width:100%;}
 .materi-item small{color:gray;}
 .materi-title{height: 35px;padding:0.1em;}
-.materi-title h4{color:#fff}
+.materi-title h4{color:gray}
 .learn_sidebar{padding:0  10px;margin-top:0;background-color: #F5F5F5}
 .terminal_view{padding:10px;background-color: #282828}
 .text{height:560px;overflow: auto;margin-bottom: 20px;}
@@ -64,7 +64,7 @@ pre{display: inline}
 #otherCourse{padding: 40px;background-color: #4AADCD;color:#fff;}
 #otherCourse h1{color:#fff;}
 #footer{padding:30px;}
-.course-detail{height:50px;color:#000;padding:0.4em;color:#fff;}
+.course-detail{height:50px;color:#000;padding:0.4em;color:gray;}
 /*base content*/
 .base-content{padding:15px;}
 /*all about discuss*/
