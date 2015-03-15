@@ -486,6 +486,13 @@ class m_course extends CI_Model{
 			'status'=>'incompeted',
 			);
 		$this->db->insert('user_course',$data);//insert course to database
+		//insert badge 'start'
+		$badge = array(
+			'id_user'=>$param,
+			'id_badge'=>1,
+			'getdate'=>date('d-m-y H:i:s')
+			);
+		$this->db->insert('user_badge',$badge);//insert new badge
 	}
 	//show recent course by user
 	public function recentCourseByUser($param){//id student
@@ -586,4 +593,34 @@ class m_course extends CI_Model{
 		}
 	}
 
+	//////////////////////////////////
+	// ALL ABOUT STUDENT
+	//////////////////////////////////
+
+	//get all badge by student and idmateri
+	public function getBadgeByMateriNStudent($idmateri,$idstudent){
+		$params = array($idstudent,$idmateri);
+		$sql = "SELECT badge.title AS 'title',badge.description AS 'description',badge.logo AS 'logo' FROM badge
+		INNER JOIN user_badge ON user_badge.id_badge=badge.id_badge
+		WHERE user_badge.id_user = ? AND badge.id_materi = ?";
+		$query = $this->db->query($sql,$params);
+		return $query->result_array();
+	}
+	//get all badge by student
+	public function getBadgeByStudent($idmateri,$idstudent){
+		$params = array($idstudent,$idmateri);
+		$sql = "SELECT badge.title AS 'title',badge.description AS 'description',badge.logo AS 'logo' FROM badge
+		INNER JOIN user_badge ON user_badge.id_badge=badge.id_badge
+		WHERE user_badge.id_user = ? AND badge.id_materi <> ?";
+		$query = $this->db->query($sql,$params);
+		return $query->result_array();
+	}
+	//get all student badge
+	public function getAllStudentBadge($idstudent){
+		$sql = "SELECT badge.title AS 'title',badge.description AS 'description',badge.logo AS 'logo' FROM badge
+		INNER JOIN user_badge ON user_badge.id_badge=badge.id_badge
+		WHERE user_badge.id_user = ?";
+		$query = $this->db->query($sql,$idstudent);
+		return $query->result_array();
+	}
 }

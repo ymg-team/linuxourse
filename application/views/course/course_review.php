@@ -88,7 +88,7 @@ $mytime = json_decode($mytime,true);//json to array
 				<div class="row">
 					<dl style="border-top:1px solid #E8E8E8" class="tabs" data-tab>
 						<dd style="width:33.333333333%" class="active"><a href="#mycourse">Review</a></dd>
-						<dd style="width:33.333333333%"><a href="">Badges</a></dd>
+						<dd style="width:33.333333333%"><a href="#badge">Badges</a></dd>
 						<dd style="width:33.333333333%"><a href="#finishedcourse" onclick="completedStudent(<?php echo $materi['id_materi'];?>,20,0)">Finished Student</a></dd>
 					</dl>
 					<br/>
@@ -173,6 +173,16 @@ $mytime = json_decode($mytime,true);//json to array
 							<?php endforeach ?>
 							<!-- end of review list-->
 						</div>
+						<div class="content" id="badge">
+							<?php if(empty($materibadge) && empty($allbadge)){ echo '<center><h3>you don\'t have any badge</h3></center>';}else{?>
+							<?php foreach($allbadge as $ab):?>
+								<span><img data-tooltip aria-haspopup="true" title="<?php echo $ab['description'];?>" style="width:50px" src="<?php echo base_url('assets/img/badge/'.$ab['logo']) ?>"></span>
+							<?php endforeach; ?>
+							<?php foreach($materibadge as $mb):?>
+								<span><img data-tooltip aria-haspopup="true" title="<?php echo $mb['description'];?>" style="width:50px" src="<?php echo base_url('assets/img/badge/'.$mb['logo']) ?>"></span>
+							<?php endforeach; ?>
+							<?php } //end of else?>
+						</div>	
 						<div class="content" id="finishedcourse"></div>					  
 					</div>
 

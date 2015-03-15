@@ -180,7 +180,13 @@
 			<!-- badge completion -->
 			<h1>Badge Collection</h1>
 			<hr/>
+			<?php if(empty($badge)){ ?>
 			<p><strong>you don't have</strong></p>
+			<?php }else{ ?>
+			<?php foreach($badge as $b):?>
+				<span><img data-tooltip aria-haspopup="true" title="<?php echo $b['description'];?>" style="width:50px" src="<?php echo base_url('assets/img/badge/'.$b['logo']) ?>"></span>
+			<?php endforeach; ?>
+			<?php } ?>
 			<br/>
 		</div>
 	</div>

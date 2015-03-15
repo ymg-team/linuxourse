@@ -40,6 +40,8 @@ class course extends base { //class for public
 			'recentCourseId'=>$this->m_course->getMyRecentCourseId($this->session->userdata['student_login']['id_user'],$id),
 			);
 		$data['detuserCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$this->session->userdata['student_login']['id_user']);
+		$data['materibadge'] = $this->m_course->getBadgeByMateriNStudent($id,$this->session->userdata['student_login']['id_user']);
+		$data['allbadge'] = $this->m_course->getBadgeByStudent($id,$this->session->userdata['student_login']['id_user']);
 		//get detail course by iduser n idlevel
 		$data['detCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$this->session->userdata['student_login']['id_user']);//get all user course data
 		$this->baseView('course/course_review',$data);
@@ -68,6 +70,8 @@ class course extends base { //class for public
 			'recentCourseStep'=>$this->m_course->getMyRecentCourseStep($idstudent,$id),//get recent id course
 			'recentCourseId'=>$this->m_course->getMyRecentCourseId($idstudent,$id),
 			);
+		$data['materibadge'] = $this->m_course->getBadgeByMateriNStudent($id,$idstudent);
+		$data['allbadge'] = $this->m_course->getBadgeByStudent($id,$idstudent);
 		$data['detuserCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$idstudent);
 		//get detail course by iduser n idlevel
 		$data['detCourse'] = $this->m_course->detUserCourseByMateriNUser($id,$idstudent);//get all user course data
