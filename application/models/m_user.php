@@ -7,6 +7,20 @@ class m_user extends CI_Model{
 		//Do your magic here
 	}
 
+	//student stats
+	public function stats($materi='',$status=''){
+		if(!empty($materi)){
+			$this->db->join('user_course','user_course.id_user=user.id_user');
+			$this->db->join('materi','materi.id_materi=user_course.id_materi');
+			$this->db->where('materi.id_materi',$materi);//by kategori
+			if(!empty($status)){//by students status
+				$this->db->where('user_course.status',$status);//by kategori
+			}
+		}//count all students
+		$this->db->where('user.verified',1);
+		$result = $this->db->count_all_results('user');
+		return $result;
+	}
 	// verification
 	public function sendVerificationEmail($code,$email){
 		$this->load->library('email');
@@ -75,10 +89,17 @@ class m_user extends CI_Model{
 			return $query->row_array();
 		}
 	}
-
 	/*
 	* ALL ABOUT STUDENT
 	*/
+	//show user by last login
+	public function showLastLogin($limit,$offset){
+		$this->db->limit($limit,$offset);
+		$this->db->where('status','active');
+		$this->db->order_by('last_login','desc');
+		$query = $this->db->get('user');
+		return $query->result_array();
+	}
 	//get students completed materi
 	public function getCompletedStudents($idmateri,$limit,$offset){
 		$params = array($idmateri,$limit,$offset);
@@ -144,9 +165,18 @@ class m_user extends CI_Model{
 		}
 	}
 
-	//count active student on 1 materi
-
 	/*
-	* ALL ABOUT ADMIN
+	*all ABOUT OAUTH
 	*/
+
+	public function isRegistered($provider,$id){
+		$this->db->where('oauthProvider',$provider);
+		$this->db->where('oauthId',$id);
+		$query=$this->db->get('user');
+		if($query->num_rows()>0){//is registered
+			return $query->row_array();
+		}else{//not registered
+			return array();
+		}
+	}
 }

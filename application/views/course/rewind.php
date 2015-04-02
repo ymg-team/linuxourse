@@ -41,10 +41,11 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 	//exec command
 	function execCommand(){
 		$('#loaderexe').show();
-		command = $('#linuxCommand').val();
+		command=$('#linuxCommand').val().toString();
 		$.ajax({
 			url:'<?php echo site_url("regex/execcommand");?>',
 			data:{command:command},
+			type:'POST',
 			success:function(response){
 				$('#result').append(response);//response is command result
 				$('#linuxCommand').val('');
@@ -68,20 +69,34 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 		'<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata("dir")?>$</span> <span style="padding-left:10px;width:50%;float:left"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span></div>';
 		$('#terminal').html(html);
 	}
+	//striptags
+	function strip_tags(str, allow) {
+		// making sure the allow arg is a string containing only tags in lowercase (<a><b><c>)
+		allow = (((allow || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+
+		var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+		var commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+		return str.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+			return allow.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+		});
+	}
 	//check result for rewind mode
 	function check(){
 		$('#loadercheck').show();//show loader
-		//$('#linuxCommand').attr('readonly','readonly');//readonly terminal
 		terminal = $('#terminal').html();
+		//remove html tags
+		terminal = strip_tags(terminal,'');
+		//find and replace
+		terminal = terminal.replace("student@linux-ecourse:", "");
 		idcourse = '<?php echo $this->uri->segment(3)?>';//get id course
 		<?php if(!empty($course['custom_controller'])){ //if use custom controller?>
 			url='<?php echo site_url("regex/".$course["custom_controller"]);?>';
-		<?php }else{//use default controller?>
+			<?php }else{//use default controller?>
 				url='<?php echo site_url("regex/checkrewind");?>';
 				<?php }	?>
 				$.ajax({
 					url:url,
-					type:'post',
+					type:'POST',
 					data:{terminal:terminal,idcourse:idcourse},
 					success:function(data){
 					$('#loadercheck').hide();//show loader
@@ -94,6 +109,20 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 				}
 			});
 			}
+
+			//full height
+			function handleResize() {
+				var h = $(window).height();
+				$('.full-height-80').css({'height':h-80+'px'});
+				$('.full-height').css({'height':h+'px'});
+			}
+			$(function(){
+				handleResize();
+
+				$(window).resize(function(){
+					handleResize();
+				});
+			});
 		</script>
 		<section id="livecommand">
 			<div style="min-width:100%" class="row collapse">
@@ -129,9 +158,9 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 								</ul>
 							</li>
 						</ul>
-						<div class="learn_sidebar row">
+						<div style="overflow:auto" class="learn_sidebar row">
 							<p><strong>Case : <?php echo $course['title']?></strong><p>
-								<div class="text">
+								<div class="full-height-80">
 									<p><?php 
 										$case = nl2br($course['course_case_id']);
 										$case = str_replace('[', '<', $case);
@@ -149,29 +178,29 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 										echo $hint;
 										?>
 									</p>									
-									</div>
 								</div>
 							</div>
-							<!-- content -->
-							<div class="full-height terminal_view large-9 columns">
-								<div style="padding:10px" class="row collapse">
-									<!-- command -->
-									<div style="background-color:#000" class="command large-12 columns">
-										<div id="terminal" class="item" style="">
-											<div id="result"></div>
-											<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata('dir')?>$</span> <span style="padding-left:10px;width:70%;float:left"><input type="text" style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus/></span></div>
-											<!-- <span class="small-8 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>-->
-										</div>
+						</div>
+						<!-- content -->
+						<div class="full-height terminal_view large-9 columns">
+							<div style="padding:0 10px" class="row collapse">
+								<!-- command -->
+								<div style="background-color:#000;overflow:auto" class="command large-12 columns full-height-80">
+									<div id="terminal" class="item" style="">
+										<div id="result"></div>
+										<div id="commandarea" class="small-12 columns" style="padding:0;font-family:monospace;font-size:12px"><span style="float:left">student@linux-ecourse:<?php echo $this->session->userdata('dir')?>$</span> <span style="padding-left:10px;width:70%;float:left"><input type="text" style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus/></span></div>
+										<!-- <span class="small-8 columns"  style="padding:0;"><textarea style="font-family:monospace" onkeyup="inputKeyUp(event)" id="linuxCommand" autofocus></textarea></span>-->
 									</div>
-									<!-- button excute -->
-									<div class="row">
-										<!-- command -->
-										<div id="btnGroupAction" style="padding-top:10px" class="large-6 columns">
-											<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>execute..</span>
-										</div>
+								</div>
+								<!-- button excute -->
+								<div class="row">
+									<!-- command -->
+									<div id="btnGroupAction" style="padding-top:10px" class="large-6 columns">
+										<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="<?php echo base_url('./assets/img/loader.gif')?>"/>execute..</span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</section>
-					<div id="test"></div>
+					</div>
+				</section>
+				<div id="test"></div>

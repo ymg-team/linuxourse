@@ -27,8 +27,8 @@
 		?>
 		<p style="margin:0"><strong>Completing in <?php echo $log;?></strong></p> 
 		<br/>
-		<a href="<?php echo site_url()?>" class="button large secondary fi-home"></a>
-		<a href="<?php echo site_url('course/review/'.str_replace('=', '', base64_encode(base64_encode($materi['id_materi']))));?>" class="button large secondary">Review</a>
+		<a style="color:gray" href="<?php echo site_url()?>" class="button large secondary fi-home"></a>
+		<a style="color:gray" href="<?php echo site_url('course/review/'.str_replace('=', '', base64_encode(base64_encode($materi['id_materi']))));?>" class="button large secondary">Review</a>
 		<a href="<?php echo site_url('course/certificate/'.$this->uri->segment(3))?>" class="button large">Get Certivicate</a>
 	</center>
 </section>

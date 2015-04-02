@@ -14,8 +14,10 @@
           <form class="manage-login" method="post" action="">
             <input name="input_username" type="text" placeholder="username" required>
             <input name="input_password" type="password" placeholder="password" required>
-            <?php if(!empty(validation_errors())):?>
-              <div data-alert class="alert-box alert"><?php echo validation_errors();?><a href="#" class="close">&times;</a></div>
+            <?php 
+$errors = validation_errors();
+            if(!empty($errors)):?>
+              <div data-alert class="alert-box alert"><?php echo $errors;?><a href="#" class="close">&times;</a></div>
             <?php endif;?>
             <small><a href="#">lost your password</a></small><br/>
             <button type="submit" class="button">login</button>

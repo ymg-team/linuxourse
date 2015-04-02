@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 06, 2015 at 03:01 
+-- Generation Time: Mar 17, 2015 at 06:37 
 -- Server version: 5.6.12
 -- PHP Version: 5.5.3
 
@@ -73,14 +73,15 @@ CREATE TABLE IF NOT EXISTS `badge` (
   KEY `id_course` (`id_course`),
   KEY `id_materi` (`id_materi`),
   KEY `id_level` (`id_level`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `badge`
 --
 
 INSERT INTO `badge` (`id_badge`, `id_materi`, `id_level`, `id_course`, `title`, `description`, `logo`) VALUES
-(1, 1, 1, 1, 'Starting Course', 'congratulations you have embarked on a course here', '');
+(1, 1, 1, 1, 'Starting Course', 'congratulations you have embarked on a course here', 'start.png'),
+(2, NULL, NULL, NULL, 'Fast', 'faster than the estimated time', 'fast.png');
 
 -- --------------------------------------------------------
 
@@ -197,8 +198,8 @@ INSERT INTO `course` (`id_course`, `id_level`, `step`, `title`, `description`, `
 (48, 7, 30, 'Home Directory', 'Knowing Home directory on Linux', '5', 'case en', '[h5]Home Diretory[/h5]\n\nBila sebuah user mengakses sebuah sistem Linux melalui proses login, maka user tersebut pastilah memasukan direktori awal yang disebut dengan home, letak direktori home ini biasanya dibawah [pre]home[/pre].\n\nSistem telah memberi direktori [pre]/etc/skel[/pre] sebagai default template bagi direktori home. Dan directory home anda adalah [pre]/home/user[/pre].\n\n[span class="instructions"][h5]Instructions[/h5]\nlakukan [code]ls -la /home/user[/code] untuk mengetahui default isi dari directory home untuk anda\n[/span]\n\nPerhatikan bahwa ada 3 file diatas merupakan file-file yang akan dijalankan apabila user login atau logout ke shell bash sebagai default shell Linux.\n\n[span class="instructions"][h5]Instructions[/h5]\nMenggunaan command cat silahkan tampilkan isi file-file berikut dari directory [pre]/home/user[/pre] :\n[pre].bash_logout[/pre], isi file ini akan dijalankan apabila user logout.\n[pre].bash_profile[/pre], berisi variabbel-variabel lobal yang akan dieksport ke environment sistem.\n[pre].bashrc[/pre], isis file ini akan dijalankan bila user memasuki atau login ke shell bash.\n[/span]', 'hint en', 'jalan semua instruksi yang ada didalam kotak ''instructions'' untuk melanjutkan', 'cat /home/user/.bashrc:ls -la /home/user:cat /home/user/.bash_logout:cat /home/user/.bash_profile', '', 'posted', '2015-02-27 10:16:44'),
 (49, 8, 32, 'Linux FIle System 2', 'Linux File System Part 2', '20', 'case en', 'Seperti yang sudah dijelaskan pada level [a href=""]1:Shell[/a]. Berikut adalah beberapa aplikasi-aplikasi yang umum digunakan dalam manajemen storage.\n\n[strong]fsck[/strong]\n[pre]fsck[/pre], digunakan untuk memeriksa dan memperbaiki secaraoptional satu lebih Linux file sistem. [pre]fsck[/pre] ini mencoba untuk menjalankan file sistem pada disk drive fisik yang berbeda secara paralel, untuk mengurangi jumlah yang waktu yang diperlukan dalam memeriksa semua file sistem yang ada. Perintah yang digunakan :\n[code]fsck <nama_dev>[/code]\ncotoh :\n[code]fsck /dev/hda1[/code]\n\n[span class="instructions"][h5]Instructions[/h5]\nuntuk lebih jelas tentang [pre]fsck[/pre] anda dapat melilhat manualnya di [code]man fsck[/code].\n[/span]\n\n[strong]e2fsck[/strong]\n\n[pre]e2fsck[/pre],  aplikasi ini mirip dengan fsck namun lebih dikhususkan untuk file sistem yang bertipe extended dua. Perintah yang digunakan :\n[code]e2fsk <nama_device>[/code]\nContoh :\n[code]e2fsk /dev/hda2[/code]\n\n[span class="instructions"][h5]Instructions[/h5]\nuntuk lebih jelas tentang [pre]e2fsck[/pre] anda dapat melihat manualnya di [code]man e2fsck[/code].\n[/span]\n\n[strong]hdparm[/strong]\n\nhdparm merupakan aplikasi yang umum digunakan untuk meningkatkan kinerja harddisk agar dapat bekerja secara optimal. Hdparm ini mendukung harddisk IDE?ST 506. APlikasi ini membutuhkan kernel linux versi 1.2.13 keatas. Beberapa option tidak bisa bekerja pada kernel-kernel awal. Sebagai tambahan beberapa option didukung hanya untuk kernel yang memasukan device IDE \nHint IDmax 200 Character\nSeparate With ":", Ex : Ls -L:ps -Aux:ls / > Grep User:driver yang baru. , seperti versi\n2.0.10 ke atas.\n\nPerintah yang bisa digunakan :\n[code]hdparm [options] <nama_device>[/code]\n\n[span class="instructions"][h5]Instructions[/h5]\nKeterangan untuk option-optionnya dapat anda baca dari manual hdparm. [code]man hdparm[/code].\n[/span]\n\nDi bawah ini merupakan beberapa contoh yang umum digunakan :\nMelihat status 32 Bit I/O :\n[code]hdparm -c /dev/hda[/code]\nUntuk mengetahui kecepatan akses disk anda\n[code]hdparm -t /dev/had[/code]\nUntuk menset hardisk anda yang 16 bit menjadi 32 Bit dan mendukung DMA\n[code]hdparm -c1 -d1 /dev/had[/code]\nUntuk menjaga agar settingan di atas tetap berlangsung, gunakan perintah :\n[code]hdparm -k1 /dev/hda[/code]\n', 'hint en', 'Untuk bisa melanjutkan ke step berikutnya, jalankan dan pahami seluruh command yang berada didalam kotak instruksi', 'man fsck:man e2fsck:man hdparm', '', 'posted', '2015-02-28 09:32:43'),
 (50, 8, 33, 'Extended Filesystem', 'Linux using Extended Filesystem', '10', 'case en', 'Versi extended file hingga soal ini dibuat adalah ext4(extended 4). Di case kali ini dijelaskan tentang beragam versi extended file yang pernah ada dan apa saja perbedaanya dengan versi sebelumnya.\n\n[h5]EXT2 (2nd Extended)[/h5]\nEXT2 adalah file sistem yang ampuh di linux. EXT2 juga merupakan salah satu file sistem yang paling ampuh dan menjadi dasar dari segala distribusi linux. Pada EXT2 file sistem, file data disimpan sebagai data blok. Data blok ini mempunyai panjang yang sama dan meskipun panjangnya bervariasi diantara EXT2 file sistem, besar blok tersebut ditentukan pada saat file sistem dibuat dengan perintah mk2fs. Jika besar blok adalah 1024 bytes, maka file dengan besar 1025 bytes akan memakai 2 blok. Ini berarti kita membuang setengah blok per file.\nEXT2 mendefinisikan topologi file sistem dengan memberikan arti bahwa setiap file pada sistem diasosiasiakan dengan struktur data inode. Sebuah inode menunjukkan blok mana dalam suatu file tentang hak akses setiap file, waktu modifikasi file, dan tipe file. Setiap file dalam EXT2 file sistem terdiri dari inode tunggal dan setiap inode mempunyai nomor identifikasi yang unik. Inode-inode file sistem disimpan dalam tabel inode. Direktori dalam EXT2 file sistem adalah file khusus yang mengandung pointer ke inode masing-masing isi direktori tersebut.\n\n[h5]EXT3 (3rd Extended)[/h5]\nEXT3 adalah peningkatan dari EXT2 file sistem. Peningkatan ini memiliki beberapa keuntungan, diantaranya:\n[strong]a[/strong] Setelah kegagalan sumber daya, unclean shutdown, atau kerusakan sistem, EXT2 file sistem harus melalui proses pengecekan dengan program e2fsck. Proses ini dapat membuang waktu sehingga proses booting menjadi sangat lama, khususnya untuk disk besar yang mengandung banyak sekali data. Dalam proses ini, semua data tidak dapat diakses.\nJurnal yang disediakan oleh EXT3 menyebabkan tidak perlu lagi dilakukan pengecekan data setelah kegagalan sistem. EXT3 hanya dicek bila ada kerusakan hardware seperti kerusakan hard disk, tetapi kejadian ini sangat jarang. Waktu yang diperlukan EXT3 file sistem setelah terjadi unclean shutdown tidak tergantung dari ukuran file sistem atau banyaknya file, tetapi tergantung dari besarnya jurnal yang digunakan untuk menjaga konsistensi. Besar jurnal default memerlukan waktu kira-kira sedetik untuk pulih, tergantung kecepatan hardware.\n[strong]b[/strong] Integritas data\nEXT3 menjamin adanya integritas data setelah terjadi kerusakan atau unclean shutdown. EXT3 memungkinkan kita memilih jenis dan tipe proteksi dari data.\n[strong]c[/strong]Kecepatan\nDaripada menulis data lebih dari sekali, EXT3 mempunyai throughput yang lebih besar daripada EXT2 karena EXT3 memaksimalkan pergerakan head hard disk. Kita bisa memilih tiga jurnal mode untuk memaksimalkan kecepatan, tetapi integritas data tidak terjamin.\n[strong]d[/strong]Mudah dilakukan migrasi\nKita dapat berpindah dari EXT2 ke sistem EXT3 tanpa melakukan format ulang.\n\n[h5]EXT4 (4th Extended)[/h5]\nExt4 dirilis secara komplit dan stabil berawal dari kernel 2.6.28 jadi apabila distro anda yang secara default memiliki versi kernel tersebuat atau di atas nya otomatis system anda sudah support ext4 (dengan catatan sudah di include kedalam kernelnya) selain itu versi e2fsprogs harus mengunakan versi 1.41.5 atau lebih.\nApabila anda masih menggunakan fs ext3 dapat mengkonversi ke ext4 dengan beberapa langkah yang tidak terlalu rumit.\nKeuntungan yang bisa didapat dengan mengupgrade filesystem ke ext4 dibanding ext3 adalah mempunyai pengalamatan 48-bit block yang artinya dia akan mempunyai 1EB = 1,048,576 TB ukuran maksimum filesystem dengan 16 TB untuk maksimum file size nya,Fast fsck,Journal checksumming,Defragmentation support.\n\n[span class="instructions"][h5]Instructions[/h5]\neksekusi [code]y[/code] untuk melanjutkan[/span]', 'hint en', 'eksekusi command [code]y[/code] untuk melanjutkan', 'y', '', 'posted', '2015-02-28 09:44:08'),
-(51, 9, 35, 'HIstory', 'Smart history on Linux Shell', '15', 'case en', 'History diadaptasi dari C-shell (csh), yaitu pencatatan dari semua instruksi yang telah dilakukan. History dapat dipilih kembali dan perintah yang dipilih dapat dijalankan kembali. Variabel yang berkenaan dengan besar history dari suatu sistem adalah variabel [pre]HISTSIZE[/pre] yang di-set dalam system wide environtment [pre]/etc/profile[/pre].\n\n[span class="instructions"][h5]Instructions[/h5]\nHistory bisa diakses dengan menggunakan command [code]history[/code].\nMaka history akan menampilkan semua command yangtelah dijalankan oleh user linux shell\n[/span]', 'hint en', 'Eksekusi dan pahami semua command yang ada didalam box instruksi untuk melanjutkan.', 'history', '', 'posted', '2015-02-28 11:02:11'),
-(52, 9, 36, 'bash Scripting', 'Knowing bash scripting and how to use it', '10', 'case en', 'case id', 'hint en', 'pahami apa itu bash scripting untuk mempermudah mengerjakan soal dan kasus di step berikutnya. Eksekusi command [code]y[/code] untuk melanjutkan', 'y', '', 'posted', '2015-02-28 11:25:51');
+(51, 9, 35, 'History', 'Smart history on Linux Shell', '15', 'case en', 'History diadaptasi dari C-shell (csh), yaitu pencatatan dari semua instruksi yang telah dilakukan. History dapat dipilih kembali dan perintah yang dipilih dapat dijalankan kembali. Variabel yang berkenaan dengan besar history dari suatu sistem adalah variabel [pre]HISTSIZE[/pre] yang di-set dalam system wide environtment [pre]/etc/profile[/pre].\n\n[span class="instructions"][h5]Instructions[/h5]\nHistory bisa diakses dengan menggunakan command [code]history[/code].\nMaka history akan menampilkan semua command yangtelah dijalankan oleh user linux shell\n[/span]', 'hint en', 'Eksekusi dan pahami semua command yang ada didalam box instruksi untuk melanjutkan.', 'history', '', 'posted', '2015-03-06 11:14:32'),
+(52, 9, 36, 'bash Scripting', 'Knowing bash scripting and how to use it', '10', 'case en', '[h5]Bash Shell[/h5]\nSalah satu jenis shell yang paling umum digunakan adalah BASH (Bourne-Again Shell) yang diciptakan oleh Bryan Fox pada tahun 1988. Shell ini merupakan pengganti dari Bourne Shell (sh) yang sudah ada lebih dahulu dan masih digunakan pada beberapa distribusi Linux. Saat ini BASH sudah menjadi shell de facto untuk hampir semua distribusi Linux karena dianggap paling kaya fitur serta memiliki tingkat portabilitas yang cukup tinggi. Untuk perbandingan antar varian shell bisa dilihat pada situs Wikipedia [a href="https://en.wikipedia.org/wiki/Comparison_of_command_shells" target="_blank"]-wikipedia-[/a]\n\nHistory bisa diakses dengan menggunakan command [code]history[/code].\nseperti biasa langkah awal untuk belajar shell scripting adalah menampilkan tampilan ke layar.\nJalankan shell dibawah ini untuk melanjutkan ke step berikutnya\n\n[span class="instructions"][h5]Instructions[/h5]\n[code]echo ''hello world''[/code].\n\nketahui semua option yang tersedia untuk command ''echo'' dengan mambaca di [code]man echo[/code]\n\nKemudian jalankan beberapa modifikasi dari echo untuk menampilkan karakter tertentu dilayar.\n[code]echo ''line1 \\n line2''[/code], menambah spasi bari dengan ''\\n''.\n[/span]', 'hint en', 'jalankan semua perintah yang ada di dalam kota instruksi untuk melanjutkan ke step berikutnya', 'echo ''hello world'':echo ''line1 \\n line2'':man echo', '', 'posted', '2015-03-07 12:03:52');
 
 -- --------------------------------------------------------
 
@@ -246,14 +247,15 @@ CREATE TABLE IF NOT EXISTS `discussion_comment` (
   PRIMARY KEY (`id_comment`),
   KEY `id_discussion` (`id_discussion`,`id_user`),
   KEY `id_user` (`id_user`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `discussion_comment`
 --
 
 INSERT INTO `discussion_comment` (`id_comment`, `id_discussion`, `id_user`, `commentdate`, `updatedate`, `comment`, `status`) VALUES
-(4, 1, 2, '2015-02-20 02:56:55', '2015-02-20 02:56:55', 'test', 'posted');
+(4, 1, 2, '2015-02-20 02:56:55', '2015-02-20 02:56:55', 'test', 'posted'),
+(5, 7, 6, '2015-03-16 11:07:53', '2015-03-16 11:07:53', 'komentar', 'posted');
 
 -- --------------------------------------------------------
 
@@ -274,7 +276,8 @@ CREATE TABLE IF NOT EXISTS `discussion_comment_action` (
 --
 
 INSERT INTO `discussion_comment_action` (`id_comment`, `id_user`, `give`) VALUES
-(4, 2, 'down');
+(4, 2, 'down'),
+(5, 6, 'up');
 
 -- --------------------------------------------------------
 
@@ -401,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `news` (
 INSERT INTO `news` (`id_news`, `id_user`, `title`, `content`, `postdate`, `updatedate`, `status`) VALUES
 (1, 1, 'About', 'About e-course', '2014-12-14 20:35:10', '2015-01-31 03:42:33', 'published'),
 (2, 1, 'Help', 'help content', '2014-12-14 20:35:20', '2015-01-31 03:42:47', 'published'),
-(3, 1, 'Terms And Conditions', 'Sebelum mengikuti kursus, diharapkan untuk membaca beberapa terms and conditions dibawah ini :', '2014-12-14 20:35:32', '2015-02-24 23:47:17', 'published'),
+(3, 1, 'Terms And Conditions', 'Sebelum mengikuti kursus, diharapkan untuk membaca beberapa terms and conditions dibawah ini :\n\nShell yang digunakan pada kursus online ini berbasis distro Linux Debian.\n\nKasus dan soal 100% dikerjakan oleh anda sendiri, tanpa campur tangan dari pihak manapun.\n\nPenilaian berdasarkan waktu yang anda butuhkan untuk memecahkan kasus/soal menggunakan Linux Shell.\n\nJika penyelesaian materi sudah 100%, maka anda langsung bisa mendapatkan sertifikat sesuai dengan materi dan nilai yang didapat.\n\nada pertanyaan kontak ke faq@linuxourse.com', '2014-12-14 20:35:32', '2015-03-06 02:22:58', 'published'),
 (4, 1, 'Locked Content', 'Locked status ditunjukan untuk konsen diskusi dan comment yang telah dibuat user, Locked diberikan karena konten tersebut dianggap pernah di post oleh user/waktu yang lain atau mengandung konten sara, porngrafi atau melanggar Undang-Undang di Indonesia. Konten yang di locked secara otomatis akan terhapus dalam waktu 1x24 jam kecuali dilakukan perubahan isi dari konten, hingga tidak mendapatkan status locked', '2014-12-14 20:35:32', '2015-02-24 23:49:12', 'published'),
 (5, 1, 'FAQ', '[strong]Apakah bisa mendapatkan sertifikat setelah menyelesaikan kursus online?[/strong]\nBisa, sertifikat bisa didapatkan setiap menyelesaikan materi pada kursus online secara langasung.', '2014-12-14 20:35:32', '2015-02-25 05:22:51', 'published'),
 (6, 1, 'Start Course', 'Beberapa hal yang perlu disiapkan untuk memulai kursus. Kursus hanya boleh iikuti oleh member yang terdaftar.\n\n[strong]Materi Wajib[/strong] yang diikuti oleh member secara otomatis adalah "Introduce Linux", untuk selanjutnya member dapat memilih materi kursus lain sesuai dengan minatnya.\n\n[strong]Sertifikat[/strong] secara langsung diberikan dalam bentuk PDF ketika member telah menyelesaikan salah satu materi kursus. Sertifikat bisa saja hilang ketka terjadi penambahan kasus/soal pada materi yang telah selesai dikerjakan.', '2014-12-14 20:35:32', '2015-02-24 23:52:55', 'published'),
@@ -472,16 +475,17 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   KEY `id_country` (`id_country`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id_user`, `username`, `email`, `fullname`, `id_country`, `register_date`, `last_login`, `password`, `level`, `status`, `pp`, `about`, `verified`) VALUES
-(2, 'yussan', 'yusuf@kompetisi.id', 'Yusuf Akhsan Hidayat', 1, '2014-11-26 00:00:00', '2015-03-06 02:00:51', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', 'cd790f1e7cfb7eef1fe75a2e5a25fc34.jpg', 'happy command', 1),
-(6, 'lisa', 'lisa@japan.jp', 'Risa Oribe', 1, '2015-01-14 11:36:02', '2015-03-06 02:00:51', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', 'lisa.jpg', 'prety linuxer', 1),
-(19, 'lucy', 'yussandeveloper@gmail.com', 'Lucy Airgard', 3, '2015-03-05 10:45:48', '2015-03-06 02:00:51', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', '08ca6985c149142b0813f540731ced35.jpg', '', 1);
+(2, 'yussan', 'yusuf@kompetisi.id', 'Yusuf Akhsan Hidayat', 1, '2014-11-26 00:00:00', '2015-03-16 04:05:04', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', 'cd790f1e7cfb7eef1fe75a2e5a25fc34.jpg', 'happy command', 1),
+(6, 'lisa', 'lisa@japan.jp', 'Risa Oribe', 1, '2015-01-14 11:36:02', '2015-03-16 04:05:04', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', 'lisa.jpg', 'prety linuxer', 1),
+(19, 'lucy', 'yussandeveloper@gmail.com', 'Lucy Airgard', 3, '2015-03-05 10:45:48', '2015-03-16 04:05:04', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', '08ca6985c149142b0813f540731ced35.jpg', '', 1),
+(20, 'ahmadfuad', 'ahmad.fuad1945@gmail.com', 'Ahmad Fuad', 3, '2015-03-09 03:26:55', '2015-03-16 04:05:04', 'be71a8e61b64f613366380071fae3b38', 'student', 'active', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -497,7 +501,15 @@ CREATE TABLE IF NOT EXISTS `user_badge` (
   PRIMARY KEY (`id_user_badge`),
   KEY `id_user` (`id_user`,`id_badge`),
   KEY `id_badge` (`id_badge`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `user_badge`
+--
+
+INSERT INTO `user_badge` (`id_user_badge`, `id_user`, `id_badge`, `getdate`) VALUES
+(1, 6, 1, '2015-03-15 19:58:23'),
+(2, 19, 1, '2015-03-15 23:02:23');
 
 -- --------------------------------------------------------
 
@@ -513,25 +525,27 @@ CREATE TABLE IF NOT EXISTS `user_course` (
   `id_course` int(11) DEFAULT NULL,
   `startdate` datetime NOT NULL,
   `lastdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `finishtime` text NOT NULL,
   `status` enum('incomplete','completed') NOT NULL,
   PRIMARY KEY (`id_user_course`),
   KEY `id_user` (`id_user`),
   KEY `id_course` (`id_course`),
   KEY `id_materi` (`id_materi`),
   KEY `id_level` (`id_level`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
 
 --
 -- Dumping data for table `user_course`
 --
 
-INSERT INTO `user_course` (`id_user_course`, `id_user`, `id_materi`, `id_level`, `id_course`, `startdate`, `lastdate`, `status`) VALUES
-(2, 2, 1, 1, 6, '2014-12-13 03:57:44', '2015-02-16 03:44:05', 'completed'),
-(8, 2, 2, 9, 16, '2014-12-22 02:37:18', '2015-02-28 04:23:19', 'incomplete'),
-(10, 6, 1, 1, 1, '2015-01-14 11:36:13', '2015-01-21 15:20:17', 'incomplete'),
-(11, 2, 5, 15, 26, '2015-02-01 02:37:46', '2015-03-02 01:43:29', 'completed'),
-(12, 6, 2, 3, 29, '2015-03-01 03:17:50', '2015-03-01 11:09:31', 'incomplete'),
-(13, 19, 1, 1, 2, '2015-03-05 11:17:56', '2015-03-05 16:18:17', 'incomplete');
+INSERT INTO `user_course` (`id_user_course`, `id_user`, `id_materi`, `id_level`, `id_course`, `startdate`, `lastdate`, `finishtime`, `status`) VALUES
+(2, 2, 1, 1, 6, '2014-12-13 03:57:44', '2015-03-06 12:00:51', '{"1":3,"2":3,"3":5,"4":5,"5":4,"6":5}', 'completed'),
+(8, 2, 2, 9, 52, '2014-12-22 02:37:18', '2015-03-15 11:36:18', '{"21":1,"9":2,"10":10,"11":4,"20":6,"27":8,"28":5,"29":4,"30":7,"31":12,"32":7,"33":10,"34":10,"35":7,"36":7,"37":5,"38":7,"39":7,"40":5,"41":12,"42":9,"43":8,"44":12,"45":14,"46":27,"13":2,"14":7,"47":1,"48":15,"15":1,"49":1,"50":3,"51":0,"12":2,"16":7,"52":0}', 'completed'),
+(19, 6, 2, 3, 30, '2015-03-06 09:37:27', '2015-03-16 02:38:55', '{"21":1,"9":0,"10":1,"11":0,"20":0,"27":1,"28":0,"29":1,"30":6,"31":2}', 'incomplete'),
+(20, 6, 5, 15, 26, '2015-03-06 09:57:32', '2015-03-06 14:58:21', '{"23":1,"25":0,"24":0,"26":0}', 'completed'),
+(21, 19, 5, 15, 26, '2015-03-07 06:59:21', '2015-03-06 23:59:50', '{"23":1,"25":0,"24":0,"26":0}', 'completed'),
+(22, 6, 1, 1, 6, '2015-03-15 07:58:23', '2015-03-15 12:59:38', '{"1":1,"2":0,"3":0,"4":0,"5":0,"6":0}', 'completed'),
+(23, 19, 1, 1, 1, '2015-03-15 11:02:23', '2015-03-15 04:02:23', '', '');
 
 -- --------------------------------------------------------
 
@@ -558,7 +572,7 @@ CREATE TABLE IF NOT EXISTS `user_manage` (
 --
 
 INSERT INTO `user_manage` (`id_user_manage`, `username`, `password`, `fullname`, `pp`, `email`, `level`, `status`, `registerdate`, `loginlog`) VALUES
-(1, 'yussan', 'be71a8e61b64f613366380071fae3b38', 'Yusuf A.H', '', 'yusuf.hi@students.amikom.ac.id', 'admin', 'active', '2015-01-19 22:45:04', '|2015-01-19 04:46:54|2015-01-20 02:55:20|2015-01-20 05:45:03|2015-01-20 04:06:11|2015-01-21 02:21:50|2015-01-21 08:19:03|2015-01-21 10:59:23|2015-01-22 04:32:22|2015-01-22 05:16:37|2015-01-22 12:47:39|2015-01-23 02:48:04|2015-01-24 02:54:49|2015-01-24 05:14:21|2015-01-26 02:49:46|2015-01-27 10:47:54|2015-01-27 12:58:40|2015-01-28 01:27:12|2015-01-29 11:39:54|2015-01-30 12:08:36|2015-01-30 08:57:02|2015-01-30 12:35:27|2015-01-30 03:41:45|2015-01-31 03:22:20|2015-01-31 05:16:00|2015-01-31 08:31:57|2015-01-31 10:02:34|2015-02-01 02:16:01|2015-02-03 06:52:46|2015-02-05 11:40:12|2015-02-06 10:43:37|2015-02-06 08:05:12|2015-02-07 08:05:46|2015-02-08 05:34:37|2015-02-10 12:07:58|2015-02-11 11:40:31|2015-02-12 06:43:44|2015-02-13 09:51:38|2015-02-13 05:45:19|2015-02-14 11:26:12|2015-02-16 10:08:08|2015-02-16 01:46:23|2015-02-16 06:34:16|2015-02-18 11:59:06|2015-02-19 12:03:54|2015-02-21 08:07:35|2015-02-21 08:38:09|2015-02-22 08:53:51|2015-02-23 08:58:21|2015-02-24 08:03:33|2015-02-24 11:05:51|2015-02-24 07:15:26|2015-02-25 12:21:16|2015-02-25 06:46:25|2015-02-25 07:54:57|2015-02-25 08:32:10|2015-02-25 08:42:44|2015-02-25 09:26:58|2015-02-25 06:35:47|2015-02-25 09:49:53|2015-02-26 07:15:59|2015-02-26 08:40:04|2015-02-27 07:33:00|2015-02-28 09:24:28|2015-03-01 08:31:51|2015-03-01 10:36:53|2015-03-01 10:58:52|2015-03-01 11:10:46|2015-03-01 01:05:17|2015-03-01 03:38:15');
+(1, 'yussan', 'be71a8e61b64f613366380071fae3b38', 'Yusuf A.H', '', 'yusuf.hi@students.amikom.ac.id', 'admin', 'active', '2015-01-19 22:45:04', '|2015-01-19 04:46:54|2015-01-20 02:55:20|2015-01-20 05:45:03|2015-01-20 04:06:11|2015-01-21 02:21:50|2015-01-21 08:19:03|2015-01-21 10:59:23|2015-01-22 04:32:22|2015-01-22 05:16:37|2015-01-22 12:47:39|2015-01-23 02:48:04|2015-01-24 02:54:49|2015-01-24 05:14:21|2015-01-26 02:49:46|2015-01-27 10:47:54|2015-01-27 12:58:40|2015-01-28 01:27:12|2015-01-29 11:39:54|2015-01-30 12:08:36|2015-01-30 08:57:02|2015-01-30 12:35:27|2015-01-30 03:41:45|2015-01-31 03:22:20|2015-01-31 05:16:00|2015-01-31 08:31:57|2015-01-31 10:02:34|2015-02-01 02:16:01|2015-02-03 06:52:46|2015-02-05 11:40:12|2015-02-06 10:43:37|2015-02-06 08:05:12|2015-02-07 08:05:46|2015-02-08 05:34:37|2015-02-10 12:07:58|2015-02-11 11:40:31|2015-02-12 06:43:44|2015-02-13 09:51:38|2015-02-13 05:45:19|2015-02-14 11:26:12|2015-02-16 10:08:08|2015-02-16 01:46:23|2015-02-16 06:34:16|2015-02-18 11:59:06|2015-02-19 12:03:54|2015-02-21 08:07:35|2015-02-21 08:38:09|2015-02-22 08:53:51|2015-02-23 08:58:21|2015-02-24 08:03:33|2015-02-24 11:05:51|2015-02-24 07:15:26|2015-02-25 12:21:16|2015-02-25 06:46:25|2015-02-25 07:54:57|2015-02-25 08:32:10|2015-02-25 08:42:44|2015-02-25 09:26:58|2015-02-25 06:35:47|2015-02-25 09:49:53|2015-02-26 07:15:59|2015-02-26 08:40:04|2015-02-27 07:33:00|2015-02-28 09:24:28|2015-03-01 08:31:51|2015-03-01 10:36:53|2015-03-01 10:58:52|2015-03-01 11:10:46|2015-03-01 01:05:17|2015-03-01 03:38:15|2015-03-06 09:18:28|2015-03-06 09:18:33|2015-03-06 09:18:39|2015-03-06 09:19:08|2015-03-06 09:20:05|2015-03-06 09:20:30|2015-03-06 06:18:47|2015-03-07 12:03:21|2015-03-09 10:48:17|2015-03-09 11:36:00|2015-03-09 11:56:02|2015-03-15 06:24:12|2015-03-16 09:41:09');
 
 --
 -- Constraints for dumped tables

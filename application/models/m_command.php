@@ -232,13 +232,13 @@ class m_command extends CI_Model{
 			}
 			//using cat
 			public function cat($directory){
-//get file name
+				//get file name
 				$dirArray = explode('/', $directory);
-//file name is last index
+				//file name is last index
 				$filename = end($dirArray);
-//get real directory name
+				//get real directory name
 				$directory = str_replace('/'.$filename,'',$directory);
-//cek on database
+				//cek on database
 				$params = array($filename,$directory);
 				$sql = "SELECT content FROM ls_dir
 				INNER JOIN available_dir ON ls_dir.id_available_dir = available_dir.id

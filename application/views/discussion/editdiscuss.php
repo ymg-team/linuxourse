@@ -1,3 +1,4 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <section id="title">
 	<center>		
 		<h1 style="margin:0">linuXourse Discussion</h1>
@@ -56,16 +57,7 @@
 							<div class="large-2 columns"><label><strong>Content</strong></label></div>
 							<div class="large-10 columns"><small><a href="#">how to create content</a></small><br/><textarea style="width:100%;min-height:300px" name="input_content"><?php if(!empty($view['content'])){echo $view['content'];}?></textarea>
 								<br/>
-								<?php 
-								if(!empty($captcha) && $captcha != $this->session->userdata('mycaptcha')){
-									echo '
-									<div data-alert class="alert-box alert radius">
-										security code not match <a href="'.site_url().'" class="close">&times;</a>
-									</div>
-									';
-								}
-								?>
-								<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
+								<div class="g-recaptcha" data-sitekey="6LcaGAQTAAAAAKRuyz9v_cGuKD4i-IzCbPIQgGlQ"></div>
 								<br/>
 								<button class="button" type="submit">Create</button><?php if($isedit){echo '<input type="hidden" name="enc_id_discuss" value="'.$enc_id_discuss.'">';echo '<a onclick="return confirm(\'are you sure!\')" class="alert button" href="'.site_url('discussion/deletetopic?id='.$enc_id_discuss).'">delete</a>';}?>
 							</div>

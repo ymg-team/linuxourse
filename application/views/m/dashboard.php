@@ -98,10 +98,17 @@
 					<div class="row">						
 						<div class="tabs-content">
 							<div class="content active" id="mycourse">
+								<?php
+								//total incomplete
+								$totalinc = $this->m_course->countMyCourse($this->session->userdata['student_login']['id_user'],'incomplete');
+								if($totalinc==0){
+									echo '<center><h4 style="color:gray">No Materi Found</h4></center>';
+								}
+								?>
 								<!-- start of my course -->
 								<?php foreach($userCourse as $uc):
 								if($uc['status']=='incomplete'):
-									$listTotalnow = $this->m_course->countCourseStepByMateri($uc['id_materi'],$uc['id_level'],$uc['id_course']);
+								$listTotalnow = $this->m_course->countCourseStepByMateri($uc['id_materi'],$uc['id_level'],$uc['id_course']);
 								$listTotalCourse = $this->m_course->countCourseByMateri($uc['id_materi']);
 								$listRecentPercentage = number_format(($listTotalnow*100/$listTotalCourse),1);
 								$id = base64_encode(base64_encode($uc['id_materi']));

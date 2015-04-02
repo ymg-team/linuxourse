@@ -15,8 +15,13 @@
     <hr/>
     <li id="discussions"><a href="<?php echo site_url('manage/discussions')?>">Discussions <span class="admin-label label"><?php echo $this->m_admin->countAllDiscussion()?></span></a></li>
     <li id="comments"><a href="<?php echo site_url('manage/comments')?>">Comments <span class="admin-label label"><?php echo $this->m_admin->countAllComment('posted')?></span></a></li>
+    <?php
+    $session = $this->session->userdata('manage_login');
+    if($session['level'] == 'admin'):
+    ?>
     <hr/>
     <li id="superuser"><a href="<?php echo site_url('manage/superuser')?>">SuperUser <span class="admin-label label"><?php echo $this->m_admin->countSuperUser('all');?></span></a></li>
+    <?php endif;?>
   </ul>
   <br/>
   <!-- <h3>Stats</h3>

@@ -40,7 +40,7 @@ class base extends CI_Controller {
 	}
 	//admin only
 	public function adminOnly(){
-		if(empty($this->session->userdata['admin_login']['id_user'])){
+		if(empty($this->session->userdata['manage_login']['id_user'])){
 			redirect(site_url('manage'));
 		}
 	}
@@ -342,6 +342,17 @@ class base extends CI_Controller {
 				break;
 			}
 			return $permissions;
+		}
+	//default session
+		public function defaultSession(){
+			$sessiondata = array(
+			'dir'=>'/home/user',//active directory
+			'command'=>'',//command history
+			'user'=>'',//created user
+			'group'=>'',//created group
+			'start'=>date('H:i:s'),//start course
+			);
+		return $this->session->set_userdata($sessiondata);
 		}
 
 		//generate verification code

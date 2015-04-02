@@ -6,16 +6,42 @@ class m_course extends CI_Model{
 		parent::__construct();
 		//Do your magic here
 	}
-
+	//staff total
+	public function statscount($type,$materi=''){
+		if(!empty($materi)){//custom view
+			$this->db->where('materi.id_materi',$materi);
+			switch ($type) {
+				case 'level':
+					$this->db->join('materi','materi.id_materi=level.id_materi');
+					break;
+				case 'course':
+					$this->db->join('level','level.id_level=course.id_level');
+					$this->db->join('materi','materi.id_materi=level.id_materi');
+					break;
+			}
+		}
+		switch ($type) {
+			case 'level':
+			$result = $this->db->count_all_results('level');
+			break;
+			case 'course':
+			$result = $this->db->count_all_results('course');
+			break;			
+			default:
+			exit('something wrong');
+			break;
+		}
+		return $result;//result of count
+	}
 	/******************
 	ALL ABOUT USER COURSE
 	*******************/
 	//countmycourse
 	public function countMyCourse($iduser,$status){
-		 $this->db->where('id_user',$iduser);
-		 $this->db->where('status',$status);
-		 $query = $this->db->get('user_course');
-		 return $query->num_rows();
+		$this->db->where('id_user',$iduser);
+		$this->db->where('status',$status);
+		$query = $this->db->get('user_course');
+		return $query->num_rows();
 	}
 	//count student by materi
 	public function countStudentByMateri($idmateri,$status){

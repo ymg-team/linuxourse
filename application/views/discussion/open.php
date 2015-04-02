@@ -1,3 +1,4 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <script type="text/javascript">
 	function showmarkdown(){
 		$('#markdown').toggle('fast');
@@ -87,8 +88,9 @@
 			<br/>
 			<div class="title">
 				<h1><a style="font-size:20px" class="linktitle" href="<?php echo site_url('discussion/open/'.$this->uri->segment(3))?>"><?php echo $view['title']?></a> 
-					<?php 
-					if(!empty($this->session->userdata('student_login'))){
+					<?php
+					$session = $this->session->userdata;
+					if(!empty($session['student_login'])){
 						if($this->session->userdata['student_login']['id_user']==$view['id_user']){echo '<a title="edit topic" href="'.site_url('discussion/edittopic/'.$this->uri->segment(3)).'"><span class="fi-pencil"></span></a>';}?></h1><br/>
 						<?php } ?>
 					</div>
@@ -123,7 +125,8 @@
 									<p>
 										<?php
 							//if user logged in is user added answer = update answer
-										if(!empty($this->session->userdata('student_login'))){
+										$session = $this->session->userdata; 
+										if(!empty($session['student_login'])){
 											if($this->session->userdata['student_login']['username'] == $c['username']){
 												echo '<a href="'.site_url('discussion/editanswer/'.$enc_id_answer).'"><span class="fi-pencil"></span> </a>';
 											}
@@ -146,7 +149,7 @@
 							<hr/>
 							<div class="small-12 columns">
 								<?php
-								if(!empty($this->session->userdata['student_login']['pp'])){
+								if(!empty($session['student_login']['pp'])){
 									$avatar = base_url('assets/img/avatar/'.$this->session->userdata['student_login']['pp']);
 								}else{
 									$avatar = base_url('assets/img/avatar.png');
@@ -165,9 +168,12 @@
 										</div>
 										<textarea name="input_comment" style="width:100%;height:150px" placeholder="post here"></textarea>
 										<br/>
-										<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
+										<!-- google recaptcha -->
+										<div class="g-recaptcha" data-sitekey="6LcaGAQTAAAAAKRuyz9v_cGuKD4i-IzCbPIQgGlQ"></div>
+										<!-- end of google recaptcha -->
+										<br/>
 										<?php
-										if(!empty($this->session->userdata['student_login'])){
+										if(!empty($session['student_login'])){
 											echo '<button type="submit" class="button">post</button>';
 										}else{
 											echo '<a class="button" href="'.site_url('/p/login').'">Login First</a>';

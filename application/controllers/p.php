@@ -41,7 +41,8 @@ class p extends base { //class for public
 
 	//register new user
 	public function register(){
-		$this->load->library('form_validation');
+		if(!empty($_POST)){//register process
+			$this->load->library('form_validation');
 		//set rules
 		$this->form_validation->set_rules('input_username', 'Username', 'required|is_unique[user.username]');//is unique
 		$this->form_validation->set_rules('input_fullname', 'Fullname', 'required');//is unique
@@ -59,14 +60,17 @@ class p extends base { //class for public
 				'password'=>md5(md5($_POST['input_password'])),//double md5
 				'status'=>'active',
 				'register_date'=>$now,
-				'verified'=>0,
+				'verified'=>1,
+				'oauthProvider'=>$this->session->userdata['registerdata']['oauthProvider'],
+				'oauthId'=>$this->session->userdata['registerdata']['oauthId'],
 				);
 			//verification code
-			$verificationCode = base64_encode(base64_encode($datauser['email'])).'linux'.base64_encode(base64_encode($datauser['username']));
-			$verificationCode = str_replace('=', '', $verificationCode);
+			// $verificationCode = base64_encode(base64_encode($datauser['email'])).'linux'.base64_encode(base64_encode($datauser['username']));
+			// $verificationCode = str_replace('=', '', $verificationCode);
 			if($this->db->insert('user',$datauser)){
 				//sent verification code to email
-				$this->m_user-> sendVerificationEmail($verificationCode,$datauser['email']);
+				// $this->m_user-> sendVerificationEmail($verificationCode,$datauser['email']);
+				$this->session->sess_destroy();
 				redirect(site_url('p/redirect/registersuccess'));
 			}else{//failed insert to db
 				$data = array(
@@ -80,20 +84,26 @@ class p extends base { //class for public
 				);
 			$this->baseView('p/registererror',$data);
 		}
+	}else{//register view
+		$data = array(
+			'title'=>'Register',
+			);
+		$this->baseView('p/register',$data);
 	}
+}
 
 	//sent verfication code to email
-	public function sentemail(){
+public function sentemail(){
 		//if not do verfication in 7 days, user data will delete
-		
-	}
+
+}
 	//do verification
-	public function doverification(){
-		$verficationcode = $this->uri->segment(3);
-	}
+public function doverification(){
+	$verficationcode = $this->uri->segment(3);
+}
 	//user login
-	public function login(){
-		$this->load->library('user_agent');
+public function login(){
+	$this->load->library('user_agent');
 		//set rules
 		$this->form_validation->set_rules('input_username', 'Username', 'required|trim|callback_validate_credentials');//is required
 		$this->form_validation->set_rules('input_password', 'Password', 'required|trim');//is required email
@@ -129,6 +139,7 @@ class p extends base { //class for public
 				$this->session->set_userdata($sessiondata);
 				$this->session->set_userdata('dir','/home/user');
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
+					$this->db->where('id_user',$this->session->userdata['student_login']['id_user']);
 					$data = array('last_login'=>date('Y-m-d h:i:s'));
 					$this->db->update('user',$data);//update login terakhir
 					redirect(site_url());					
@@ -161,7 +172,8 @@ class p extends base { //class for public
 	//success action
 	public function redirect(){
 		//set uri segment 3
-		if(empty($this->uri->segment(3))){
+		$segment = $this->uri->segment(3);
+		if(empty($segment)){
 			echo '404';
 		}
 		//else

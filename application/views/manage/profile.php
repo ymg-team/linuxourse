@@ -34,8 +34,10 @@
             <h4>My Profile</h4>
             <p>Level : <?php echo $profile['level']?></p>
             <hr/>
-            <?php if(!empty(validation_errors())):?>
-              <div data-alert class="alert-box alert"><?php echo validation_errors();?><a href="#" class="close">&times;</a></div>
+            <?php 
+            $error = validation_errors();
+            if(!empty($error)):?>
+              <div data-alert class="alert-box alert"><?php echo $error;?><a href="#" class="close">&times;</a></div>
             <?php endif;?>
             <form action="" method="POST">
               <label>Username

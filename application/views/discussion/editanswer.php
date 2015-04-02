@@ -1,3 +1,4 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <section id="title">
 	<center>		
 		<h1 style="margin:0">linuXourse Discussion</h1>
@@ -13,7 +14,8 @@
 		<!-- new discuss form -->
 		<div class="row">
 			<?php 
-			if(!empty(validation_errors())){
+			$error = validation_errors();
+			if(!empty($error)){
 				echo '
 				<div data-alert class="alert-box alert radius">
 					'.validation_errors().'<a href="'.site_url().'" class="close">&times;</a>
@@ -38,7 +40,9 @@
 						}
 						?>
 						<input type="hidden" name="id_discuss" value="<?php echo $view['id_discussion']?>">
-						<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
+						<!-- recaptcha -->
+						<div class="g-recaptcha" data-sitekey="6LcaGAQTAAAAAKRuyz9v_cGuKD4i-IzCbPIQgGlQ"></div>
+						<!-- end of recaptcha -->
 						<br/>
 						<button class="button" type="submit">Edit Answer</button>
 						<a href="<?php echo site_url('discussion/deleteanswer?id='.$this->uri->segment(3))?>" class="button alert medium">Delete</a>

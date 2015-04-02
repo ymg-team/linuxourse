@@ -1,4 +1,3 @@
-
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 require_once('application/controllers/base.php');//load base class
 class course extends base { //class for public
@@ -84,7 +83,8 @@ class course extends base { //class for public
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));//decoding id to get id_materi
 		//cek is user have started
-		if(!empty($this->session->userdata['student_login'])){
+		$session = $this->session->userdata['student_login'];
+		if(!empty($session)){
 			if($this->m_course->isStudentStarted($this->session->userdata['student_login']['id_user'],$id)){
 			redirect(site_url('course/review/'.$this->uri->segment(3)));//redirect to syllabus view
 		}
@@ -101,15 +101,13 @@ class course extends base { //class for public
 	}
 	//start new course
 	public function start(){
-		error_reporting(0);
+		//error_reporting(0);
+		//set session
 		$this->defaultPublicFile();//set default public file on session
 		$this->defaultPublicDirectory();//set default public directory on session
 		$this->defaultUmask();//set default umask
-		$this->session->set_userdata('dir','/home/user');//default active directory
-		$this->session->set_userdata('command','');
-		$this->session->set_userdata('user','');//manajemen user on session
-		$this->session->set_userdata('group','');//manajemen group on session
-		$this->session->set_userdata('start',date('H:i:s'));//start time
+		$this->defaultSession();//set default session
+		//end of set session
 		//end of set default directory
 		$this->memberOnly();
 		$id = $this->uri->segment(3);//id_user_course
@@ -139,16 +137,13 @@ class course extends base { //class for public
 	//rewind course
 	public function rewind(){
 		//error_reporting(0);
+		//set session
 		$this->defaultPublicFile();//set default public file on session
 		$this->defaultPublicDirectory();//set default public directory on session
 		$this->defaultUmask();//set default umask
-		$this->session->set_userdata('dir','/home/user');//default active directory
-		$this->session->set_userdata('command','');
-		$this->session->set_userdata('user','');//manajemen user on session
-		$this->session->set_userdata('group','');//manajemen group on session
-		//end of set default directory
+		$this->defaultSession();//set default session
+		//end of set session
 		$this->memberOnly();
-
 		$id = $this->uri->segment(3);//id_course
 		$id = str_replace('', '=', $id);
 		$id = base64_decode(base64_decode($id));
@@ -254,7 +249,8 @@ class course extends base { //class for public
 		$this->memberOnly();
 		if(empty($_POST['id_materi']) && $_POST['check_tnc'] == 'off'){
 			redirect(site_url());
-		} else if(empty($this->session->userdata)){
+			$session = $this->session->userdata;
+		} else if(empty($session)){
 			redirect(site_url());
 		} else{
 			$iduser = $this->session->userdata['student_login']['id_user'];
@@ -303,7 +299,8 @@ class course extends base { //class for public
 	
 	//get certificate
 public function certificate(){
-	if(empty($this->uri->segment(3))){
+	$uri = $this->uri->segment(3);
+	if(empty($uri)){
 		redirect('site_url');
 	}else{
 		//get id user course

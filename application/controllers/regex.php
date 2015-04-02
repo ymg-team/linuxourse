@@ -6,7 +6,7 @@ class regex extends base { //class for public
 	{
 		parent::__construct();
         //only for member
-		$this->memberOnly();
+		// $this->memberOnly();
 		$this->load->model('m_command');
 	}
 
@@ -17,7 +17,7 @@ class regex extends base { //class for public
 	}
 
 	public function execcommand(){
-		$command = $_GET['command'];
+		$command = $_POST['command'];
         //remove new line with regex
 		$commandclear = preg_replace('/[\n]/', '',$command);
         //history setup
@@ -47,7 +47,7 @@ class regex extends base { //class for public
         if($this->checkSpecialCommand('cd',$commandArray)){//cd
         	redirect(site_url('regex/cd?command='.$command));
         }else if(trim($command) == 'ls' || in_array('ls',$commandArray)){//ls
-        	redirect(site_url('regex/ls?command='.$command));
+        	redirect(site_url('regex/ls?command='.$commandclear));
         }else if($this->checkSpecialCommand('init',$commandArray) && in_array(0,$commandArray)){//init 0
         	redirect(site_url('m/dashboard'));
         }else if($this->checkSpecialCommand('cat',$commandArray) && !in_array('<',$commandArray)){//cat file
@@ -244,7 +244,7 @@ class regex extends base { //class for public
     }
     //cat
     public function cat(){
-    	$command = $_GET['command'];
+    	$command = $_GET['command'];        
         //cek is this folder or not
     	$commandArray = explode(' ',$command);
     	$cdCommand = array_shift($commandArray);
@@ -638,9 +638,9 @@ class regex extends base { //class for public
         endforeach;
         //set session case = true
         if($course == TRUE){
-        	echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
         	$sessiondata['coursestatus'] = $course;
         	$this->session->set_userdata($sessiondata);
+            echo '<a style="border:1px solid #fff" href="'.site_url('course/next/'.$usercourseid).'" class="small button success"><strong><span class="fi-check"></span> Good, Next Step</strong></a> <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a>';
         } else {
         	echo '<a onclick="check()" class="small button">Check</a>  <a onclick="clearTerminal()" title="clear terminal" href="#" class="small alert button">X</a><span style="padding:5px;color:#fff;display:none" id="loadercheck"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>checking..</span><span style="padding:5px;color:#fff;display:none" id="loaderexe"><img style="width:30px;margin-right:5px;" src="'.base_url('./assets/img/loader.gif').'"/>execute..</span><span style="color:#fff"> oops, try again</span>';
         }
@@ -648,7 +648,7 @@ class regex extends base { //class for public
 
     //rewind check
     public function checkrewind(){
-    	//about url segment idcourse/idmateri
+    	 //about url segment idcourse/idmateri
         $redirection = array('&gt;','&lt;','&gt&gt;','2&gt;','1&gt;','\'','0&gt;','&ndash;','-',);//special character on html
         $redirection2 = array('>','<','>>','2>','1>','\'','0<','-');//special character on html
         $terminal = strip_tags($_POST['terminal']);//remove all html tag
@@ -883,7 +883,8 @@ class regex extends base { //class for public
                 $newuser = array('name'=>$username,'group'=>'linuxourse');//new user on array
                 $users = array();
                 //cek apakah session user sudah tersedia
-                if(!empty($this->session->userdata('user'))){//jika sudah ada user terdaftar
+                $session = $this->session->userdata('user');
+                if(!empty($session)){//jika sudah ada user terdaftar
                 	foreach($this->session->userdata('user') as $u){
                         if($u['name']==$username){//if user exist
                             redirect(site_url('regex/errorMessage?command='.$command.'&error=user is exist'));//redirect to error page
@@ -1008,7 +1009,8 @@ class regex extends base { //class for public
         if(count($commandArray)==1){//valid format
         	switch ($commandArray[0]) {
                 case 'checkuser'://check user list
-                if(!empty($this->session->userdata('user'))){
+                $session = $this->session->userdata('user');
+                if(!empty($session)){
                 	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:';
                 	foreach($this->session->userdata('user') as $u){
                 		echo $u['name'].':x:1000:1000:'.$u['group'].',,,:/home/user:/bin/bash<br/>';
@@ -1019,7 +1021,8 @@ class regex extends base { //class for public
                     }
                     break;
                 case 'checkgroup'://check group list
-                if(!empty($this->session->userdata('group'))){
+                $session = $this->session->userdata('group');
+                if(!empty($session)){
                 	echo '<pre>student@linux-ecourse:'.$this->session->userdata['dir'].'$ '.$command.'<br/>:';
                 	foreach($this->session->userdata('group') as $g){
                 		echo $g['name'].'<br/>';

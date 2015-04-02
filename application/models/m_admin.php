@@ -16,6 +16,13 @@ class m_admin extends CI_Model{
 			return $query->row_array();
 		}
 	}
+	//show user by last login
+	public function showAdmin($limit,$offset){
+		$this->db->limit($limit,$offset);
+		$this->db->order_by('username','asc');
+		$query = $this->db->get('user_manage');
+		return $query->result_array();
+	}
 
 	////////////////
 	// MANAGE COURSE

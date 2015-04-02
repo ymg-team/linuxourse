@@ -87,8 +87,20 @@ class manage extends base { //class for public
 
 //show dashboard after login
 	public function dashboard(){
+		$this->adminOnly();
 		$data=array(
 			'title'=>'Manage Title',
+			'totallevel'=>$this->m_course->statscount('level'),//total level
+			'totalcourse'=>$this->m_course->statscount('course'),//total course
+			'totallevelintro'=>$this->m_course->statscount('level',1),//total level introduce linux
+			'totalcourseintro'=>$this->m_course->statscount('course',1),//total course introduce linux
+			'totallevelshell'=>$this->m_course->statscount('level',2),//total level linux shell
+			'totalcourseshell'=>$this->m_course->statscount('course',2),//total course linux shell
+			'totalstudents'=>$this->m_user->stats(),//total student
+			'totalgoingintro'=>$this->m_user->stats(1,'incomplete'),//total student ongoing in introduce linux
+			'totalcompleteintro'=>$this->m_user->stats(1,'completed'),//total student completed in introduce linux
+			'totalgoingshell'=>$this->m_user->stats(2,'incomplete'),//total student ongoing in linux shell
+			'totalcompleteshell'=>$this->m_user->stats(2,'completed'),//total student completed in linux shell
 			);	
 		$this->baseManageView('manage/dashboard',$data);
 	}
@@ -98,6 +110,7 @@ class manage extends base { //class for public
 ////////////////////
 //delete course
 	public function deletecourse(){
+		$this->adminOnly();
 		$id = $this->uri->segment(3);
 		$this->db->where('id_course',$id);
 		$this->db->delete('course');
@@ -105,6 +118,7 @@ class manage extends base { //class for public
 	}
 //add new course
 	public function addcourse(){
+		$this->adminOnly();
 		if(!empty($_POST)){
 		// echo '<pre>';
 		// print_r($_POST);
@@ -168,6 +182,7 @@ class manage extends base { //class for public
 }
 //edit course
 public function editcourse(){
+	$this->adminOnly();
 	//if submiting post
 	if(!empty($_POST)){
 		$idcourse = $_POST['input_idcourse'];
@@ -214,8 +229,8 @@ public function editcourse(){
 			echo 'error insert database';
 		}
 	}
-
-	if(empty($this->uri->segment(3))){
+	$urisegment = $this->uri->segment(3); 
+	if(empty($urisegment)){
 			//get lattest edited idcourse
 		$idcourse = $this->m_course->lastEditCourse();
 	}else{
@@ -236,6 +251,7 @@ public function editcourse(){
 
 //manage materi-level-course
 public function course(){
+	$this->adminOnly();
 	//if using get post to search, redirect to uri segment
 	if(!empty($_GET['q'])){
 		redirect(site_url('manage/course/search/'.$_GET['q']));
@@ -247,7 +263,8 @@ public function course(){
 			'num_link'=>7,
 			);
 		//end of public pagination setup
-		if(!empty($this->uri->segment(3)) AND !is_numeric($this->uri->segment(3))){//filtering via uri segement 3
+		$urisegment = $this->uri->segment(3);
+		if(!empty($urisegment) AND !is_numeric($urisegment)){//filtering via uri segement 3
 			switch ($this->uri->segment(3)) {
 				case 'active':
 				break;
@@ -301,6 +318,7 @@ public function course(){
 }
 //get course by materi
 public function courseByMateri(){
+	$this->adminOnly();
 	//pagination setup
 	$config = array(
 		'per_page'=>13,
@@ -327,6 +345,7 @@ public function courseByMateri(){
 }
 //check available step
 public function ajaxAvailableStep(){
+	$this->adminOnly();
 	$idmateri = $this->uri->segment(3);
 	$step = $this->uri->segment(4);
 	$params = array($idmateri,$step);
@@ -343,6 +362,7 @@ public function ajaxAvailableStep(){
 //manage level
 //////////////
 public function level(){
+	$this->adminOnly();
 	//using form
 	if(isset($_GET['q'])){
 		redirect(site_url('manage/level/search/'.$_GET['q']));
@@ -392,8 +412,9 @@ public function level(){
 		'num_link'=>7,
 		);
 	//suspend pagination
-	if(!empty($this->uri->segment(3))){
-		switch ($this->uri->segment(3)) {
+	$urisegment = $this->uri->segment(3); 
+	if(!empty($urisegment)){
+		switch ($urisegment) {
 			case 'search':
 			$keyword = $this->uri->segment(4);
 			$data = array(
@@ -457,10 +478,11 @@ public function level(){
 }
 //show level by materi
 public function levelbymateri(){
-
+	$this->adminOnly();
 }
 //delete level
 public function deleteLevel(){//delete a level
+	$this->adminOnly();
 	$idlevel = $this->uri->segment(3);
 	$this->db->where('id_level',$idlevel);
 	$this->db->delete('level');
@@ -468,6 +490,7 @@ public function deleteLevel(){//delete a level
 }
 //review level
 public function reviewLevel(){
+	$this->adminOnly();
 	$idmateri = $this->uri->segment(3);
 	$sql = "SELECT level.level, level.title AS 'title',materi.title AS 'materi',level.id_level 
 	FROM level INNER JOIN materi ON materi.id_materi = level.id_materi
@@ -489,6 +512,7 @@ public function reviewLevel(){
 }
 //add new materi
 public function addLevel(){
+	$this->adminOnly();
 	$idmateri = $_POST['input_materi'];
 	$title = $_POST['input_title'];
 	$level = $_POST['input_level'];
@@ -496,6 +520,7 @@ public function addLevel(){
 }
 //check available level
 public function checkAvailableLevel(){
+	$this->adminOnly();
 	$level = $this->uri->segment(3);
 	$materi = $this->uri->segment(4);
 	$this->db->where('level',$level);
@@ -514,6 +539,7 @@ public function checkAvailableLevel(){
 
 //manage materi
 public function materi(){
+	$this->adminOnly();
 //start pagination
 	$config = array(
 		'per_page'=>13,
@@ -547,6 +573,7 @@ public function materi(){
 }
 //add new materi
 public function addmateri(){
+	$this->adminOnly();
 	if(empty($_POST)){
 		redirect('manage/materi');//back to maateri list
 	}
@@ -571,6 +598,7 @@ public function addmateri(){
 }
 //mater action
 public function materiaction(){
+	$this->adminOnly();
 	switch ($_GET['act']) {
 		case 'delete'://delete materi
 			$id = $_GET['id'];//get materi id
@@ -615,6 +643,7 @@ public function materiaction(){
 //////////
 //student management
 public function students(){
+	$this->adminOnly();
 	// $this->load->model('m_user');
 	//pagination start
 	$config = array(
@@ -623,8 +652,9 @@ public function students(){
 		'num_link'=>7,
 		);
 	//suspend pagination
-	if(!empty($this->uri->segment(3))){
-		switch ($this->uri->segment(3)) {
+	$urisegment = $this->uri->segment(3);
+	if(!empty($urisegment)){
+		switch ($urisegment) {
 			case 'status':
 			$status = $this->uri->segment(4);
 			//start show student by status
@@ -678,6 +708,7 @@ public function students(){
 }
 //student action
 public function studentaction(){
+	$this->adminOnly();
 	$iduser = $this->uri->segment(4);
 	$this->db->where('id_user',$iduser);
 	switch ($this->uri->segment(3)) {
@@ -696,6 +727,7 @@ public function studentaction(){
 //File and Folder Management
 ////////////////////////////
 public function storage(){
+	$this->adminOnly();
 	$data = array(
 		'title'=>'Storage Management',
 		'link'=>'',
@@ -707,6 +739,7 @@ public function storage(){
 //DISCUSSION
 ////////////
 public function discussions(){
+	$this->adminOnly();
 	$this->load->model('m_discussion');
 	//start pagination
 	$config = array(
@@ -720,7 +753,8 @@ public function discussions(){
 		$q = $_GET['q'];//get keyword
 		redirect(site_url('manage/discussions/action/search/'.$q));
 	}
-	if(!empty($this->uri->segment(4))){//manage/discussion/sort/locked
+	$urisegment = $this->uri->segment(4);
+	if(!empty($urisegment)){//manage/discussion/sort/locked
 		switch ($this->uri->segment(4)) {
 			case 'locked':
 			//resume pagination
@@ -779,6 +813,7 @@ public function discussions(){
 }
 //change discussion status
 public function setdiscussion(){
+	$this->adminOnly();
 	$status = $this->uri->segment(3);
 	$id = $this->uri->segment(4);
 	//update db
@@ -791,6 +826,7 @@ public function setdiscussion(){
 //COMMENTS
 //////////
 public function comments(){
+	$this->adminOnly();
 	$this->load->model('m_discussion');
 	if(!empty($_GET['q'])){
 		$q = $_GET['q'];//get keyword
@@ -802,8 +838,9 @@ public function comments(){
 		'uri_segment'=>3,
 		'num_link'=>7,
 		);
-	if(!empty($this->uri->segment(4))){
-		switch ($this->uri->segment(4)){		
+	$urisegment = $this->uri->segment(4);
+	if(!empty($urisegment)){
+		switch ($urisegment){		
 			case 'locked'://show locked comments
 			//resume pagination
 			$config['total_rows'] = $this->m_admin->countAllComment('locked');//count all posted comment
@@ -876,6 +913,7 @@ public function comments(){
 //MANAGE NEWS
 /////////////
 public function news(){
+	$this->adminOnly();
 	$this->load->model('m_news');
 	//if submit form
 	if(!empty($_POST)){//add form
@@ -926,8 +964,9 @@ public function news(){
 		'num_link'=>7,
 		);
 	//suspend pagination
-	if(!empty($this->uri->segment(4))){
-		switch ($this->uri->segment(4)) {
+	$urisegment = $this->uri->segment(4); 
+	if(!empty($urisegment)){
+		switch ($urisegment) {
 			case 'draft':
 				$config['total_rows'] = $this->m_admin->countNews('draft');//count all posted comment
 				$config['base_url'] = site_url('manage/news');
@@ -985,6 +1024,7 @@ $this->baseManageView('manage/news',$data);
 //edit profile
 //////////////
 public function profile(){
+	$this->adminOnly();
 	//if do action woth form
 	$data = array(
 		'title'=>'myprofile',
@@ -998,9 +1038,14 @@ public function profile(){
 		}
 		$this->load->library('form_validation');
 		//set rules
-		$this->form_validation->set_rules('input_username', 'Username', 'required|is_unique[user_manage.username]');//is unique
+		$session = $this->session->userdata('manage_login');
+		if($_POST['input_username'] != $session['username']){
+			$this->form_validation->set_rules('input_username', 'Username', 'required|is_unique[user_manage.username]');//is unique
+		}
+		if($_POST['input_username'] != $session['email']){
+			$this->form_validation->set_rules('input_email', 'Email', 'required|valid_email');//is unique
+		}
 		$this->form_validation->set_rules('input_fullname', 'Fullname', 'required');//is unique
-		$this->form_validation->set_rules('input_email', 'Email', 'required|valid_email');//is unique
 		//is change password
 		if(!empty($_POST['input_changepassword'])){
 			$this->form_validation->set_rules('input_changepassword', 'New Password', 'required');//is unique
@@ -1018,7 +1063,7 @@ public function profile(){
 			}
 			$this->db->where('id_user_manage',$_POST['id_user_manage']);
 			$this->db->update('user_manage',$data);
-			redirect(site_url('manage/profile?success=data saved'));
+			redirect(site_url('manage/profile?success=data updated, please logout and login again'));
 		}
 	}
 	$this->baseManageView('manage/profile',$data);
@@ -1027,6 +1072,7 @@ public function profile(){
 //Manage Super User
 ///////////////////
 public function superuser(){
+	$this->adminOnly();
 	//start pagination
 	$config = array(
 		'per_page'=>13,
@@ -1037,7 +1083,9 @@ public function superuser(){
 	if(!empty($_POST)){
 
 	}
-	if(!empty($this->uri->segment(4) && $this->uri->segment(3)!= 'sort')){//chang status
+	$urisegment4 = $this->uri->segment(4);
+	$urisegment3 = $this->uri->segment(3);
+	if(!empty($urisegment4) && $urisegment3!= 'sort'){//chang status
 		$action = $this->uri->segment(4);
 		if($action == 'admin' || $action == 'moderator'){
 			$level = $this->uri->segment(4);
@@ -1088,11 +1136,35 @@ public function superuser(){
 	$this->baseManageView('manage/superuser',$data);
 	
 }
+//add user manage
+public function addusermanage(){
+	if(isset($_POST['btn_admin'])){
+			$level = 'admin';
+		}else if(isset($_POST['btn_moderator'])){
+			$level = 'moderator';
+		}else{
+			$level = 'modeartor';
+		}
+	$data = array(
+		'username'=>$_POST['input_username'],
+		'password'=>md5(md5($_POST['input_username'])),
+		'email'=>$_POST['input_email'],
+		'fullname'=>$_POST['input_fullname'],
+		'level'=>$level,
+		'pp'=>'',
+		'status'=>'active',
+		'registerdate'=>date('Y-m-d H:i:s'),
+		);
+	$this->db->insert('user_manage',$data);
+	redirect($this->agent->referrer());
+}
+
 
 ////////
 //logout
 ////////
 public function logout(){
+	$this->adminOnly();
 	$this->session->sess_destroy();
 	redirect(site_url('manage'));
 }
@@ -1100,6 +1172,7 @@ public function logout(){
 	// AJAX ONLY - ajax for admin manage
 	//
 public function getDirectory(){
+	$this->adminOnly();
 	$directory = $_GET['dir'];
 	$directory = str_replace('%2f', '/', $directory);
 	$path = $directory;
@@ -1154,6 +1227,7 @@ public function getDirectory(){
 }
 //add file / directory
 public function crudStorage(){
+	$this->adminOnly();
 	switch ($_GET['act']) {
 		case 'addfile':
 		$dir = $_GET['dir'];

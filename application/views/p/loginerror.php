@@ -1,6 +1,6 @@
 <div class="row">
-	<div class="base-content" class="large-12 columns">
-		<div style="height:450px" class="large-5 columns">
+	<div style="height:450px" class="base-content" class="large-12 columns">
+		<div class="large-5 columns">
 			<br/><br/>
 			<h4>Login</h4>
 			<p><a href="<?php echo site_url()?>">i don't have account</a></p>
@@ -19,8 +19,10 @@
 				</div>
 				<div class="row">
 					<div class="large-12 columns">
-						<?php if(!empty(validation_errors())){?>
-							<small class="error"><?php echo validation_errors();?></small>
+						<?php 
+						$error = validation_errors();
+						if(!empty($error)){?>
+							<small class="error"><?php echo $error;?></small>
 						<?php }else if(!empty($error)){?>
 							<small class="error"><?php echo $error;?></small>
 						<?php }?>
@@ -28,6 +30,13 @@
 					</div>
 				</div>
 			</form>	
+		</div>
+		<div class="large-5 columns">
+		<br/><br/>
+		<h4>Atau Login Via</h4>
+		<hr/>
+		<!-- <a style="background-color:rgb(77, 117, 202);display:block" href="#" class="button"><i style="font-size:20px;vertical-align:middle" class="fi-social-facebook"></i> Facebook</a> -->
+		<a style="background-color:rgb(202, 77, 77);display:block" href="<?php echo site_url('oauth/googleplus')?>" class="button"><i style="font-size:20px;vertical-align:middle" class="fi-social-google-plus"></i> Google+</a>		
 		</div>
 	</div>
 </div>

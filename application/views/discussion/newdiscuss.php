@@ -1,3 +1,4 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <script type="text/javascript">
 	function showmarkdown(){
 		$('#markdown').toggle('fast');
@@ -72,7 +73,7 @@
 								</div>
 							</small><br/><textarea style="width:100%;min-height:300px" name="input_content"></textarea>
 							<br/>
-							<span style="float:left"><?php echo $image;?></span><span><input placeholder="security code" style="width:200px" type="text" name="input_captcha"></span>
+							<div class="g-recaptcha" data-sitekey="6LcaGAQTAAAAAKRuyz9v_cGuKD4i-IzCbPIQgGlQ"></div>
 							<br/>
 							<button class="button" type="submit">Create</button>
 						</div>

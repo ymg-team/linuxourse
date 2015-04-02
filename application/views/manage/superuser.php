@@ -56,15 +56,15 @@
               <div class="large-12 columns">
                 <div class="form-add large-6 columns">
                 <h5><strong>Add Super User</strong></h5>
-                <form method="POST" action="">
+                <form method="POST" action="<?php echo site_url('manage/addusermanage')?>">
                 <label>Username :
                 <input type="text" name="input_username" required/></label>
                 <label>Fullname :
-                <input type="text" name="input_username" required/></label>
+                <input type="text" name="input_fullname" required/></label>
                 <label>Email :
-                <input type="email" name="input_username" required/></label>
-                <button class="button small">Set As Moderator</button>
-                <button onclick="return confirm('are you sure')" class="button small">Set As Admin</button>
+                <input type="email" name="input_email" required/></label>
+                <button type="submit" name="btn_moderator" class="button small">Set As Moderator</button>
+                <button type="submit" name="btn_admin" onclick="return confirm('are you sure')" class="button small">Set As Admin</button>
                 </form>
                 </div>
               </div>
