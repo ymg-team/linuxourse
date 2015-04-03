@@ -103,14 +103,14 @@
 	<hr/>
 	<div class="row">
 		<div class="large-6 columns">
-			<p><center><a style="width:100%" href="<?php echo site_url('discussion?create=ask')?>" class="button large"><span class=""></span> Ask</a></center>
+			<p><center><a style="width:100%" href="<?php echo site_url('discussion/creatediscuss?create=ask')?>" class="button large"><span class=""></span> Ask</a></center>
 				Are you stuck? <br/>
 				some command does not work <br/>
 				ask here
 			</p>
 		</div>
 		<div class="large-6 columns">
-			<p><center><a style="width:100%" href="<?php echo site_url('discussion?create=thread')?>" class="button large"><span class="fi-megaphone"></span> Thread</a></center>
+			<p><center><a style="width:100%" href="<?php echo site_url('discussion/creatediscuss?create=thread')?>" class="button large"><span class="fi-megaphone"></span> Thread</a></center>
 				Do you have an interesting topic to discuss, post here</p>
 			</div>
 		</div>

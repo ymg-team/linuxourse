@@ -10,7 +10,7 @@ class discussion extends base { //class for public
 		$this->load->library('user_agent');
 	}
 	public function index(){
-		echo 'empty';
+		redirect(site_url('discussion/all'));
 	}
 	// index page
 	public function all(){
@@ -218,7 +218,7 @@ public function creatediscuss(){
 	//create new topic
 	public function addtopic(){
 		//Google Recaptcha Validation
-		if(isset($_POST['g-recaptcha-response'])){
+		if(!empty($_POST) && isset($_POST['g-recaptcha-response'])){
 			$captcha=$_POST['g-recaptcha-response'];
 		}
 		$response=file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=6LcaGAQTAAAAANXY7MJQwxQXUK2ODKM0ZaO2Ij1K&response=".$captcha."&remoteip=".$_SERVER['REMOTE_ADDR']);
@@ -234,7 +234,7 @@ public function creatediscuss(){
 				$this->load->library('form_validation');
 				$this->form_validation->set_rules('input_title', 'title', 'required|min_length[5]|max_length[50]|xss_clean');
 				$this->form_validation->set_rules('input_content', 'content', 'required|min_length[5]|max_length[500]|xss_clean');
-		if($this->form_validation->run() && $captcha == $this->session->userdata('mycaptcha')){//is data valid
+		if($this->form_validation->run()){//is data valid
 			$data = array(
 				'title'=>$title,
 				'content'=>strip_tags($content),
@@ -242,8 +242,10 @@ public function creatediscuss(){
 				'updatedate'=>date('Y-m-d h:i:s'),
 				'id_user'=>$this->session->userdata['student_login']['id_user'],
 				'type'=>$type,
-				'views'=>0
+				'views'=>0,
+				'status'=>'posted'
 				);
+			print_r($data);
 			if($this->db->insert('discussion',$data)){
 				//get lattest id_discussion by id_user
 				$this->db->where('id_user',$this->session->userdata['student_login']['id_user']);
@@ -257,29 +259,9 @@ public function creatediscuss(){
 				echo 'error add topic';
 			}
 		}else{//not valid
-			// captcha
-			$this->load->helper('captcha');
-			$tgl = date('d');
-			$minutes = date('m');
-			$second = date('s');
-			$key = $tgl * $minutes * $second ;
-			$vals = array(
-				'word' => $key,
-				'img_path'   => './assets/img/captcha/',
-				'img_url'    => base_url('assets/img/captcha').'/',
-				'img_width'  => '200',
-				'img_height' => 30,
-				'border' => 0,
-				'expiration' => 7200
-				);
-	  		// create captcha image
-			$cap = create_captcha($vals);
-			// store the captcha word in a session
-			$this->session->set_userdata('mycaptcha', $cap['word']);
 			// end of captcha config
 			$data = array(
 				'title'=>'Create New Ask',
-				'image'=>$cap['image'],
 				'type'=>$type,
 				'captcha'=>$captcha,
 				'isedit'=>false,
@@ -321,7 +303,7 @@ public function edittopic(){
 	//proc edit topic
 	public function procEditTopic(){
 		//Google Recaptcha Validation
-		if(isset($_POST['g-recaptcha-response'])){
+		if(!empty($_POST) && isset($_POST['g-recaptcha-response'])){
 			$captcha=$_POST['g-recaptcha-response'];
 		}
 		$response=file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=6LcaGAQTAAAAANXY7MJQwxQXUK2ODKM0ZaO2Ij1K&response=".$captcha."&remoteip=".$_SERVER['REMOTE_ADDR']);
@@ -339,16 +321,18 @@ public function edittopic(){
 		//is chaptcha correct
 		if(!empty($content)){//if captcha is correct
 			if($this->form_validation->run()){//form validation is good
+				// decode id dicus
+				$id_discuss = base64_decode(base64_decode(str_replace('', '=', $_POST['enc_id_discuss'])));
 				//update database
 				$this->db->where('id_discuss',$id_discuss);//where id discuss
 				$data = array(
-					'title'=>$title,
-					'content'=>$content,
+					'title'=>$_POST['input_title'],
+					'content'=>$_POST['input_content'],
 					'updatedate'=>date('Y-m-d h:i:s'),
 					);
 				if($this->db->update('discussion',$data)){
 					//$enc_id_discuss;
-					redirect(site_url('discussion/open/'.$enc_id_discuss));
+					redirect(site_url('discussion/open/'.$_POST['enc_id_discuss']));
 				}else{
 					echo 'gagal memasukan ke database';
 				}
