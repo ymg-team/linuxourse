@@ -44,18 +44,14 @@
 					<dd class="small-6 columns active"><a style="background-color:#fff" class="tab-home" role="tab" href="#register">Login / Register</a></dd>
 					<dd class="small-6 columns"><a class="tab-home" role="tab"></a></dd>
 				</dl> -->
-				<div style="padding:5px 5px 0 5px;background-color:#fff" class="tabs-content">
+				<div style="padding:20px 20px;background-color:#fff" class="tabs-content">
 					<div class="content active" id="register">
-						<p>Login / Register Via :</p>
+						<p>Login:</p>
 						<hr/>
-						<a style="background-color:rgb(77, 117, 202);display:block" href="<?php echo site_url('oauth/facebook/facebook.php')?>" class="button"><i style="font-size:20px;vertical-align:middle" class="fi-social-facebook"></i> Facebook</a>
-						<a style="background-color:rgb(202, 77, 77);display:block" href="<?php echo site_url('oauth/googleplus')?>" class="button"><i style="font-size:20px;vertical-align:middle" class="fi-social-google-plus"></i> Google+</a>
-					</div>
-					<div style="padding:5px 5px 0 5px;background-color:#fff" class="content" id="login">
-						<form method="POST" action="<?php echo site_url('p/login')?>">
+						<form method="POST" action="<?php echo site_url('p/login') ?>">
 							<div class="row">
 								<div class="large-12 columns">
-									<input name="input_username" style="height:40px" type="text" placeholder="username" required>
+									<input name="input_username" style="height:40px" type="text" placeholder="username" value="<?php if(!empty($_POST['input_username'])){echo $_POST['input_username'];}?>" required>
 								</div>								
 							</div>
 							<div class="row">
@@ -65,12 +61,29 @@
 							</div>
 							<div class="row">
 								<div class="large-12 columns">
-									<input class="button" type="submit" value="Login">
+									<?php 
+									$error = validation_errors();
+									if(!empty($error)){?>
+									<small class="error"><?php echo $error;?></small>
+									<?php }else if(!empty($error)){?>
+									<small class="error"><?php echo $error;?></small>
+									<?php }?>
+									<input style="width:100%" class="button" type="submit" value="Login">
 								</div>
 							</div>
-						</form>
-					</div>						
-				</div>
+						</form>	
+						<table style="border:0;margin:0">
+							<tr>
+								<td><hr/></td>
+								<td style="width:100px"><center><small>login/register via</small></center></td>
+								<td><hr/></td>
+							</tr>
+						</table>
+						<div class="row"></div>
+						<a class="small-6 columns button" style="margin:0;background-color:rgb(77, 117, 202);display:block" href="<?php echo site_url('oauth/facebook/facebook.php')?>"><i style="font-size:20px;vertical-align:middle" class="fi-social-facebook"></i></a>
+						<a class="small-6 columns button" style="margin:0;background-color:rgb(202, 77, 77);display:block" href="<?php echo site_url('oauth/googleplus')?>"><i style="font-size:20px;vertical-align:middle" class="fi-social-google-plus"></i></a>
+						</div>
+					</div>
 			</div>
 		</div>
 	</section>
@@ -82,7 +95,7 @@
 			<div class="large-3 columns"><p></p></div>
 			<div class="large-6 columns">
 				<center>
-					<h3>Linux is Everywhere!</h3>
+					<h2>Linux is Everywhere!</h2>
 					<p style="font-size:13px">Whether you know it or not you are already using Linux every day. Every time you use Google or Facebook or any other major Internet site, you are communicating with servers running Linux. Most DVRs, airplane and automobile entertainment systems and recent TVs run on Linux. Most ubiquitously, if you are using an Android phone, you are using a flavor of Linux.
 
 						At its core, Linux is software used to control hardware like desktop and laptop computers, supercomputers, mobile devices, networking equipment, airplanes, and automobiles; the list is endless. Linux is everywhere. <a style="color:lightgray" target="_blank" href="https://www.edx.org/blog/why-learn-linux#.VIZXq-qUfHw">-www.edx.org-</a> </p>
@@ -96,7 +109,7 @@
 			<center>
 				<div class="row">		
 					<div class="large-12 collapse" columns>
-						<h1 style="margin:0">Available Course Materi</h1>
+						<h2 style="color:#fff;margin:0">Available Course Materi</h2>
 						<p>improve the mastery of Linux by following other courses</p>
 						<!-- skill completion -->
 						<div class="row">

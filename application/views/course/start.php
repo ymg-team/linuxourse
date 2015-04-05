@@ -165,13 +165,15 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 									if($cl['step'] <= $detCourse['step']){
 										$title = '<span style="color:gray">'.$cl['title'].'
 										<span class="fi-check"></span></span>';
-										$link = site_url('rewind');
+										$encid = str_replace('=', '', base64_encode(base64_encode($cl['id_course'])));
+										$encmateri = str_replace('=', '', base64_encode(base64_encode($detCourse['id_materi'])));
+										$link = site_url('course/rewind/'.$encid.'/'.$encmateri.'?lang='.$_GET['lang']);
 									} else if($cl['step'] == $detCourse['step'] + 1){
 										$title = '<strong>'.$cl['title'].'</strong>';
-										$link = '#';											
+										$link = site_url();											
 									} else {
 										$title = $cl['title'];
-										$link = site_url('preview');
+										$link = site_url();
 									}															
 									?>
 									<a href="<?php echo $link;?>"><?php echo $title;?></a></li>
@@ -183,7 +185,18 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 						<p><strong>Case : <?php echo $course['title']?></strong><p>
 							<div class="full-height-80">
 								<p><?php 
-									$case = nl2br($course['course_case_id']);
+									switch ($_GET['lang']) {
+										case 'id':
+											$case = $course['course_case_id'];
+											break;
+										case 'en':
+											$case = $course['course_case_en'];
+											break;
+										default:
+											$case = $course['course_case_en'];
+											break;
+									}
+									$case = nl2br($case);
 									$case = str_replace('[', '<', $case);
 									$case = str_replace(']', '>', $case);
 									echo $case;
@@ -193,7 +206,18 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 								<h5><strong><a data-tooltip aria-haspopup="true" title="are you stuck?" onclick="showhint()">Hint !</a></strong></h5>
 								<p style="display:none" id="hint">
 									<?php
-									$hint = nl2br($course['hint_id']);
+									switch ($_GET['lang']) {
+										case 'id':
+											$hint = $course['hint_id'];
+											break;
+										case 'en':
+											$hint = $course['hint_en'];
+											break;
+										default:
+											$hint = $course['hint_en'];
+											break;
+									}
+									$hint = nl2br($hint);
 									$hint = str_replace('[', '<', $hint);
 									$hint = str_replace(']', '>', $hint);
 									echo $hint;
@@ -235,3 +259,11 @@ $course = $this->m_course->detCourse($step,$detCourse['id_materi']);//sow detail
 				<p style="color:#494949" class="lead"><?php if(!empty($_GET['modal'])):echo $_GET['modal'];endif;?></p>					
 				<a class="close-reveal-modal">&#215;</a>
 			</div>
+			<!-- Histats.com  START (hidden counter)-->
+<script type="text/javascript">document.write(unescape("%3Cscript src=%27http://s10.histats.com/js15.js%27 type=%27text/javascript%27%3E%3C/script%3E"));</script>
+<a href="http://www.histats.com" target="_blank" title="web page hit counter" ><script  type="text/javascript" >
+try {Histats.start(1,2972237,4,0,0,0,"");
+Histats.track_hits();} catch(err){};
+</script></a>
+<noscript><a href="http://www.histats.com" target="_blank"><img  src="http://sstatic1.histats.com/0.gif?2972237&101" alt="web page hit counter" border="0"></a></noscript>
+<!-- Histats.com  END  -->

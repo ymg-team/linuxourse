@@ -42,6 +42,12 @@
 			}
 		});
 	}
+	//choose rewind language
+	function rewindLanguage(action){
+		//load modal
+		 $("#rewindForm").attr("action",action);
+		$('#rewindModal').foundation('reveal', 'open');
+	}
 </script>
 <a class="button" style="display:none;padding:10px;position: fixed;right: 0;bottom: 0;" id="btntop"><span style="font-size:2rem"; class="fi-arrow-up"></span></a>
 
@@ -69,11 +75,19 @@ $encIdUserCourse = str_replace('=', '', $encIdUserCourse);
 		<div id="progressanimate" style="height:10px;width:50%" class="radius progress">
 			<span style="float:left;color:#fff;width:<?php echo $recentPercentage;?>%;" class="meter"></span>
 		</div>
-		<hr/>
+		<br/>
 		<p style="margin:0">Active Student <strong><?php echo $this->m_course->countStudentByMateri($materi['id_materi'],'incomplete')?></strong></p>
 		<p style="margin:0">Completed Student <strong><?php echo $this->m_course->countStudentByMateri($materi['id_materi'],'completed')?></strong></p>
 		<br/>
-		<a href="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">Resume Course</a>
+		<div class="row">
+			<form class="large-6 large-offset-3 columns" method="GET" action="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">
+				<select style="height:45px;color:gray" class="large-6 columns" name="lang">
+					<option value="en">English</option>
+					<option value="id">Indonesia</option>
+				</select>
+				<button class="button button-lg large-6 columns" type="submit">Resume <i class="fi-arrow-right"></i></button>
+			</form>
+		</div>
 	</center>
 </section>
 <?php 
@@ -136,7 +150,7 @@ $mytime = json_decode($mytime,true);//json to array
 									<tr>
 										<td><?php echo $c['title'];?>
 											<?php if($c['id_level'] < $detCourse['id_level'] || ($c['step'] <= $recentCourseStep && $c['level'] <= $detCourse['level'])){//if level n course step <= now = completed
-												echo '<a href="'.site_url('course/rewind/'.str_replace('=', '', base64_encode(base64_encode($c['id_course']))).'/'.$this->uri->segment(3)).'" style="background-color:#008cba;color:#fff;padding:2px;font-size:9px">rewind</a>';
+												echo '<a onclick="rewindLanguage(\''.site_url('course/rewind/'.str_replace('=','', base64_encode(base64_encode($c['id_course']))).'/'.$this->uri->segment(3)).'\')"  style="background-color:#008cba;color:#fff;padding:2px;font-size:9px">rewind</a>';
 											}?>
 											<br/><small style="color:gray"><?php echo $c['description']?></small></td>
 											<td><?php echo $c['estimate'].'m'; ?></td>
@@ -173,6 +187,14 @@ $mytime = json_decode($mytime,true);//json to array
 							<?php endforeach ?>
 							<!-- end of review list-->
 						</div>
+						<!-- <div class="content" id="finishedcourse"></div>					   -->
+						<form class="" method="GET" action="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">
+							<select style="height:45px" class="large-6 columns" name="lang">
+								<option value="en">English</option>
+								<option value="id">Indonesia</option>
+							</select>
+							<button class="button button-lg large-6 columns" type="submit">Resume <i class="fi-arrow-right"></i></button>
+						</form>
 						<div class="content" id="badge">
 							<?php if(empty($materibadge) && empty($allbadge)){ echo '<center><h3>you don\'t have any badge</h3></center>';}else{?>
 							<?php foreach($allbadge as $ab):?>
@@ -183,13 +205,23 @@ $mytime = json_decode($mytime,true);//json to array
 							<?php endforeach; ?>
 							<?php } //end of else?>
 						</div>	
-						<div class="content" id="finishedcourse"></div>					  
 					</div>
-
-				</div>				
-				<a href="<?php echo site_url('course/start/'.$encIdUserCourse)?>" class="button large">Resume Course</a>
+				</div>
 			</div>
 		</div>
 	</center>
 </section>
-<!-- end of syllabus list
+<!-- end of syllabus list-->
+<!-- modal to choose language -->
+<div id="rewindModal" class="tiny reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+	<h4 id="modalTitle">Choose Language</h4>
+	<form id="rewindForm" class="" method="GET" action="" class="button large">
+		<select style="height:45px" class="large-6 columns" name="lang">
+			<option value="en">English</option>
+			<option value="id">Indonesia</option>
+		</select>
+		<button class="button button-lg large-6 columns" type="submit">Resume <i class="fi-arrow-right"></i></button>
+	</form>
+	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
+<!-- end of modal to choose language -->

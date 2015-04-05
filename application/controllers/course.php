@@ -247,6 +247,7 @@ class course extends base { //class for public
 	//join new course materi
 	public function newcourse(){
 		$this->memberOnly();
+		$session = $this->session->userdata('student_login');
 		if(empty($_POST['id_materi']) && $_POST['check_tnc'] == 'off'){
 			redirect(site_url());
 			$session = $this->session->userdata;

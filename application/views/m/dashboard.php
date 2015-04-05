@@ -69,9 +69,17 @@
 						$idRecentCourse = base64_encode(base64_encode($recentCourse['id_user_course']));
 						$idRecentCourse = str_replace('=', '', $idRecentCourse);
 						?>
-						<p><a style="width:30%" class="button" href="<?php echo site_url('course/start/'.$idRecentCourse)?>">Resume</a>
-							<br/>
-							<a id="btnoverview">Overview Recent Course</a>
+						<p>
+						<div class="row">
+		<form class="large-12 columns" method="GET" action="<?php echo site_url('course/start/'.$idRecentCourse)?>" class="button large">
+			<select style="height:45px;color:gray" class="large-6 columns" name="lang">
+				<option value="en">English</option>
+				<option value="id">Indonesia</option>
+			</select>
+			<button class="button button-lg large-6 columns" type="submit">Resume <i class="fi-arrow-right"></i></button>
+		</form>
+		</div>
+						
 						</p>
 
 					</div>
@@ -271,7 +279,13 @@
 						</table>
 						<br/><br/>
 					<?php endforeach ?>
-					<a href="<?php echo site_url('course/start/'.$idRecentCourse)?>" class="button large">resume</a>
+					<form class="" method="GET" action="<?php echo site_url('course/start/'.$idRecentCourse)?>" class="button large">
+						<select style="height:45px" class="large-6 columns" name="lang">
+							<option value="en">English</option>
+							<option value="id">Indonesia</option>
+						</select>
+						<button class="button button-lg large-6 columns" type="submit">Resume <i class="fi-arrow-right"></i></button>
+					</form>
 					<br/>
 				</div>
 			</center>
@@ -316,7 +330,7 @@
 												<img src="<?php echo $logo?>"/>
 											</center>
 											<div class="materi-title">
-												<h4><?php echo $am['title'];?></h4>								
+												<h4><?php echo substr($am['title'],0,20);?></h4>								
 											</div>
 											<div class="course-detail">
 												<?php echo $am['description'];?>

@@ -22,7 +22,7 @@ class Oauth extends base { //class for public
 	 ************************************************/
 	  $client_id = '850390802439-iam46vt2ah1i291fs4bhr3r8lp43miau.apps.googleusercontent.com';
 	  $client_secret = '-Fgv-YgBFMyPjjYDEztf3vWT';
-	  $redirect_uri = 'http://127.0.0.1/project/2015/linuxourse/oauth/googleplus';
+	  $redirect_uri = 'https://linuxourse.me/oauth/googleplus';
 	  $client = new Google_Client();
 	  $client->setClientId($client_id);
 	  $client->setClientSecret($client_secret);
@@ -74,10 +74,10 @@ class Oauth extends base { //class for public
 	  	|| $client_secret == '-Fgv-YgBFMyPjjYDEztf3vWT'
 	  	|| $redirect_uri == site_url('oauth/googleplus')) {
 	  	// echo missingClientSecretsWarning();
-	}
+	  }
 	if (isset($authUrl)){
-      redirect($authUrl);
-    } 
+		redirect($authUrl);
+	} 
 		//is data found
 	if (isset($token_data)) {
 		$payload = $token_data['payload'];
@@ -92,9 +92,9 @@ class Oauth extends base { //class for public
 		if(!empty($userdata)){//user is registered
 			//set session
 			if($userdata['verified']==0){//email not verified
-					$data['title'] = 'Verified email first';
-					$data['error'] = 'check your email to verification or resend verification code <a data-reveal-id="verificationModal" href="#">here</a>';
-					$this->baseView('p/loginerror',$data);
+				$data['title'] = 'Verified email first';
+				$data['error'] = 'check your email to verification or resend verification code <a data-reveal-id="verificationModal" href="#">here</a>';
+				$this->baseView('p/loginerror',$data);
 				}else{//create session
 					$loginuser['id_user'] = $userdata['id_user'];
 					$loginuser['username'] = $userdata['username'];
@@ -110,8 +110,8 @@ class Oauth extends base { //class for public
 					$sessiondata['student_login'] = $loginuser;
 					$sessiondata['command'] = array();//for course
 				//set session
-				$this->session->set_userdata($sessiondata);
-				$this->session->set_userdata('dir','/home/user');
+					$this->session->set_userdata($sessiondata);
+					$this->session->set_userdata('dir','/home/user');
 				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
 					$this->db->where('id_user',$this->session->userdata['student_login']['id_user']);
 					$data = array('last_login'=>date('Y-m-d h:i:s'));
@@ -143,8 +143,57 @@ class Oauth extends base { //class for public
 
 	//facebook oauth
 	public function facebooklogin(){
-		session_start();
-		print_r($_SESSION);
+		//is user registred
+		$userdata = $this->m_user->isRegistered('facebook',$_GET['id']);//is user available on database
+		if(!empty($userdata)){//user is registered
+			//set session
+			if($userdata['verified']==0){//email not verified
+				$data['title'] = 'Verified email first';
+				$data['error'] = 'check your email to verification or resend verification code <a data-reveal-id="verificationModal" href="#">here</a>';
+				$this->baseView('p/loginerror',$data);
+				}else{//create session
+					$loginuser['id_user'] = $userdata['id_user'];
+					$loginuser['username'] = $userdata['username'];
+					$loginuser['email'] = $userdata['email'];
+					$loginuser['fullname'] = $userdata['fullname'];
+					$loginuser['id_country'] = $userdata['id_country'];
+					$loginuser['register_date'] = $userdata['register_date'];
+					$loginuser['password'] = $userdata['password'];
+					$loginuser['level'] = $userdata['level'];
+					$loginuser['status'] = $userdata['status'];
+					$loginuser['pp'] = $userdata['pp'];
+					$loginuser['is_login'] = 1;
+					$sessiondata['student_login'] = $loginuser;
+					$sessiondata['command'] = array();//for course
+				//set session
+					$this->session->set_userdata($sessiondata);
+					$this->session->set_userdata('dir','/home/user');
+				if($this->session->userdata['student_login']['status'] == 'active'){ //jika statusnya aktif
+					$this->db->where('id_user',$this->session->userdata['student_login']['id_user']);
+					$data = array('last_login'=>date('Y-m-d h:i:s'));
+					$this->db->update('user',$data);//update login terakhir
+					echo ("<SCRIPT LANGUAGE='JavaScript'>
+						window.alert('Login Success');
+						window.location.href='".site_url()."';
+					</SCRIPT>");				
+				} else { //jika statusnya banned
+					echo 'gagal memasukan session';
+				}			
+			}	
+		}else{//user not registered
+			//do registration
+			$registerdata = array(
+				'oauthId'=>$_GET['id'],
+				'oauthProvider'=>'facebook',
+				'email'=>$_GET['email'],
+				'fullname'=>$_GET['name'],
+				'gender'=>$_GET['gender'],
+				'username'=>$_GET['id'],//username facebook is facebook id
+				);
+			$params['registerdata'] = $registerdata;
+			$this->session->set_userdata($params);
+			redirect(site_url('p/register'));
+		}
 	}
 
 }

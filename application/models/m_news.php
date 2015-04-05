@@ -13,7 +13,7 @@ class m_news extends CI_Model{
 		news.postdate,news.status
 		FROM news INNER JOIN user_manage ON user_manage.id_user_manage = news.id_user
 		WHERE news.status = 'published'
-		ORDER BY news.id_news DESC
+		ORDER BY news.updatedate DESC
 		LIMIT ".$limit." OFFSET ".$offset;
 		$query = $this->db->query($sql);
 		if($query->num_rows()>0){

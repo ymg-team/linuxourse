@@ -25,7 +25,7 @@
 			<p><a href="#">register</a></p>
 			<p><a href="#">login</a></p>
 			<p><a href="<?php echo site_url('news')?>">news</a></p>
-			<p><a href="#">error report</a></p>
+			<p><a target="_blank" href="http://www.emailmeform.com/builder/form/cFXuKdU7scdJQNh9">error report</a></p>
 		</div>
 		<div class="large-2 medium-2 columns">
 			<h3 class="menu-title">Course Materi</h3>
@@ -74,5 +74,13 @@
 	$(document).foundation();
 </script>
 <!--<script src="<?php echo base_url('assets/js/vendor/fastclick.js')?>"></script>-->
+<!-- Histats.com  START (hidden counter)-->
+<script type="text/javascript">document.write(unescape("%3Cscript src=%27http://s10.histats.com/js15.js%27 type=%27text/javascript%27%3E%3C/script%3E"));</script>
+<a href="http://www.histats.com" target="_blank" title="free hit counter" ><script  type="text/javascript" >
+try {Histats.start(1,2972237,4,0,0,0,"");
+Histats.track_hits();} catch(err){};
+</script></a>
+<noscript><a href="http://www.histats.com" target="_blank"><img  src="http://sstatic1.histats.com/0.gif?2972237&101" alt="free hit counter" border="0"></a></noscript>
+<!-- Histats.com  END  -->
 </body>
 </html>

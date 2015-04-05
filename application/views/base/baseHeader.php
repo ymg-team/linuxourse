@@ -27,7 +27,7 @@
 	if(!empty($title)){
 		echo $title.' :: LINUXOURSE';
 	} else {
-		echo 'FOSSIL Linux Ecourse';
+		echo 'Linux Ecourse :: LINUXOURSE';
 	}
 	?>
 </title>
