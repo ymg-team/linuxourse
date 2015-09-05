@@ -1,0 +1,104 @@
+/*knowlinux css
+by yussan @xyussanx
+28 Oct 2014*/
+@font-face {
+    font-family:oxygen;
+    src: url(../font/Oxygen.otf);
+}
+body{font-size:12px;font-family: oxygen}
+ul.menu{list-style: none;line-height: 1.2}
+pre{display: inline}
+.width-100{width:100%}
+/*home only*/
+.home-navbar{font-size:2em;width:100%;padding: 10px 0;height: initial;position: fixed;background-color: transparent;color:#fff;z-index:200;}
+.no-background{background-color: transparent;}
+.home-cover{background-color: gray;color:#FFF;}
+.home-cover h1{font-size: 6.5em}
+.home-cover h1,h2{font-family:oxygen;color:#fff;margin:0;}
+.super-center{text-align: center;vertical-align: middle}
+.button-transparent{border:2.5px solid #fff;background-color: transparent;font-weight:bold}
+.button-transparent:hover{color:#333;background-color: #FFF;}
+.button-cover{width:300px;}
+.button-circle-home{border-radius: 100px;padding: 0 18px;font-size: 80px;}
+#home-quote{height: initial}
+#home-quote h2,#home-quote p{color:gray;}
+.home-quote-item{padding:40px1 0px;float:left;}
+#progressanimate{display:none;}
+.activemenu{border-bottom: 2px solid #008cba;}
+.logo{margin-top:5px;width:155px;height:40px;background-color:#000;background-image: url('img/logo.png');background-size: cover}
+.home_login{}
+.welcome_message{color:#fff;}
+/*dashboard*/
+.notification{background-color: #008CBA;padding: 0 10px;color: #fff;font-size: 0.8em;}
+.joinmateri{text-align: left;background-color: #fff;padding:20px;border-bottom: 1px solid #E8E8E8}
+.joinmateri p{margin:0;}
+.joinmateri:hover{background-color: #008cba;color:#fff;}
+.thumb-progress{padding:10px;}
+/*section only*/
+#title{background-color: #4AADCD;padding: 20px;margin-top: 17px;color:#fff;}
+#title a,#title h1,#title h2,#title h3{color:#fff;}
+#welcome{padding: 20px 0 10px 0;background-color: #000;background-size: cover;}
+#home_header{border-bottom: 4px solid #D5D5D5;width:100%;position:fixed;background-color:#fff;z-index:100;}
+#home_center{padding:40px;}
+.divideroftopmenu{width:100%;height: 40px}
+#home_user{padding:40px;background-color: #004257}
+#home_user h3,#home_user  h5{color:#fff;}
+#footer{padding:10px;background-color: #000;color:#B3B3B3;}
+#footer h3{font-size: 14px;color:#B3B3B3;}
+#footer p{line-height:0;font-size: 12px;color:#B3B3B3;margin-bottom: 10px;}
+#footer a{font-size: 12px;color:#F4F4F4;line-height: 1;/* padding-bottom: 1px; */}
+#afterlogin{background-color: #FFF;padding:40px;}
+#completion{background-color: #E8E8E8;padding:40px;}
+#livecomand{background-color: #000;height:100%;}
+#btndown{padding:20px;}
+.level{padding:20px;background-color:#fff;}
+.whitebutton{background-color: #E8E8E8;color:rgb(58, 58, 58);border-color: #000;}
+.whitebutton:hover,.whitebutton:active{background-color: gray;color:#FFF;}
+/*learn*/
+.full-height{margin: 0 auto 0 auto};
+.materi-item:hover{background-color: #F4F4F4;}
+.materi-item{float:left;border:1.5px solid rgb(0, 96, 128);width:100%;}
+.materi-item small{color:gray;}
+.materi-title{height: 35px;padding:0.1em;}
+.materi-title h4{color:gray}
+.learn_sidebar{padding:0  10px;margin-top:0;background-color: #F5F5F5}
+.terminal_view{padding:10px;background-color: #282828}
+.text{height:560px;overflow: auto;margin-bottom: 20px;}
+.text p{font-size: 12px}
+.texthint{height:150px;overflow: auto;font-size}
+.texthint p{font-size: 12px}
+.instructions{background-color:rgb(167, 213, 228);padding:5px;display: block}
+.instructions>h5{font-weight: bold}
+.command{}
+.command>.item{padding:10px;color:#fff;overflow-y:auto}
+.result{}
+.result>.item{margin:10px;padding:10px;color:#fff;background-color: #000;min-height: 500px}
+#linuxCommand{color:#fff;height:17px;background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;font-family: monospace}
+#linuxCommand:focus{border:0;box-shadow: none}
+#nano{background-color: #000;border:0;float:left;max-width: 100%;font-size:13px;padding:0;font-family: monospace}
+#nano:focus{border:0;box-shadow: none};
+.dropdownme{max-width: none}
+/*other course*/
+#otherCourse{padding: 40px;background-color: #4AADCD;color:#fff;}
+#otherCourse h1{color:#fff;}
+#footer{padding:30px;}
+.course-detail{height:50px;color:#000;padding:0.4em;color:gray;}
+/*base content*/
+.base-content{padding:15px;}
+/*all about discuss*/
+.discuss-avatar{width:40px;border-radius:40px}
+.discuss-item a.linktitle{font-size: 14px}
+.discuss-item .avatar{width:45px;height:45px;float:left;display: block}
+.discuss-item .detail{width:80%;height:45px;float:left;display: block}
+.discuss-item .title{height:60px;}
+.linktaggreen{color:#fff;background-color: green;padding: 0 0.4em;width:40px;font-size: 11px}
+.linktagblue{color:#fff;background-color: blue;padding: 0 0.4em;width:40px;font-size: 11px}
+.linktaggreen:hover,.linktagblue:hover{color:#fff;background-color: gray};
+.discuss-comments{background-color: #F4F4F4;padding:5px;}
+.comment-item{background-color: #F4F4F4;padding:5px;}
+.comment-item-button a{font-size: 20px}
+/*404 Page*/
+.notfound{background-color: #000;color:#fff;}
+.notfound h1{color:#fff;font-size: 100px}
+/*terminal*/
+.terminal-showdir{color:green;font-weight: bold}
